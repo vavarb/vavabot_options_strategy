@@ -15,12 +15,12 @@ This is a bot what send options strategies orders. It was developed in python an
   https://www.deribit.com/
 
 <img src = 'https://github.com/vavarb/vavabot_options_spread/blob/ad2b1f500d2846dc9af0796e32d63adc2ee30824/img/img1.PNG'>
-<img src = 'img/img2.png'>
-<img src = 'img/img3.png'>
-<img src = 'img/img4.png'>
-<img src = 'img/img5.png'>
-<img src = 'img/img6.png'>
-<img src = 'img/img7.png'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img2.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img3.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img4.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img5.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img6.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img7.PNG'>
 
 ## Getting Started
 - This project was devoloped:
