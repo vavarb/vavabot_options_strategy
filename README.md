@@ -45,6 +45,109 @@ git clone https://github.com/vavarb/vavabot_options_spread
 ```
   2. Run vavabot_options_spread.py file
 
+#### Linux
+- If you use Linux Ubuntu 22.04 and the following error appears:
+
+qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
+This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+
+Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, vnc, xcb.
+
+- You can try:
+  1. OPEN TERMINAL: <CTRL + ALT + T>
+  2. From https://howtoinstall.co/pt/xcb
+
+  ```
+  sudo apt-get update
+  ```
+
+  ```
+  sudo apt-get install xcb
+  ```
+
+  3. From https://www.techtudo.com.br/noticias/2011/04/aprenda-ativar-o-login-de-acesso-conta-root-no-ubuntu.ghtml
+
+  ```
+  sudo passwd root
+  ```
+
+  Type your user password.
+
+  Type new root password
+
+  Confirm new root password
+
+  4. DISBLED WAYLAND. 
+
+  From https://stackoverflow.com/questions/69828508/warning-ignoring-xdg-session-type-wayland-on-gnome-use-qt-qpa-platform-wayland#:~:text=The%20same%20Warning%3A%20Ignoring%20XDG_SESSION_TYPE,figure%20to%20a%20pdf%20file.
+  
+  ```
+  su root
+  ```
+
+  ```
+  cd //
+  ```
+
+  ```
+  cd etc
+  ```
+
+  ```
+  cd gdm3
+  ```
+
+  ```
+  gedit custom.conf
+  ```
+
+  Uncommenting: ```WaylandEnable=false```
+
+  Save and close.
+
+  ```
+  cd //
+  ```
+
+  ```
+  cd etc
+  ```
+
+  ```
+  gedit environment
+  ```
+
+  Add: 
+  ```
+  QT_QPA_PLATFORM=xcb
+  ```
+
+  Save and close.
+
+    ```
+    OR you can open Nautilus or Nemo GUI. 
+
+    <CTRL + L>  
+    Type: admin //
+    Type: root password         
+    Open etc/gdm3/custom.conf file and Uncommenting: ```WaylandEnable=false```.
+    After, open etc/environment file and add ```QT_QPA_PLATFORM=xcb```
+  ```
+  
+
+  5. From https://forum.qt.io/topic/93247/qt-qpa-plugin-could-not-load-the-qt-platform-plugin-xcb-in-even-though-it-was-found/17
+
+  ```
+  sudo apt-get install libxcb-xinerama0
+  ```
+
+  6. RESTART LINUX.
+  7. CHECK WHETHER YOU ARE ON WAYLAND OR XORG USING:
+  ```
+  echo $XDG_SESSION_TYPE
+  ```
+  The expected return is: x11
+
 ## Contributing
 - Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
