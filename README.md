@@ -14,6 +14,8 @@ vavarb@yahoo.com
 This is a bot what send options strategies orders. It was developed in python and designed to be executed only on the Deribit Exchange.
   https://www.deribit.com/
 
+<img src = 'img/img1'>
+
 ## Getting Started
 - This project was devoloped:
   - OS: Windows 10.
