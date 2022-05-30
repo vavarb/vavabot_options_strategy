@@ -14,7 +14,7 @@ vavarb@yahoo.com
 This is a bot what send options strategies orders. It was developed in python and designed to be executed only on the Deribit Exchange.
   https://www.deribit.com/
 
-<img src = 'img/img1.png'>
+<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/ad2b1f500d2846dc9af0796e32d63adc2ee30824/img/img1.PNG'>
 <img src = 'img/img2.png'>
 <img src = 'img/img3.png'>
 <img src = 'img/img4.png'>
