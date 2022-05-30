@@ -27,6 +27,7 @@ This is a bot what send options structure orders. It was developed in python and
    - Websocket
    - Threading
    - Matplotlib
+   - PyQt5, QtCore, QtGui, QtWidgets
 - Windows FireWall need disabled for PyCaharm if there is a conection or SSL Certificate error.
 
 ### Installation :arrow_forward:
