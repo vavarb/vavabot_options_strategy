@@ -11,7 +11,7 @@ vavarb@yahoo.com
 ```
 
 ## About the Project
-This is a bot what send options structure orders. It was developed in python and designed to be executed only on the Deribit Exchange.
+This is a bot what send options strategies orders. It was developed in python and designed to be executed only on the Deribit Exchange.
   https://www.deribit.com/
 
 ## Getting Started
