@@ -1,0 +1,39 @@
+* Primeiro passo: configure API Key, Secret Key e conta TEST ou REAL.
+
+* Necessita de uma conexão pela internet que seja estável. No entanto, não necessita de uma banda
+com alta velocidade.
+
+* O arquino log_spread pode ser apagado quando considerar o seu tamanho muito grande.
+
+* Recomendamos executar o programa a partir de um pendrive.
+
+* Ao reiniciar o bot, conforme a velocidade da conexão, a mesma pode ser lenta até ele conclua todas
+verificações. 
+
+* Ao deixar o boot executando, recomendamos deixar desativada da caixa 'auto scrool bar'.
+
+* Uma vez finalizada a execução das ordens de uma estrutura, deve configurar novamente os instrumentos
+para que execute nova operção.
+
+* Se a montagem de uma estrutura está em andamento e o bot seja finalizado, ao reiniciar, continuará
+do ponnto onde parou.
+
+* Você pode verificar o saldo em sua conta dos instrumentos configurados à qualquer momento, só clicar em 
+"UPDATE Current Positions" na aba "Config". O mesmo se quiser mais detalhes sobre os instrumentos definidos em
+"REQUEST Options Structure Cost" na aba "Structure". Clique uma vez e aguarde, pode demorar alguns segundos para
+atualizar os dados. 
+
+* Entre outras coisas, pode realizar:
+		- simplesmente montar uma estrutura com até 4 pontas envolvendo opções ou futuros e 
+	executar as ordens à mercado;
+		 - montar uma estrutura com até 4 pontas envolvendo opções ou futuros e
+	executar as ordens conforme as condições definidas nas configurações como, por exemplo, vender
+	uma borboleta caso a valor da mesma esteja acima de x USD e a cotação do BTC acima de y.
+		- definir que uma estrutura seja montada quando a cotação do BTC/ETH atingir
+	determinado valor.
+		- usar como 'stop loss/stop gain'. Desmontar uma estrutra, ou converter em outra, 
+	caso alguma condição seja alcançada, como por exemplo, uma estrutura está dando um lucro de
+	x BTC, caso o custo da mesma fique menor à y, desmontá-la.
+		- vender uma call ou estrutura caso a cotação fique acima de x e a vol acima de y, por exemplo.
+		- simplesmente calcular o valor de uma estrutura e obervar.
+
