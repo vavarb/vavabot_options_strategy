@@ -14,7 +14,13 @@ vavarb@yahoo.com
 This is a bot what send options strategies orders. It was developed in python and designed to be executed only on the Deribit Exchange.
   https://www.deribit.com/
 
-<img src = 'img/img1'>
+<img src = 'img/img1.png'>
+<img src = 'img/img2.png'>
+<img src = 'img/img3.png'>
+<img src = 'img/img4.png'>
+<img src = 'img/img5.png'>
+<img src = 'img/img6.png'>
+<img src = 'img/img7.png'>
 
 ## Getting Started
 - This project was devoloped:
