@@ -15,7 +15,19 @@ This is a bot what send options structure orders. It was developed in python and
   https://www.deribit.com/
 
 ## Getting Started
-- To get a local copy up and running follow these simple example steps.
+- This project was devoloped:
+  - OS: Windows 10.
+  - IDE: PyCharm 2021.3.1 (Community Edition).
+  - Language: Python 3.10
+- To get a local copy up and running follow.
+
+### Prerequisites
+- Install packages:
+   - websocket-client
+   - Websocket
+   - Threading
+   - Matplotlib
+- Windows FireWall need disabled for PyCaharm if there is a conection or SSL Certificate error.
 
 ### Installation :arrow_forward:
   1. Clone the repo:
