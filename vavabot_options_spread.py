@@ -7056,10 +7056,9 @@ def run(ui):
         from connection_spread import connect
 
         counter = 0
-
         len_log_a = 0
-
         led1 = led_color()
+
         if led1 == 'green':
             sinal.led_color_green_signal.emit()
         elif led1 == 'red':
@@ -7095,8 +7094,8 @@ def run(ui):
                         led1 = 'red'
                         sinal.led_color_red_signal.emit()
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6424 ***')
-                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 6425 ***')
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7098 ***')
+                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 7099 ***')
                         sinal.error_in_list_monitor_signal.emit(er1_str)
                         pass
                 else:
@@ -7112,8 +7111,8 @@ def run(ui):
                     pass
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 6440')
-                er1 = str('*** ERROR - lists_monitor() Error Code:: 6441: ' + str(er) + ' ***')
+                connect.logwriter(str(er) + ' Error Code:: 7115')
+                er1 = str('*** ERROR - lists_monitor() Error Code:: 7116: ' + str(er) + ' ***')
                 sinal.error_in_list_monitor_signal.emit(er1)
             finally:
                 pass
