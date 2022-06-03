@@ -7064,8 +7064,8 @@ def run(ui):
         elif led1 == 'red':
             sinal.led_color_red_signal.emit()
         else:
-            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6393 ***')
-            er1_str = str('*** ERROR - lists_monitor() Error Code:: 6394 ***')
+            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7067 ***')
+            er1_str = str('*** ERROR - lists_monitor() Error Code:: 7068 ***')
             sinal.error_in_list_monitor_signal.emit(er1_str)
             pass
 
