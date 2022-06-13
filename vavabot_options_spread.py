@@ -6790,6 +6790,14 @@ def instruments(ui):
 
 # noinspection PyShadowingNames
 def config(ui):
+    def set_version_and_icon():
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Spread 6.2.2"))
+
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
     def set_enabled_trigger():
         if ui.comboBox_value_given_2.currentText() == 'Set the cost of the Options Structure as trigger (optional)':
             ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
@@ -6888,6 +6896,7 @@ def config(ui):
             finally:
                 pass
 
+    set_version_and_icon()
     ConfigSaved().target_saved_check()
     ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
     ui.comboBox_value_given_2.currentTextChanged.connect(set_enabled_trigger)
