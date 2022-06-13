@@ -1,5 +1,5 @@
 
-from vavabot_options_spread import Deribit, client_ID, client_secret, testnet_saved_tru_or_false1
+from vavabot_options_spread_6_1_2 import Deribit, client_ID, client_secret, testnet_saved_tru_or_false1
 import time
 from lists import list_monitor_log
 import threading
