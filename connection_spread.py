@@ -37,21 +37,25 @@ def connection():
                 pass
             elif connect_set_heartbeat == 'too_many_requests':
                 list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
+                connect.logwriter(str('***************** ERROR too_many_requests ******************'))
                 connect.cancel_all()
                 time.sleep(10)
                 connect.cancel_all()
             else:
                 list_monitor_log.append('********** Offline - Connection ERROR **********')
+                connect.logwriter(str('********** OffLine - Connection ERROR **********'))
                 led = 'red'
                 time.sleep(2)
                 connect = Deribit(test=test, only_public=False, client_ID=client_ID, client_secret=client_secret)
                 connect_set_heartbeat2 = connect.set_heartbeat()
                 if connect_set_heartbeat2 == 'ok':
                     list_monitor_log.append(str('***************** Reeturn Connection ******************'))
+                    connect.logwriter(str('***************** Reeturn Connection ******************'))
                     connect.cancel_all()
                     time.sleep(2)
                 elif connect_set_heartbeat2 == 'too_many_requests':
                     list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
+                    connect.logwriter(str('***************** ERROR too_many_requests ******************'))
                     connect.cancel_all()
                     time.sleep(10)
                     connect.cancel_all()
@@ -63,6 +67,7 @@ def connection():
             led = 'red'
             time.sleep(10)
             list_monitor_log.append('********** Thread_connection - Connection ERROR ********** ' + str(e))
+            connect.logwriter('********** Thread_connection - Connection ERROR ********** ' + str(e))
             pass
         finally:
             pass
