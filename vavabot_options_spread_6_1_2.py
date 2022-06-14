@@ -56,7 +56,7 @@ class Sinais(QtCore.QObject):
         QtCore.QObject.__init__(self)
 
 
-sinal = Sinais()  # Instância da Classe Sinais.
+sinal = Sinais()
 
 
 class Deribit:
