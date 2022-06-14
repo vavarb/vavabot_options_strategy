@@ -615,7 +615,7 @@ class CredentialsSaved:
             list_monitor_log.append('*** REAL Account Selected ***')
             return False
         else:
-            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 620 *****')
+            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 618 *****')
 
     @staticmethod
     def url():
@@ -627,7 +627,7 @@ class CredentialsSaved:
             list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://deribit.com/ws/api/v2'
         else:
-            list_monitor_log.append('***** URL ERROR in testnet True or False - Error Code: 634 *****')
+            list_monitor_log.append('***** URL ERROR in testnet True or False - Error Code: 630 *****')
 
 
 class InstrumentsSaved:
@@ -675,8 +675,8 @@ class InstrumentsSaved:
             elif 'ETH' in instrument_name:
                 currency = 'ETH'
             else:
-                connect.logwriter(str('********** Instrument currency ERROR Error Code:: 809 *********'))
-                list_monitor_log.append('********** Instrument currency ERROR Error Code:: 810 *********')
+                connect.logwriter(str('********** Instrument currency ERROR Error Code:: 678 *********'))
+                list_monitor_log.append('********** Instrument currency ERROR Error Code:: 679 *********')
             a10 = connect.get_instruments(currency=currency)
             list_instrument_name = []
             for i in a10:
@@ -743,10 +743,10 @@ class InstrumentsSaved:
             elif 'option' in list_line_instrument:
                 return 'option'
             else:
-                connect.logwriter('*** Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 877 ***')
+                connect.logwriter('*** Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 746 ***')
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 880')
+                msg.setText('Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 749')
                 msg.setWindowTitle('***** ERROR *****')
                 msg.exec_()
                 pass
@@ -772,10 +772,10 @@ class InstrumentsSaved:
                 return 'sell'
             else:
                 connect.logwriter(str(
-                    '*** Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 905 ***'))
+                    '*** Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 775 ***'))
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 908')
+                msg.setText('Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 778')
                 msg.setWindowTitle('***** ERROR *****')
                 msg.exec_()
                 pass
@@ -806,8 +806,8 @@ class Instruments:
             elif 'ETH' in instrument_name:
                 currency = 'ETH'
             else:
-                connect.logwriter(str('********** Instrument currency ERROR Error Code:: 939 *********'))
-                list_monitor_log.append('********** Instrument currency ERROR Error Code:: 940 *********')
+                connect.logwriter(str('********** Instrument currency ERROR Error Code:: 809 *********'))
+                list_monitor_log.append('********** Instrument currency ERROR Error Code:: 810 *********')
             a10 = connect.get_instruments(currency=currency)
             list_instrument_name = []
             for i in a10:
@@ -895,8 +895,8 @@ class Instruments:
                 pass
 
         except Exception as er:
-            connect.logwriter(str(er) + ' Error Code:: 1026')
-            list_monitor_log.append(str(er) + ' Error Code:: 1027')
+            connect.logwriter(str(er) + ' Error Code:: 898')
+            list_monitor_log.append(str(er) + ' Error Code:: 899')
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setText('Instruments Checking before save\n Syntax ERROR')
@@ -1197,8 +1197,8 @@ class Config:
                     pass
 
         except Exception as er:
-            connect.logwriter(str(er) + ' Error Code:: 1330')
-            list_monitor_log.append(str(er) + ' Error Code:: 1331')
+            connect.logwriter(str(er) + ' Error Code:: 1200')
+            list_monitor_log.append(str(er) + ' Error Code:: 1201')
             list_thread_when_open_app.append('Positions preview don´t saved')
             list_thread_when_open_app.append('***** ERROR *****')
             ui.textEdit_targets_saved_2.append('Change25')
@@ -1690,9 +1690,9 @@ class Quote:
                 Quote().structure_option_greeks_quote()  # já chama signal (creir ter erro aqui)
                 Quote().last_trade_instrument_conditions_quote()  # já chama signal (creir ter erro aqui)
             except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 1823')
+                connect.logwriter(str(er) + ' Error Code:: 1693')
                 list_monitor_log.append(str(er) + ' Error Code:: 1824')
-                list_monitor_log.append('********* Quote new ERROR Error Code:: 1825 *********')
+                list_monitor_log.append('********* Quote new ERROR Error Code:: 1695 *********')
                 pass
             finally:
                 pass
@@ -1765,10 +1765,10 @@ class Quote:
                 sinal.quote_new_structure_cost_for_print_when_stopped_trading_signal1.emit(quote_dict_for_signal)
 
             except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 198')
-                list_monitor_log.append(str(er) + ' Error Code:: 1899')
+                connect.logwriter(str(er) + ' Error Code:: 1768')
+                list_monitor_log.append(str(er) + ' Error Code:: 1769')
                 list_monitor_log.append('********** Quote new structure cost for print in tab run'
-                                        ' ERROR Error Code:: 1900 **********')
+                                        ' ERROR Error Code:: 1771 **********')
                 pass
             finally:
                 pass
@@ -1852,8 +1852,8 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
                 return False
             else:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1985 *****'))
-                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 1986 *****')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1855 *****'))
+                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 1856 *****')
                 return False
 
         elif 'in Mark Price % < ' in str(lines_file_structure_market_cost_trigger):
@@ -1887,8 +1887,8 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
                 return False
             else:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2020 *****'))
-                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 2021 *****')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1890 *****'))
+                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 1891 *****')
                 return False
 
         elif 'in USD > ' in str(lines_file_structure_market_cost_trigger):
@@ -2082,8 +2082,8 @@ class ConditionsCheck:
                 currency = 'USDC'
             else:
                 currency = 'BTC'
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2215 *****'))
-                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2216 ***')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2085 *****'))
+                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2086 ***')
 
             list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN ' + str(currency) + ' VOL > ' +
                                     str(value_in_btc_vol_list_lines_file_structure_market_cost_trigger) + ' ***')
@@ -2091,8 +2091,8 @@ class ConditionsCheck:
             vol = float(connect.volatility_index_data(currency=currency))
 
             if vol == 0:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2224 *****'))
-                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 22265. '
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2094 *****'))
+                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2095. '
                                         'connect.volatility_index_data Returned 0 (zero) ***')
                 return False
             elif vol > float(value_in_btc_vol_list_lines_file_structure_market_cost_trigger):
@@ -2108,8 +2108,8 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
                 return False
             else:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2241 *****'))
-                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2242 ***')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2111 *****'))
+                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2112 ***')
                 return False
 
         elif 'in Vol <' in str(lines_file_structure_market_cost_trigger):
@@ -2129,7 +2129,7 @@ class ConditionsCheck:
                 currency = 'USDC'
             else:
                 currency = 'BTC'
-                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2164 ***')
+                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2132 ***')
 
             list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN ' + str(currency) + ' VOL < ' +
                                     str(value_in_btc_vol_list_lines_file_structure_market_cost_trigger) + ' ***')
@@ -2137,8 +2137,8 @@ class ConditionsCheck:
             vol = float(connect.volatility_index_data(currency=currency))
 
             if vol == 0:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2270 *****'))
-                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2270. '
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2140 *****'))
+                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2141. '
                                         'connect.volatility_index_data Returned 0 (zero) ***')
                 return False
             elif vol < float(value_in_btc_vol_list_lines_file_structure_market_cost_trigger):
@@ -2154,14 +2154,14 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
                 return False
             else:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2287 *****'))
-                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2288 ***')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2157 *****'))
+                list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2158 ***')
                 return False
 
         else:
-            connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2292 *****'))
+            connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2162 *****'))
             list_monitor_log.append(
-                '*** ERROR IN STRUCTURE COST TRIGGER - Error Code:: 2294 ***')
+                '*** ERROR IN STRUCTURE COST TRIGGER - Error Code:: 2164 ***')
             return False
 
     def position_option_smaller_max_position_instrument(self, instrument_number=None):
@@ -2192,10 +2192,10 @@ class ConditionsCheck:
                 return 'instrument_run_trade_no'
             elif a5 > b5 and d5 == 'buy':
                 connect.logwriter('****************** ERROR: Instrument ' + str(
-                    instrument_number) + ' position > max position Error Code:: 2325 ******************')
+                    instrument_number) + ' position > max position Error Code:: 2195 ******************')
                 list_monitor_log.append(
                     '****************** ERROR: Instrument ' + str(instrument_number) +
-                    ' position > max position ****************** Error Code:: 2328')
+                    ' position > max position ****************** Error Code:: 2198')
                 return 'instrument_run_trade_no'
             elif a5 > b5 and abs(round(b5 - a5, 1)) >= 0.1 and d5 == 'sell':
                 return 'instrument_run_trade_ok'
@@ -2204,10 +2204,10 @@ class ConditionsCheck:
             elif a5 < b5 and d5 == 'sell':
                 connect.logwriter(
                     '****************** ERROR: Instrument ' + str(instrument_number) +
-                    ' position > max position Error Code:: 2337 ******************')
+                    ' position > max position Error Code:: 2207 ******************')
                 list_monitor_log.append(
                     '****************** ERROR: Instrument ' + str(instrument_number) +
-                    ' position > max position Error Code:: 2340 ******************')
+                    ' position > max position Error Code:: 2210 ******************')
                 return 'instrument_run_trade_no'
             else:
                 pass
@@ -2216,9 +2216,9 @@ class ConditionsCheck:
         else:
             connect.logwriter(
                 '****************** ERROR: position_option_smaller_max_position_instrument '
-                'vavabot_spread.py Error Code:: 2349 ******************')
+                'vavabot_spread.py Error Code:: 2219 ******************')
             list_monitor_log.append('****************** ERROR: position_option_smaller_max_position_instrument '
-                                    'vavabot_spread.py Error Code:: 2351 ******************')
+                                    'vavabot_spread.py Error Code:: 2221 ******************')
             return 'instrument_run_trade_no'
 
     @staticmethod
@@ -2249,9 +2249,9 @@ class ConditionsCheck:
             return 'position_option_smaller_max_position_instruments_ok'
         else:
             connect.logwriter('********** ERROR IN OPTION POSITION SMALLER MAX POSITION INSTRUMENTS '
-                              'Error Code:: 2382 **********')
+                              'Error Code:: 2252 **********')
             list_monitor_log.append('********** ERROR IN OPTION POSITION SMALLER MAX POSITION INSTRUMENTS '
-                                    'Error Code:: 2384 **********')
+                                    'Error Code:: 2254 **********')
             return 'position_option_smaller_max_position_instruments_ERROR'
 
     @staticmethod
@@ -2366,12 +2366,12 @@ class ConditionsCheck:
                                 list_monitor_log.append('*** WAITING VALUE GIVEN TO BE FILLED ***')
                                 return False
                         elif float(structure_option_mark_price_cost) == 0:
-                            connect.logwriter('*** MARK price is 0 (ZERO) Error Code:: 2500 ***')
-                            list_monitor_log.append('*** MARK price is 0 (ZERO) Error Code:: 2501 ***')
+                            connect.logwriter('*** MARK price is 0 (ZERO) Error Code:: 2369 ***')
+                            list_monitor_log.append('*** MARK price is 0 (ZERO) Error Code:: 2370 ***')
                             return False
                         else:
-                            connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2504 *****')
-                            list_monitor_log.append('***** ERROR in value_give_in_achieved() Error Code:: 2505 *****')
+                            connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2373 *****')
+                            list_monitor_log.append('***** ERROR in value_give_in_achieved() Error Code:: 2374 *****')
                             return False
 
                     elif buy_or_sell_structure == 'sell':
@@ -2401,16 +2401,16 @@ class ConditionsCheck:
                                 list_monitor_log.append('*** WAITING VALUE GIVEN TO BE FILLED ***')
                                 return False
                         elif float(structure_option_mark_price_cost) == 0:
-                            connect.logwriter('*** MARK price is 0 (ZERO) Error Code:: 2535 ***')
-                            list_monitor_log.append('*** MARK price is 0 (ZERO) Error Code:: 2536 ***')
+                            connect.logwriter('*** MARK price is 0 (ZERO) Error Code:: 2404 ***')
+                            list_monitor_log.append('*** MARK price is 0 (ZERO) Error Code:: 2405 ***')
                             return False
                         else:
-                            connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2539 *****')
-                            list_monitor_log.append('***** ERROR in value_give_in_achieved() Error Code:: 2540 *****')
+                            connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2408 *****')
+                            list_monitor_log.append('***** ERROR in value_give_in_achieved() Error Code:: 2409 *****')
                             return False
                     else:
-                        connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2543 *****')
-                        list_monitor_log.append('**** ERRORR - value_give_in_achieved - Error Code:: 2544 *****')
+                        connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2412 *****')
+                        list_monitor_log.append('**** ERRORR - value_give_in_achieved - Error Code:: 2413 *****')
                         return False
 
                 elif 'USD' in read_file_vgi:
@@ -2471,14 +2471,14 @@ class ConditionsCheck:
                             list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
                             return False
                     else:
-                        connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2605 *****')
+                        connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2474 *****')
                         list_monitor_log.append(
-                            '********** ERROR in value_give_in_achieved Error Code:: 2607 **********')
+                            '********** ERROR in value_give_in_achieved Error Code:: 2476 **********')
                         return False
 
                 else:
-                    connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2611 *****')
-                    list_monitor_log.append('********* ERRORR - value_give_in_achieved Error Code:: 2612 ***********')
+                    connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2480 *****')
+                    list_monitor_log.append('********* ERRORR - value_give_in_achieved Error Code:: 2481 ***********')
 
             elif 'BTC' in read_file_vgi:
                 with open('targets_spread.txt', 'r') as ft:
@@ -2527,16 +2527,16 @@ class ConditionsCheck:
                         list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
                         return False
                 else:
-                    connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2661 *****')
-                    list_monitor_log.append('********* ERROR in def value_give_in_achieved Error Code:: 2662 *********')
+                    connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2530 *****')
+                    list_monitor_log.append('********* ERROR in def value_give_in_achieved Error Code:: 2531 *********')
                     return False
             else:
-                connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2665 *****')
-                list_monitor_log.append('********** ERROR in def value_give_in_achieved Error Code:: 2666 **********')
+                connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2534 *****')
+                list_monitor_log.append('********** ERROR in def value_give_in_achieved Error Code:: 2535 **********')
                 return False
         except Exception as er:
-            connect.logwriter(str(er) + ' Error Code:: 2669')
-            list_monitor_log.append('target_cost_structure_in_btc Error Code:: 2670' + str(er))
+            connect.logwriter(str(er) + ' Error Code:: 2538')
+            list_monitor_log.append('target_cost_structure_in_btc Error Code:: 2539' + str(er))
             return False
         finally:
             pass
@@ -3028,8 +3028,8 @@ class ConditionsCheck:
             connect.cancel_all()
 
         except Exception as er:
-            list_monitor_log.append('ERROR in send_options_orders_like_first_time(). Error Code 3166 ' + str(er))
-            connect.logwriter('ERROR in send_options_orders_like_first_time(). Error Code 3167 ' + str(er))
+            list_monitor_log.append('ERROR in send_options_orders_like_first_time(). Error Code 3031 ' + str(er))
+            connect.logwriter('ERROR in send_options_orders_like_first_time(). Error Code 3032 ' + str(er))
         finally:
             pass
 
@@ -3504,9 +3504,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument1 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3564 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3507 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3565 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3509 *****'))
                         else:
                             sent_options_adjusts_instrument1 = False
                             pass
@@ -3542,9 +3542,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument1 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3590 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3545 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3591 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3547 *****'))
                         else:
                             sent_options_adjusts_instrument1 = False
                             pass
@@ -3553,8 +3553,8 @@ class ConditionsCheck:
                         pass
                 else:
                     sent_options_adjusts_instrument1 = False
-                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3600 *****')
-                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3601 *****'))
+                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3556 *****')
+                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3557 *****'))
 
             #           Instrument 2
             if float(bigger_rate_option_now) != 0 and instrument2_kind == 'option' and \
@@ -3601,9 +3601,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument2 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3635 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3604 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3636 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3606 *****'))
                         else:
                             sent_options_adjusts_instrument2 = False
                             pass
@@ -3639,9 +3639,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument2 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3661 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3642 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3662 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3644 *****'))
                         else:
                             sent_options_adjusts_instrument2 = False
                             pass
@@ -3650,8 +3650,8 @@ class ConditionsCheck:
                         pass
                 else:
                     sent_options_adjusts_instrument2 = False
-                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3671 *****')
-                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3672 *****'))
+                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3653 *****')
+                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3654 *****'))
 
             #           Instrument 3
             if float(bigger_rate_option_now) != 0 and instrument3_kind == 'option' and \
@@ -3698,9 +3698,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument3 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3706 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3701 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3707 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3703 *****'))
                         else:
                             sent_options_adjusts_instrument3 = False
                             pass
@@ -3736,9 +3736,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument3 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3732 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3739 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3733 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3741 *****'))
                         else:
                             sent_options_adjusts_instrument3 = False
                             pass
@@ -3747,8 +3747,8 @@ class ConditionsCheck:
                         pass
                 else:
                     sent_options_adjusts_instrument3 = False
-                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3742 *****')
-                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3743 *****'))
+                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3750 *****')
+                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3751 *****'))
 
             #           Instrument 4
             if float(bigger_rate_option_now) != 0 and instrument4_kind == 'option' and \
@@ -3795,9 +3795,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument4 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3777 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3798 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3778 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3800 *****'))
                         else:
                             sent_options_adjusts_instrument4 = False
                             pass
@@ -3833,9 +3833,9 @@ class ConditionsCheck:
                             else:
                                 sent_options_adjusts_instrument4 = False
                                 list_monitor_log.append(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3803 *****')
+                                    '***** ERROR in option adjusts orders - Error Code:: 3836 *****')
                                 connect.logwriter(msg=str(
-                                    '***** ERROR in option adjusts orders - Error Code:: 3804 *****'))
+                                    '***** ERROR in option adjusts orders - Error Code:: 3838 *****'))
                         else:
                             sent_options_adjusts_instrument4 = False
                             pass
@@ -3844,8 +3844,8 @@ class ConditionsCheck:
                         pass
                 else:
                     sent_options_adjusts_instrument4 = False
-                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3813 *****')
-                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3814 *****'))
+                    list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 3847 *****')
+                    connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 3848 *****'))
 
             # se não houver negociação de ajuste feita, ordem igual à primeira ordem
             if float(bigger_rate_option_now) == 0 or (
@@ -4122,13 +4122,13 @@ class ConditionsCheck:
                 ConditionsCheck().send_options_orders_like_first_time()
                 pass  # chamar uma funçao para recalcular as variáveis com dados do mercado
             else:
-                list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 4066 *****')
-                connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 4067 *****'))
+                list_monitor_log.append('***** ERROR in option adjusts orders - Error Code:: 4125 *****')
+                connect.logwriter(msg=str('***** ERROR in option adjusts orders - Error Code:: 4126 *****'))
                 pass
 
         except Exception as er:
-            list_monitor_log.append('ERROR in send_options_orders(). Error Code 4245 ' + str(er))
-            connect.logwriter('ERROR in send_options_orders(). Error Code 4246 ' + str(er))
+            list_monitor_log.append('ERROR in send_options_orders(). Error Code 4130 ' + str(er))
+            connect.logwriter('ERROR in send_options_orders(). Error Code 4131 ' + str(er))
         finally:
             pass
 
@@ -4159,10 +4159,10 @@ class ConditionsCheck:
                 elif a9 > b9 and d9 == 'buy':
                     connect.logwriter(
                         '****************** ERROR: Instrument ' + str(instrument_number) +
-                        ' position > max position Error Code:: 4097 ******************')
+                        ' position > max position Error Code:: 4162 ******************')
                     list_monitor_log.append(
                         '****************** ERROR: Instrument ' + str(instrument_number) +
-                        ' position > max position Error Code:: 4100 ******************')
+                        ' position > max position Error Code:: 4165 ******************')
                     return 'instrument_run_trade_no'
                 elif a9 > b9 and abs(round(b9 - a9, 0)) >= 10 and d9 == 'sell':
                     return 'instrument_run_trade_ok'
@@ -4171,10 +4171,10 @@ class ConditionsCheck:
                 elif a9 < b9 and d9 == 'sell':
                     connect.logwriter(
                         '****************** ERROR: Instrument ' + str(instrument_number) +
-                        ' position > max position Error Code:: 4109 ******************')
+                        ' position > max position Error Code:: 4174 ******************')
                     list_monitor_log.append(
                         '****************** ERROR: Instrument ' + str(instrument_number) +
-                        ' position > max position Error Code:: 4112 ******************')
+                        ' position > max position Error Code:: 4177 ******************')
                     return 'instrument_run_trade_no'
                 else:
                     pass
@@ -4182,13 +4182,13 @@ class ConditionsCheck:
                 return 'instrument_run_trade_no'
             else:
                 connect.logwriter('****************** ERROR: Instrument  position vavabot_spread.py Error Code:: '
-                                  '4120 ******************')
+                                  '4185 ******************')
                 list_monitor_log.append('****************** ERROR: Instrument  position vavabot_spread.py Error Code:: '
-                                        '4122 ******************')
+                                        '4187 ******************')
                 return 'instrument_run_trade_no'
         except Exception as er:
-            connect.logwriter(str(er) + ' Error Code:: 4125')
-            list_monitor_log.append(str(er) + ' Error Code:: 4126')
+            connect.logwriter(str(er) + ' Error Code:: 4190')
+            list_monitor_log.append(str(er) + ' Error Code:: 4191')
             pass
         finally:
             pass
@@ -4490,16 +4490,16 @@ class ConditionsCheck:
 
                         else:
                             connect.logwriter('********** ERROR in def send_future_orders in vavabot_spread.py '
-                                              'Error Code:: 4428 **********')
+                                              'Error Code:: 4493 **********')
                             list_monitor_log.append('********** ERROR in def send_future_orders in vavabot_spread.py '
-                                                    'Error Code:: 4430 **********')
+                                                    'Error Code:: 4495 **********')
                             time.sleep(3)
                             pass
                     else:
                         break
             except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 4434')
-                list_monitor_log.append(str(er) + ' Error Code:: 4435')
+                connect.logwriter(str(er) + ' Error Code:: 4501')
+                list_monitor_log.append(str(er) + ' Error Code:: 4502')
                 time.sleep(10)
                 pass
             finally:
@@ -4558,9 +4558,9 @@ class ConditionsCheck:
                                     time.sleep(5)
                                 else:
                                     connect.logwriter(
-                                        '********** ERROR -  Structure cost unassigned Error Code:: 4494 **********')
+                                        '********** ERROR -  Structure cost unassigned Error Code:: 4561 **********')
                                     list_monitor_log.append(
-                                        '********** ERROR -  Structure cost unassigned Error Code:: 4496**********')
+                                        '********** ERROR -  Structure cost unassigned Error Code:: 4563 **********')
                                     pass
                             elif structure_market_cost_trigger_check is False:  # Opcional a configuração
                                 run_target_on_off = 'on'
@@ -4568,9 +4568,9 @@ class ConditionsCheck:
                             else:
                                 run_target_on_off = 'on'
                                 connect.logwriter(
-                                    '********** ERROR - structure_market_cost_trigger Error Code:: 4504 - **********')
+                                    '********** ERROR - structure_market_cost_trigger Error Code:: 4571 - **********')
                                 list_monitor_log.append(
-                                    '********** ERROR - structure_market_cost_trigger Error Code:: 4506 - **********')
+                                    '********** ERROR - structure_market_cost_trigger Error Code:: 4573 - **********')
                                 time.sleep(5)
                                 pass
                         else:
@@ -4590,13 +4590,13 @@ class ConditionsCheck:
                     run_target_on_off = 'off'
                     pass
                 else:
-                    list_monitor_log.append('****** ERROR targets_achieved Error Code:: 4526 *****')
-                    connect.logwriter(msg='****** ERROR targets_achieved Error Code:: 4527 *****')
+                    list_monitor_log.append('****** ERROR targets_achieved Error Code:: 4593 *****')
+                    connect.logwriter(msg='****** ERROR targets_achieved Error Code:: 4594 *****')
                     pass
         except Exception as er:
             from connection_spread import connect
-            connect.logwriter(str(er) + ' Error Code:: 4531')
-            list_monitor_log.append(str(er) + ' Error Code:: 4532')
+            connect.logwriter(str(er) + ' Error Code:: 4598')
+            list_monitor_log.append(str(er) + ' Error Code:: 4599')
         finally:
             pass
 
@@ -4608,8 +4608,8 @@ class ConditionsCheck:
             return 'targets_ok'
         else:
             from connection_spread import connect
-            connect.logwriter('*********** Error Error Code:: 4544 - targets_achieved ************')
-            list_monitor_log.append('*********** Error Error Code:: 4545 - targets_achieved ************')
+            connect.logwriter('*********** Error Error Code:: 4611 - targets_achieved ************')
+            list_monitor_log.append('*********** Error Error Code:: 4612 - targets_achieved ************')
             return 'targets_ok'
 
     @staticmethod
@@ -4695,10 +4695,10 @@ class ConditionsCheck:
 
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 4631')
-                list_monitor_log.append(str(er) + ' Error Code:: 4632')
+                connect.logwriter(str(er) + ' Error Code:: 4698')
+                list_monitor_log.append(str(er) + ' Error Code:: 4699')
                 list_monitor_log.append('********* ERROR - structure cost for tab run trade when started run trading'
-                                        ' Error Code:: 4634 **********')
+                                        ' Error Code:: 4701 **********')
                 pass
             finally:
                 pass
@@ -4917,8 +4917,8 @@ def instruments(ui):
                 return round(payoff, 2)
 
         except Exception as er:
-            list_monitor_log.append('*** ERROR in _payoff() Error Code: 5018 ***' + str(er))
-            connect.logwriter(msg='*** ERROR in _payoff() Error Code: 5019 ***' + str(er))
+            list_monitor_log.append('*** ERROR in _payoff() Error Code: 4920 ***' + str(er))
+            connect.logwriter(msg='*** ERROR in _payoff() Error Code: 4921 ***' + str(er))
         finally:
             pass
 
@@ -5052,9 +5052,9 @@ def instruments(ui):
             else:
                 index_name = 'BTC'
                 connect.logwriter(str('***** ERROR in plot_payoff_for_4_instruments ' + str(
-                    index_name) + ' Error Code:: 55198 *****'))
+                    index_name) + ' Error Code:: 5055 *****'))
                 list_monitor_log.append(str('***** ERROR in plot_payoff_for_4_instruments ' + str(
-                    index_name) + ' Error Code:: 5200 *****'))
+                    index_name) + ' Error Code:: 5057 *****'))
                 time.sleep(3)
             index_price_a = connect.index_price(currency=str(index_name))
             index_price = float(index_price_a['index_price'])
@@ -5356,8 +5356,8 @@ def instruments(ui):
             plt.show()
 
         except Exception as er:
-            list_monitor_log.append('*** ERROR in plot_payoff_for_4_instruments() Error Code: 5454 ***' + str(er))
-            connect.logwriter(msg='*** ERROR in plot_payoff_for_4_instruments() Error Code: 5455 ***' + str(er))
+            list_monitor_log.append('*** ERROR in plot_payoff_for_4_instruments() Error Code: 5359 ***' + str(er))
+            connect.logwriter(msg='*** ERROR in plot_payoff_for_4_instruments() Error Code: 5360 ***' + str(er))
         finally:
             pass
 
@@ -5560,8 +5560,8 @@ def instruments(ui):
 
         except Exception as er:
             from connection_spread import connect
-            connect.logwriter(str(er) + ' Error Code:: 5025')
-            list_monitor_log.append(str(er) + ' Error Code:: 5026')
+            connect.logwriter(str(er) + ' Error Code:: 5563')
+            list_monitor_log.append(str(er) + ' Error Code:: 5564')
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setText('Instruments Checking Syntax ERROR')
@@ -5625,10 +5625,10 @@ def instruments(ui):
                 #                               'Instrument 4: ' + str(d1))
 
             except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 5090')
-                list_monitor_log.append(str(er) + ' Error Code:: 5091')
+                connect.logwriter(str(er) + ' Error Code:: 5628')
+                list_monitor_log.append(str(er) + ' Error Code:: 5629')
                 ui.textEdit_balance_2.clear()
-                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 5093')
+                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 5631')
                 list_thread_when_open_app.append('Current Positions don´t checked')
                 list_thread_when_open_app.append('***** ERROR *****')
                 ui.textEdit_targets_saved_2.append('Change16')
@@ -5854,8 +5854,8 @@ def instruments(ui):
 
         except Exception as er:
             from connection_spread import connect
-            connect.logwriter(str(er) + ' Error Code:: 5319')
-            list_monitor_log.append(str(er) + ' Error Code:: 5320')
+            connect.logwriter(str(er) + ' Error Code:: 5857')
+            list_monitor_log.append(str(er) + ' Error Code:: 5858')
             list_thread_when_open_app.append('Instruments Checking Syntax ERROR')
             list_thread_when_open_app.append('***** ERROR *****')
             ui.textEdit_targets_saved_2.append('Change13')
@@ -6021,10 +6021,10 @@ def instruments(ui):
                 quote_new_when_open_app()
                 ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
 
-        except Exception as er:  # erro ver o que fazer para tirar da thread
+        except Exception as er:
             from connection_spread import connect
-            connect.logwriter(str(er) + ' Error Code:: 5488')
-            list_monitor_log.append(str(er) + ' Error Code:: 5489')
+            connect.logwriter(str(er) + ' Error Code:: 6026')
+            list_monitor_log.append(str(er) + ' Error Code:: 6027')
             with open('instruments_spread.txt', 'w') as instruments_save_file:
                 instruments_save_file.write('Instrument 1: Unassigned\n' +
                                             'Instrument 2: Unassigned\n' +
@@ -6033,10 +6033,8 @@ def instruments(ui):
                                             )
             textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
             sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
-            # ui.textEdit_instruments_saved.setText(str(InstrumentsSaved().instruments_check()))
             print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
-            sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
-            # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
+            sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))
             position_preview_to_gui()
             ui.pushButton_update_balance_2.click()
             ui.pushButton_request_options_structure_cost.click()  # já direciona pra signal
@@ -6688,9 +6686,9 @@ def config(ui):
         except Exception as er:
             from connection_spread import connect
             list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
-                                    str(er) + '. Error Code 6825 *****')
+                                    str(er) + '. Error Code 6689 *****')
             connect.logwriter('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
-                              str(er) + '. Error Code 6827 *****')
+                              str(er) + '. Error Code 6691 *****')
 
     def set_enabled_trigger():
         if ui.comboBox_value_given_2.currentText() == 'Set the cost of the Options Structure as trigger (optional)':
@@ -6777,10 +6775,10 @@ def config(ui):
                 sinal.position_now_signal.emit(info)
 
             except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 6203')
-                list_monitor_log.append(str(er) + ' Error Code:: 6204')
+                connect.logwriter(str(er) + ' Error Code:: 6778')
+                list_monitor_log.append(str(er) + ' Error Code:: 6779')
                 ui.textEdit_balance_2.clear()
-                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 6206')
+                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 6781')
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Current Positions don´t checked')
@@ -6953,7 +6951,7 @@ def run(ui):
             ui.textEdit_monitor.verticalScrollBar()
 
     def receive_error_in_list_monitor_signal(er):
-        ui.textEdit_monitor.append('ERROR in lists_monitor: Error Code:: 6376 ' + str(er))
+        ui.textEdit_monitor.append('ERROR in lists_monitor: Error Code:: 6954 ' + str(er))
 
     def lists_monitor():
         import time
@@ -6968,8 +6966,8 @@ def run(ui):
         elif led1 == 'red':
             sinal.led_color_red_signal.emit()
         else:
-            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7105 ***')
-            er1_str = str('*** ERROR - lists_monitor() Error Code:: 7106 ***')
+            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6969 ***')
+            er1_str = str('*** ERROR - lists_monitor() Error Code:: 6970 ***')
             sinal.error_in_list_monitor_signal.emit(er1_str)
             pass
 
@@ -6992,8 +6990,8 @@ def run(ui):
                         led1 = 'red'
                         sinal.led_color_red_signal.emit()
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7129 ***')
-                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 7130 ***')
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6993 ***')
+                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 6994 ***')
                         sinal.error_in_list_monitor_signal.emit(er1_str)
                         pass
                 else:
@@ -7008,8 +7006,8 @@ def run(ui):
                     pass
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 7145')
-                er1 = str('*** ERROR - lists_monitor() Error Code:: 7146: ' + str(er) + ' ***')
+                connect.logwriter(str(er) + ' Error Code:: 7009')
+                er1 = str('*** ERROR - lists_monitor() Error Code:: 7010: ' + str(er) + ' ***')
                 sinal.error_in_list_monitor_signal.emit(er1)
             finally:
                 pass
@@ -7067,8 +7065,8 @@ def run(ui):
                 ui.lineEdit_24.setText(k)
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 6499')
-                list_monitor_log.append(str(er) + ' Error Code:: 6500')
+                connect.logwriter(str(er) + ' Error Code:: 7068')
+                list_monitor_log.append(str(er) + ' Error Code:: 7069')
                 list_monitor_log.append('********** index_price_and_greeks ERROR **********')
                 pass
             finally:
@@ -7099,8 +7097,8 @@ def run(ui):
 
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 6531')
-                list_monitor_log.append(str(er) + ' Error Code:: 6532')
+                connect.logwriter(str(er) + ' Error Code:: 7100')
+                list_monitor_log.append(str(er) + ' Error Code:: 7101')
                 list_monitor_log.append('********** index_price_and_greeks ERROR **********')
                 pass
             finally:
@@ -7154,8 +7152,8 @@ def run(ui):
 
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 6585')
-                list_monitor_log.append(str(er) + ' Error Code:: 6586')
+                connect.logwriter(str(er) + ' Error Code:: 7165')
+                list_monitor_log.append(str(er) + ' Error Code:: 7156')
                 list_monitor_log.append('********** BTC index print ERROR **********')
                 time.sleep(3)
                 pass
@@ -7240,9 +7238,9 @@ def run(ui):
                                 pass
                             else:
                                 connect.logwriter(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6671 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7241 **********')
                                 list_monitor_log.append(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6673 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7243 **********')
                                 pass
                         else:
                             pass
@@ -7261,9 +7259,9 @@ def run(ui):
                                 pass
                             else:
                                 connect.logwriter(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6692 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7262 **********')
                                 list_monitor_log.append(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6694 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7264 **********')
                                 pass
                         else:
                             pass
@@ -7282,9 +7280,9 @@ def run(ui):
                                 pass
                             else:
                                 connect.logwriter(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6713 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7283 **********')
                                 list_monitor_log.append(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6715 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7285 **********')
                                 pass
                         else:
                             pass
@@ -7303,17 +7301,17 @@ def run(ui):
                                 pass
                             else:
                                 connect.logwriter(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6734 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7304 **********')
                                 list_monitor_log.append(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 3736 **********')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7306 **********')
                                 pass
                         else:
                             pass
 
             except Exception as error3:
                 from connection_spread import connect
-                connect.logwriter(str(error3) + ' Error Code:: 6743')
-                list_monitor_log.append('run_trade_future_on_off - error3: Error Code:: 6743 ' + str(error3))
+                connect.logwriter(str(error3) + ' Error Code:: 7313')
+                list_monitor_log.append('run_trade_future_on_off - error3: Error Code:: 7314 ' + str(error3))
                 pass
             finally:
                 pass
@@ -7347,8 +7345,8 @@ def run(ui):
 
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 6778')
-                list_monitor_log.append(str(er) + ' Error Code:: 6779')
+                connect.logwriter(str(er) + ' Error Code:: 7348')
+                list_monitor_log.append(str(er) + ' Error Code:: 7349')
                 list_monitor_log.append('********* structure_mark_greek_cost_signal ERROR'
                                         '**********')
                 pass
@@ -7473,20 +7471,20 @@ def run(ui):
                                     time.sleep(5)
                                 else:
                                     connect.logwriter(
-                                        '********** ERROR IN vavabot_spread.py Error Code:: 6899 **********')
+                                        '********** ERROR IN vavabot_spread.py Error Code:: 7474 **********')
                                     list_monitor_log.append('********** ERROR IN vavabot_spread.py '
-                                                            'Error Code:: 6901 **********')
+                                                            'Error Code:: 7476 **********')
                                     pass
                             else:
                                 connect.logwriter(
-                                    '********** ERROR IN vavabot_spread.py Error Code:: 6905 **********')
-                                list_monitor_log.append('******* ERROR IN vavabot_spread.py Error Code:: 6906 *******')
+                                    '********** ERROR IN vavabot_spread.py Error Code:: 7480 **********')
+                                list_monitor_log.append('******* ERROR IN vavabot_spread.py Error Code:: 7481 *******')
                                 pass
                         time.sleep(5)
                     except Exception as error2:
                         from connection_spread import connect
-                        connect.logwriter(str(error2) + ' Error Code:: 6910')
-                        list_monitor_log.append(str(error2) + ' Error Code:: 6911')
+                        connect.logwriter(str(error2) + ' Error Code:: 7486')
+                        list_monitor_log.append(str(error2) + ' Error Code:: 7487')
                         pass
                     finally:
                         pass
@@ -7498,8 +7496,8 @@ def run(ui):
                     pass
                 else:
                     connect.logwriter(
-                        '********** ERROR IN vavabot_spread.py Error Code:: 6923 **********')
-                    list_monitor_log.append('********** ERROR IN vavabot_spread.py Error Code:: 6924 **********')
+                        '********** ERROR IN vavabot_spread.py Error Code:: 7499 **********')
+                    list_monitor_log.append('********** ERROR IN vavabot_spread.py Error Code:: 7500 **********')
                     pass
 
                 if trading_on_off_for_msg == 'on':
@@ -7511,13 +7509,13 @@ def run(ui):
                     pass
                 else:
                     connect.logwriter(
-                        '********** ERROR IN vavabot_spread.py Error Code:: 6936 **********')
-                    list_monitor_log.append('********** ERROR IN vavabot_spread.py Error Code:: 6937 **********')
+                        '********** ERROR IN vavabot_spread.py Error Code:: 7512 **********')
+                    list_monitor_log.append('********** ERROR IN vavabot_spread.py Error Code:: 7513 **********')
                     pass
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 6941')
-                list_monitor_log.append(str(er) + ' Error Code:: 6942')
+                connect.logwriter(str(er) + ' Error Code:: 7517')
+                list_monitor_log.append(str(er) + ' Error Code:: 7518')
                 pass
             finally:
                 pass
