@@ -20,7 +20,7 @@ global send_future_orders_while
 global counter_send_order
 
 # Tem um erro na execução, dá que não pode dividir por zero,
-#   logo após a ordem ID 21. Creio que corrigi. Falta testar. *** OK
+#    logo após a ordem ID 21. Creio que corrigi. Falta testar. *** OK
 # Creio que o erro acima começou após ter sido enviada as ordens de compra e venda das opções. *** OK
 # Penso que o erro acima é na linha 2384. *** OK
 # "Current Positions" dá "None", mas deveria dar zero. *** Creio que corrigi. Verificar. *** OK
