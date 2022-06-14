@@ -19,9 +19,7 @@ global send_future_orders_while
 global counter_send_order
 
 
-# Classe de Sinais.
 class Sinais(QtCore.QObject):
-    # Elementos.
     textEdit_monitor_signal = QtCore.pyqtSignal(str)
     led_color_green_signal = QtCore.pyqtSignal()
     led_color_red_signal = QtCore.pyqtSignal()
@@ -7641,8 +7639,8 @@ def run(ui):
     ui.pushButton.clicked.connect(btc_index_print_start_thread)
     ui.pushButton_start_trading.clicked.connect(start_trading)
     ui.pushButton_stop_arbitrage.clicked.connect(stop_trading)
-    # ui.pushButton_2.clicked.connect(clear_monitor_signal) # Creio que não tem nenhuma função
     ui.textEdit_monitor.textChanged.connect(receive_autoscroll_monitor)
+    ui.checkBox_autoScrollBar.clicked.connect(receive_autoscroll_monitor)
 
 
 if __name__ == "__main__":
