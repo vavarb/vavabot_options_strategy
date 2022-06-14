@@ -7357,8 +7357,10 @@ def run(ui):
         c.clear()
 
     def start_signal_1():
+        from connection_spread import connect
         ui.label_58.show()
         ui.label_58.setText('*** Trading Started ***')
+        connect.logwriter('*** Trading Started ***')
 
         green_icon = "./green_led_icon.png"
         ui.label_62.setPixmap(QtGui.QPixmap(green_icon))
@@ -7370,8 +7372,10 @@ def run(ui):
         ui.label_58.setText('*** Trading Completed ***')
 
     def start_signal_3():
+        from connection_spread import connect
         ui.label_58.show()
         ui.label_58.setText('*** Trading Stopped ***')
+        connect.logwriter('*** Trading Stopped ***')
 
     def start_signal_4():
         red_icon = "./red_led_icon.png"
