@@ -183,7 +183,7 @@ class Deribit:
             if testnet_true_or_false is True:
                 out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
                 out_append = str.replace(str(out), '\n', '')
-                list_monitor_log.append(str(out_append) + '_' + str(counter_send_order))
+                list_monitor_log.append(out_append + '_' + str(counter_send_order))
                 with open(filename, 'a') as logwriter_file:
                     logwriter_file.write(str(out) + str(msg) + '_' + str(counter_send_order))
                 pass
@@ -200,7 +200,8 @@ class Deribit:
         except Exception as er:
             from connection_spread import connect
             with open(filename, 'a') as logwriter_file:
-                logwriter_file.write(str(er) + str(msg) + '_' + str(counter_send_order))
+                logwriter_file.write(str(datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ")) + str(er) + str(msg) +
+                                     '_' + str(counter_send_order))
             list_monitor_log.append('Error except in logwriter: ' + str(er))
         finally:
             pass
@@ -282,6 +283,8 @@ class Deribit:
 
             if 'error' in str(out):
                 self.logwriter(str(out) + ' ID: ' + str(msg['id']))
+                list_monitor_log.append(str(out) + ' ID: ' + str(msg['id']))
+                return out['error']
             elif str(msg['method']) == 'public/set_heartbeat':
                 if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
                         out['result']) or '10028' in str(out['result']):
@@ -294,8 +297,7 @@ class Deribit:
                 else:
                     return out['result']
             else:
-                pass
-            return out['result']
+                return out['result']
 
         except Exception as er:
             self.logwriter('_sender error: ' + str(er) + ' ID: ' + str(msg['id']))
