@@ -182,25 +182,24 @@ class Deribit:
         try:
             if testnet_true_or_false is True:
                 out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
-                out_append = str.replace(str(out), '\n', '')
-                list_monitor_log.append(out_append + '_' + str(counter_send_order))
+                list_monitor_log.append(str(msg) + '_' + str(counter_send_order))
                 with open(filename, 'a') as logwriter_file:
-                    logwriter_file.write(str(out) + str(msg) + '_' + str(counter_send_order))
+                    logwriter_file.write(str(out) + '_' + str(counter_send_order))
                 pass
 
             elif testnet_true_or_false is False:
                 out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
-                out_append = str.replace(str(out), '\n', '')
-                list_monitor_log.append(str(out_append) + '_' + str(counter_send_order))
+                list_monitor_log.append(str(msg) + '_' + str(counter_send_order))
                 with open(filename, 'a') as logwriter_file:
-                    logwriter_file.write(str(out) + str(msg) + '_' + str(counter_send_order))
+                    logwriter_file.write(str(out) + '_' + str(counter_send_order))
                 pass
             else:
                 pass
         except Exception as er:
             from connection_spread import connect
             with open(filename, 'a') as logwriter_file:
-                logwriter_file.write(str(datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ")) + str(er) + str(msg) +
+                logwriter_file.write('Error except in logwriter: ' +
+                                     str(datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ")) + str(er) + str(msg) +
                                      '_' + str(counter_send_order))
             list_monitor_log.append('Error except in logwriter: ' + str(er))
         finally:
