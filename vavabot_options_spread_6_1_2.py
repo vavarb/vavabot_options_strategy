@@ -181,7 +181,7 @@ class Deribit:
 
         try:
             if testnet_true_or_false is True:
-                out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ") + str(msg)
+                out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
                 out_append = str.replace(str(out), '\n', '')
                 list_monitor_log.append(str(out_append) + '_' + str(counter_send_order))
                 with open(filename, 'a') as logwriter_file:
@@ -189,7 +189,7 @@ class Deribit:
                 pass
 
             elif testnet_true_or_false is False:
-                out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ") + str(msg)
+                out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
                 out_append = str.replace(str(out), '\n', '')
                 list_monitor_log.append(str(out_append) + '_' + str(counter_send_order))
                 with open(filename, 'a') as logwriter_file:
@@ -6820,6 +6820,7 @@ def config(ui):
                 pass
 
         except Exception as er:
+            from connection_spread import connect
             list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
                                     str(er) + '. Error Code 6825 *****')
             connect.logwriter('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
@@ -7090,11 +7091,10 @@ def run(ui):
 
     def lists_monitor():
         import time
-        from lists import list_monitor_log, list_monitor_print_log
+        from lists import list_monitor_log
         from connection_spread import connect
 
         counter = 0
-        len_log_a = 0
         led1 = led_color()
 
         if led1 == 'green':
@@ -7102,27 +7102,21 @@ def run(ui):
         elif led1 == 'red':
             sinal.led_color_red_signal.emit()
         else:
-            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7067 ***')
-            er1_str = str('*** ERROR - lists_monitor() Error Code:: 7068 ***')
+            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7105 ***')
+            er1_str = str('*** ERROR - lists_monitor() Error Code:: 7106 ***')
             sinal.error_in_list_monitor_signal.emit(er1_str)
             pass
 
         while True:
             try:
-                len_log_b = len(list_monitor_log)
-                if len_log_a != len_log_b:
-                    list_monitor_print_log.append(list_monitor_log[len_log_a:])
-                    del (list_monitor_log[:len_log_a])
-                    for i in range(len(list_monitor_print_log)):
-                        info = str(list_monitor_print_log[i])
-                        del (list_monitor_print_log[i])
+                if len(list_monitor_log) > 0:
+                    for i in list_monitor_log:
+                        info = str(datetime.now().strftime("[%Y/%m/%d, %H:%M:%S] ")) + str(i)
                         sinal.textEdit_monitor_signal.emit(info)
-                    len_log_a = len(list_monitor_log)
-                    time.sleep(0.0001)
-                    pass
+                        counter = counter + 1
+                    list_monitor_log.clear()
                 else:
                     time.sleep(0.0001)
-                    pass
 
                 if led1 != led_color():
                     if led_color() == 'green':
@@ -7132,15 +7126,14 @@ def run(ui):
                         led1 = 'red'
                         sinal.led_color_red_signal.emit()
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7098 ***')
-                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 7099 ***')
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 7129 ***')
+                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 7130 ***')
                         sinal.error_in_list_monitor_signal.emit(er1_str)
                         pass
                 else:
                     pass
 
-                counter = counter + 1
-                if counter >= 100000:
+                if counter >= 10000:
                     counter = 0
                     sinal.pushbutton_2_click_signal.emit()
                     time.sleep(0.5)
@@ -7149,8 +7142,8 @@ def run(ui):
                     pass
             except Exception as er:
                 from connection_spread import connect
-                connect.logwriter(str(er) + ' Error Code:: 7115')
-                er1 = str('*** ERROR - lists_monitor() Error Code:: 7116: ' + str(er) + ' ***')
+                connect.logwriter(str(er) + ' Error Code:: 7145')
+                er1 = str('*** ERROR - lists_monitor() Error Code:: 7146: ' + str(er) + ' ***')
                 sinal.error_in_list_monitor_signal.emit(er1)
             finally:
                 pass
