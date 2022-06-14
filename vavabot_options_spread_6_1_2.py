@@ -10,7 +10,6 @@ import time
 global index_greeks_print_on_off
 global list_monitor_log
 global list_thread_when_open_app
-global connect
 global trading_on_off
 global run_trade_option_on_off
 global run_trade_future_on_off
@@ -18,71 +17,6 @@ global run_target_on_off
 global trading_on_off_for_msg
 global send_future_orders_while
 global counter_send_order
-
-# Tem um erro na execução, dá que não pode dividir por zero,
-#    logo após a ordem ID 21. Creio que corrigi. Falta testar. *** OK
-# Creio que o erro acima começou após ter sido enviada as ordens de compra e venda das opções. *** OK
-# Penso que o erro acima é na linha 2384. *** OK
-# "Current Positions" dá "None", mas deveria dar zero. *** Creio que corrigi. Verificar. *** OK
-# Colocar o projeto no disco D. *** OK
-# Verficar e arrumar os outros alvos. *** OK
-# Verificar se na execução das ordens das opções houver falha se lida com isto para manter igual relação. *** OK
-# Falta fazer não travar inicialização. *** Dá só uma pequena travada. *** OK
-# Falta fazer não travar quando modifica os instrumentos. Tirei tdos ui com sinais. *** OK
-# Fazer não travar quando pede para atualizar o saldo. *** OK
-# Verificar se dá para colocar o "setheartbeat" junfo com o "_sender" principal. *** OK
-# Caso a anterior não der, colocar o contador de ordens jundo. Deu para fazer o anterior. *** OK
-# Tirei todos os # e os "prints" que estavam sem função. *** ok
-# Criar sinal para config().position_now. Falta o "msg box". *** OK
-# Criar sinal no "instruments.print_greeks_by_instrument". *** OK
-# Conferir os "dict clear". *** ok
-# Coloquei ''' '''em um dos 'IFs" do "intruments.instruments_saved_print_and_check_available_when_open_app'. *** OK
-# Modifiquei "instruments_saved_print_and_check_available_when_open_app" mais ainda. *** OK
-# No 'instruments_saved_print_and_check_available_when_open_app' passei
-#   'ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))' para signal. *** OK
-# Também , no 'instruments_saved_print_and_check_available_when_open_app',
-#   modifiquei a função 'quote_new_when_open_app', que essa função chamava. *** OK
-# Apagar trecho citado na linha anterior. Usar um pouco mair para ver se não vai dar problema. *** OK
-# Retirei o time.sleep(5) do instrument_name_construction_from_file_when_open_app. *** OK
-# Apagar trecho citado na linha anterior. Usar um pouco mair para ver se não vai dar problema. *** OK
-# Coloquei # em muitos time.sleep e em dois import time. Testar antes de apagar. *** OK
-# Incluí 'null' e 'None' no "bid e ask price e amount". *** OK
-# Modifiquei a parte de criação do dicionário da relação de quantidade que se quer comprar com quantidade que tem
-#   no livro de oferta, para dar retorno 1 se a posição máxima menos a atual for zero. *** OK
-# Coloquei signal no 'position_now_when_open_app'. *** OK
-# Modifiquei a data inicial do calendário no arquivo gui_spread e neste arquivo aqui também. *** OK
-# Coloquei signal na função 'position_preview_to_gui', que altera o GUI 'textEdit_balance_after'. *** OK
-# Criei signal para 'clear_monitor', que era ativado pelo pushButton_2_click. *** OK
-# Alterei o Logwriter, _sender_. Retirei o _sender_setheatbeat e logwirter_for_set_heartbeat. *** OK
-# Modifiquei value_give_in_achieved. *** OK
-# Modifiquei target_achieved. *** OK
-# Alterei o start() dentro do while. *** OK
-# Alterei o send_options_orders para informar quais ordens de opções foram enviadas. *** OK
-# Ativei o 'structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading'. *** OK
-# Conferir 'structure_market_cost_trigger()', que é opcional. *** OK
-# Alterei, de novo, o 'value_give_in_achieved()'. *** OK
-# Acrescentar Volatilidade do BTC como trigger no gui_spread.py. ***OK
-# Acrecentar Volatilidade no 'structure_market_cost_trigger()'. *** OK
-# Coloquei 'volatility_index_data(' no deribit. *** OK
-# Creio que depois que executa parcial, para de analizar o target_achieved. Poderia explicar o erro acima. *** OK
-# Para tentar corrigir o acima, coloquei run_target_on_off = 'on' embaixo do elif aa ==
-#   'position_option_smaller_max_position_instruments_ok': *** OK
-# Coloquei: if b1 == 0 or b2 == 0 or b3 == 0 or b4 == 0: return 'waiting trade' no.
-#   min_max_price_option_buy_or_sell_order_by_mark_price, para se for there are not bid/ask offer não retornar ok. ***OK
-# Criei def send_options_order_first_time. *** OK
-# Modifiquei o send_options_order para tentar que corrija as proporções das options caso não estejam de acordo. *** OK
-# Após testar as duas funções, a que criei e a que modifiquei, colocar um try nelas. *** OK
-# ERRO 3202. Avaliar e corrigir. *** OK
-# Colocar logwriter nos erros. *** OK
-# Arrumei number_multiple_10_and_round_0_digits. *** OK
-# Arrumei o number_multiple_0_1_and_round_1_digits. *** OK
-# Criei um pushButoon no gui_spread.py para Structure\nPayoff. *** OK
-# Adicionei duas funções para calcular e plotar o payoff esperado. *** OK
-# Colocar um try nas funções acima. *** OK
-# Tentar criar uma classe "deribit" nova. Usar "async". *** Creio que não vai dar.
-# Testar um arquivo executável.
-# Testar se roda no Linux e/ou no wine.
-# Colocar no "readme" que deve desativar "FireWall" para o executável.
 
 
 # Classe de Sinais.
@@ -126,147 +60,84 @@ class Sinais(QtCore.QObject):
 
 sinal = Sinais()  # Instância da Classe Sinais.
 
-with open('api-key_spread.txt', 'r') as api_secret_saved_file1:
-    api_secret_saved_file_read1 = str(api_secret_saved_file1.read())
-
-with open('secret-key_spread.txt', 'r') as secret_key_saved_file1:
-    secret_key_saved_file_read1 = str(secret_key_saved_file1.read())
-
-client_ID = api_secret_saved_file_read1
-client_secret = secret_key_saved_file_read1
-
-clientId = client_ID
-clientSecret = client_secret
-
-with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_tru_or_false1_file:
-    testnet_saved_tru_or_false1_file_read = str(testnet_saved_tru_or_false1_file.read())
-    testnet_saved_tru_or_false1 = testnet_saved_tru_or_false1_file_read
-
-if 'False' in testnet_saved_tru_or_false1:
-    testnet_true_or_false = False
-    user_client_url = 'wss://deribit.com/ws/api/v2'
-else:
-    testnet_true_or_false = True
-    user_client_url = 'wss://test.deribit.com/ws/api/v2'
-
-WSS_url = user_client_url
-
 
 class Deribit:
-    def __init__(self, test=None, only_public=False, client_ID=False, client_secret=False):
-        if test is True:
-            if client_ID or client_secret: only_public = False
-            if only_public:
-                self.logwriter(msg='WARNING! Only public methods available!')
-                return
-            self._auth(client_ID, client_secret, WSS_url)
-        else:
-            pass
-        if test is False:
-            if client_ID or client_secret: only_public = False
-            if only_public:
-                self.logwriter(msg='WARNING! Only public methods available!')
-                return
-            self.WSS_url = 'wss://www.test.deribit.com/ws/api/v2' if test else 'wss://www.deribit.com/ws/api/v2'
-            self._auth(client_ID, client_secret, self.WSS_url)
-        else:
-            pass
+    def __init__(self, client_id=None, client_secret=None, wss_url=None):
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.wss_url = wss_url
+
+        self._auth(client_id=client_id, wss_url=wss_url, client_secret=client_secret)
 
     # noinspection PyMethodMayBeStatic
-    def logwriter(self, msg, filename='log_spread.log'):
+    def logwriter(self, msg):
         from lists import list_monitor_log
         global counter_send_order
 
+        filename = 'log_spread.log'
         counter_send_order = counter_send_order + 1
 
         try:
-            if testnet_true_or_false is True:
-                out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
-                list_monitor_log.append(str(msg) + '_' + str(counter_send_order))
-                with open(filename, 'a') as logwriter_file:
-                    logwriter_file.write(str(out) + '_' + str(counter_send_order))
-                pass
+            out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
+            list_monitor_log.append(str(msg) + '_' + str(counter_send_order))
+            with open(filename, 'a') as logwriter_file:
+                logwriter_file.write(str(out) + '_' + str(counter_send_order))
 
-            elif testnet_true_or_false is False:
-                out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
-                list_monitor_log.append(str(msg) + '_' + str(counter_send_order))
-                with open(filename, 'a') as logwriter_file:
-                    logwriter_file.write(str(out) + '_' + str(counter_send_order))
-                pass
-            else:
-                pass
         except Exception as er:
             from connection_spread import connect
+            from lists import list_monitor_log
             with open(filename, 'a') as logwriter_file:
-                logwriter_file.write('Error except in logwriter: ' +
-                                     str(datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ")) + str(er) + str(msg) +
-                                     '_' + str(counter_send_order))
-            list_monitor_log.append('Error except in logwriter: ' + str(er))
+                logwriter_file.write(str(datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ")) +
+                                     '***** ERROR except in logwriter: ' +
+                                     str(er) + str(msg) +
+                                     '_' + str(counter_send_order) + ' *****')
+            list_monitor_log.append('***** ERROR except in logwriter: ' + str(er) + ' *****')
         finally:
             pass
 
-    def _auth(self, client_ID, client_secret, WSS_url):
+    def _auth(self, client_id=None, wss_url=None, client_secret=None):
+        self.client_id = client_id
+        self.wss_url = wss_url
+        self.client_secret = client_secret
+
         from lists import list_monitor_log
         global counter_send_order
+
         counter_send_order = 0
 
         timestamp = round(datetime.now().timestamp() * 1000)
         nonce = "abcd"
         data = ""
         signature = hmac.new(
-            bytes(clientSecret, "latin-1"),
+            bytes(client_secret, "latin-1"),
             msg=bytes('{}\n{}\n{}'.format(timestamp, nonce, data), "latin-1"),
             digestmod=hashlib.sha256
         ).hexdigest().lower()
-        if testnet_true_or_false is True:
-            try:
-                self._WSS = create_connection(WSS_url)
-                msg = {
-                    "jsonrpc": "2.0",
-                    "id": 1,
-                    "method": "public/auth",
-                    "params": {
-                        "grant_type": "client_signature",
-                        "client_id": clientId,
-                        "timestamp": timestamp,
-                        "signature": signature,
-                        "nonce": nonce,
-                        "data": data
-                    }
-                }
-                self.logwriter('Auth OK\n############')
-                list_monitor_log.append('Auth OK\n############')
-                list_monitor_log.append('identified')
-                return self._sender(msg)
-            except Exception as er:
-                self.logwriter('auth error:' + ' error: ' + str(er))
-        else:
-            pass
 
-        if testnet_true_or_false is False:
-            try:
-                self._WSS = create_connection(WSS_url)
-                msg = {
-                    "jsonrpc": "2.0",
-                    "id": 1,
-                    "method": "public/auth",
-                    "params": {
-                        "grant_type": "client_signature",
-                        "client_id": clientId,
-                        "timestamp": timestamp,
-                        "signature": signature,
-                        "nonce": nonce,
-                        "data": data
-                    }
+        try:
+            self._WSS = create_connection(wss_url)
+            msg = {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "public/auth",
+                "params": {
+                    "grant_type": "client_signature",
+                    "client_id": client_id,
+                    "timestamp": timestamp,
+                    "signature": signature,
+                    "nonce": nonce,
+                    "data": data
                 }
-                self.logwriter('Auth OK\n############')
-                list_monitor_log.append('Auth OK\n############')
-                list_monitor_log.append('identified')
-                return self._sender(msg)
-            except Exception as er:
-                self.logwriter('auth error:' + ' error: ' + str(er))
-        else:
-            pass
+            }
+            self.logwriter('Auth OK\n############')
+            list_monitor_log.append('Auth OK\n############')
+            list_monitor_log.append('identified')
+            return self._sender(msg)
+
+        except Exception as er:
+            from lists import list_monitor_log
+            list_monitor_log.append('***** auth ERROR:' + ' error: ' + str(er) + ' *****')
+            self.logwriter('***** auth ERROR:' + ' error: ' + str(er) + ' *****')
 
     def _sender(self, msg):
         from lists import list_monitor_log
@@ -737,32 +608,28 @@ class CredentialsSaved:
     @staticmethod
     def testnet_saved_tru_or_false():
         from lists import list_monitor_log
-        from connection_spread import connect
         with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_tru_or_false_file:
             testnet_saved_tru_or_false_file_read = str(testnet_saved_tru_or_false_file.read())
         if testnet_saved_tru_or_false_file_read == 'True':
-            list_monitor_log.append('*** TEST Account ***')
+            list_monitor_log.append('*** TEST Account Selected ***')
             return True
         elif testnet_saved_tru_or_false_file_read == 'False':
-            list_monitor_log.append('*** REAL Account ***')
+            list_monitor_log.append('*** REAL Account Selected ***')
             return False
         else:
-            connect.logwriter(str('***** ERROR in testnet_saved_tru_or_false Error Code: 746 *****'))
-            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false Error Code: 746 *****')
+            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 620 *****')
 
     @staticmethod
     def url():
         from lists import list_monitor_log
-        from connection_spread import connect
         if CredentialsSaved.testnet_saved_tru_or_false() is True:
-            list_monitor_log.append('*** URL: ' + 'wss://test.deribit.com/ws/api/v2' + ' ***')
+            list_monitor_log.append('*** URL: ' + 'wss://test.deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://test.deribit.com/ws/api/v2'
         elif CredentialsSaved.testnet_saved_tru_or_false() is False:
-            list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' ***')
+            list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://deribit.com/ws/api/v2'
         else:
-            connect.logwriter(str('***** URL ERROR in testnet True or False Error Code: 760 *****'))
-            list_monitor_log.append('***** URL ERROR in testnet True or False Error Code:: 761 *****')
+            list_monitor_log.append('***** URL ERROR in testnet True or False - Error Code: 634 *****')
 
 
 class InstrumentsSaved:
@@ -6807,7 +6674,7 @@ def config(ui):
         ui.lineEdit_maturity_instrumet3.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet4.setDate(date_now_instrument.addDays(-1))
 
-    def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
+    def remove_log_spread_log_if_bigger_500kb_when_open_app():
         import os
         from lists import list_monitor_log
 
@@ -6926,7 +6793,7 @@ def config(ui):
                 pass
 
     set_version_and_icon()
-    remove_log_arbitrage_log_if_bigger_500kb_when_open_app()
+    remove_log_spread_log_if_bigger_500kb_when_open_app()
     set_date()
     ConfigSaved().target_saved_check()
     ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)

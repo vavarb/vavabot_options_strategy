@@ -1,17 +1,12 @@
 
-from vavabot_options_spread_6_1_2 import Deribit, client_ID, client_secret, testnet_saved_tru_or_false1
+from vavabot_options_spread_6_1_2 import Deribit, CredentialsSaved
 import time
 from lists import list_monitor_log
 import threading
-global connect
 
-
-if 'False' in testnet_saved_tru_or_false1:
-    test = False
-else:
-    test = True
-
-connect = Deribit(test=test, only_public=False, client_ID=client_ID, client_secret=client_secret)
+connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
+                  client_secret=CredentialsSaved.secret_key_saved(),
+                  wss_url=CredentialsSaved.url())
 
 led = 'red'
 
@@ -46,7 +41,9 @@ def connection():
                 connect.logwriter(str('********** OffLine - Connection ERROR **********'))
                 led = 'red'
                 time.sleep(2)
-                connect = Deribit(test=test, only_public=False, client_ID=client_ID, client_secret=client_secret)
+                connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
+                                  client_secret=CredentialsSaved.secret_key_saved(),
+                                  wss_url=CredentialsSaved.url())
                 connect_set_heartbeat2 = connect.set_heartbeat()
                 if connect_set_heartbeat2 == 'ok':
                     list_monitor_log.append(str('***************** Reeturn Connection ******************'))
