@@ -6185,13 +6185,14 @@ def instruments(ui):
             pass
 
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
-
+        date_now_instrument = QtCore.QDate.currentDate()
         if (ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' and (
                 ui.lineEdit_buy_or_sell_instrumet1.currentText() == '' or
                 ui.lineEdit_amount_instrumet1.text() == '' or
                 ui.lineEdit_currency_instrumet1.currentText() == '' or
                 ui.lineEdit_strike_instrumet1.text() == '' or
-                (ui.checkBox_perpetual_1.isChecked() is False and ui.lineEdit_maturity_instrumet1.text() == '1Jan22') or
+                (ui.checkBox_perpetual_1.isChecked() is False and
+                 ui.lineEdit_maturity_instrumet1.date() == date_now_instrument.addDays(-1)) or
                 ui.lineEdit_c_or_p_instrumet1.currentText() == ''
         )) or \
                 (ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and (
@@ -6200,7 +6201,7 @@ def instruments(ui):
                         ui.lineEdit_currency_instrumet1.currentText() == '' or
                         (
                                 ui.checkBox_perpetual_1.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet1.text() == '1Jan22')
+                                ui.lineEdit_maturity_instrumet1.date() == date_now_instrument.addDays(-1))
                 )) or \
                 (ui.lineEdit_o_or_f_instrumet2.currentText() == 'o' and (
                         ui.lineEdit_buy_or_sell_instrumet2.currentText() == '' or
@@ -6209,7 +6210,7 @@ def instruments(ui):
                         ui.lineEdit_strike_instrumet2.text() == '' or
                         (
                                 ui.checkBox_perpetual_2.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet2.text() == '1Jan22') or
+                                ui.lineEdit_maturity_instrumet2.date() == date_now_instrument.addDays(-1)) or
                         ui.lineEdit_c_or_p_instrumet2.currentText() == ''
                 )) or \
                 (ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and (
@@ -6218,7 +6219,7 @@ def instruments(ui):
                         ui.lineEdit_currency_instrumet2.currentText() == '' or
                         (
                                 ui.checkBox_perpetual_2.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet2.text() == '1Jan22')
+                                ui.lineEdit_maturity_instrumet2.date() == date_now_instrument.addDays(-1))
                 )) or \
                 (ui.lineEdit_o_or_f_instrumet3.currentText() == 'o' and (
                         ui.lineEdit_buy_or_sell_instrumet3.currentText() == '' or
@@ -6227,7 +6228,7 @@ def instruments(ui):
                         ui.lineEdit_strike_instrumet3.text() == '' or
                         (
                                 ui.checkBox_perpetual_3.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet3.text() == '1Jan22') or
+                                ui.lineEdit_maturity_instrumet3.date() == date_now_instrument.addDays(-1)) or
                         ui.lineEdit_c_or_p_instrumet3.currentText() == ''
                 )) or \
                 (ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and (
@@ -6236,7 +6237,7 @@ def instruments(ui):
                         ui.lineEdit_currency_instrumet3.currentText() == '' or
                         (
                                 ui.checkBox_perpetual_3.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet3.text() == '1Jan22')
+                                ui.lineEdit_maturity_instrumet3.date() == date_now_instrument.addDays(-1))
                 )) or \
                 (ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' and (
                         ui.lineEdit_buy_or_sell_instrumet4.currentText() == '' or
@@ -6245,7 +6246,7 @@ def instruments(ui):
                         ui.lineEdit_strike_instrumet4.text() == '' or
                         (
                                 ui.checkBox_perpetual_4.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet4.text() == '1Jan22') or
+                                ui.lineEdit_maturity_instrumet4.date() == date_now_instrument.addDays(-1)) or
                         ui.lineEdit_c_or_p_instrumet4.currentText() == ''
                 )) or \
                 (ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and (
@@ -6254,7 +6255,7 @@ def instruments(ui):
                         ui.lineEdit_currency_instrumet4.currentText() == '' or
                         (
                                 ui.checkBox_perpetual_4.isChecked() is False and
-                                ui.lineEdit_maturity_instrumet4.text() == '1Jan22')
+                                ui.lineEdit_maturity_instrumet4.date() == date_now_instrument.addDays(-1))
                 )):
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
