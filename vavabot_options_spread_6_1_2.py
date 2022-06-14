@@ -6806,6 +6806,25 @@ def config(ui):
         ui.lineEdit_maturity_instrumet3.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet4.setDate(date_now_instrument.addDays(-1))
 
+    def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
+        import os
+        from lists import list_monitor_log
+
+        try:
+            if os.path.isfile('log_spread.log') is True:
+                if float(os.path.getsize('log_spread.log')) > 500000:
+                    os.unlink('log_spread.log')
+                else:
+                    pass
+            else:
+                pass
+
+        except Exception as er:
+            list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
+                                    str(er) + '. Error Code 6825 *****')
+            connect.logwriter('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
+                              str(er) + '. Error Code 6827 *****')
+
     def set_enabled_trigger():
         if ui.comboBox_value_given_2.currentText() == 'Set the cost of the Options Structure as trigger (optional)':
             ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
@@ -6905,6 +6924,7 @@ def config(ui):
                 pass
 
     set_version_and_icon()
+    remove_log_arbitrage_log_if_bigger_500kb_when_open_app()
     set_date()
     ConfigSaved().target_saved_check()
     ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
