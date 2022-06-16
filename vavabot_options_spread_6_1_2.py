@@ -143,6 +143,17 @@ class Deribit:
         try:
             if str(msg['method']) == 'public/set_heartbeat':
                 self.logwriter(str(msg['method']) + '(* Connection Test *)' + ' ID: ' + str(msg['id']))
+
+            elif str(msg['method']) == "private/buy" or str(msg['method']) == "private/sell":
+                instrument_name = str(msg['params']['instrument_name'])
+                instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
+                order_amount_instrument = str(msg['params']['amount'])
+                instrument_price = str(msg['params']['price'])
+                self.logwriter(str(instrument_name) +
+                               ': ' + str(instrument_direction) +
+                               ' ' + str(order_amount_instrument) +
+                               ' at ' + str(instrument_price))
+
             else:
                 self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
 
