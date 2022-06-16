@@ -152,7 +152,8 @@ class Deribit:
                 self.logwriter(str(instrument_name) +
                                ': ' + str(instrument_direction) +
                                ' ' + str(order_amount_instrument) +
-                               ' at ' + str(instrument_price))
+                               ' at ' + str(instrument_price) +
+                               ' ID: ' + str(msg['id']))
 
             else:
                 self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
