@@ -6966,7 +6966,9 @@ def run(ui):
         info.clear()
 
     def receive_signal_por_print_monitor(info):
-        ui.textEdit_monitor.append(str(info))
+        msg1 = str(info['msg'])
+        msg2 = msg1.replace('\n', '')
+        ui.textEdit_monitor.append(str(msg2))
 
     def receive_led_green_for_monitor():
         green_icon = "./green_led_icon.png"
