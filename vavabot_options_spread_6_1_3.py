@@ -618,16 +618,20 @@ class CredentialsSaved:
     @staticmethod
     def testnet_saved_tru_or_false():
         from lists import list_monitor_log
+        from connection_spread import connect
         with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_tru_or_false_file:
             testnet_saved_tru_or_false_file_read = str(testnet_saved_tru_or_false_file.read())
         if testnet_saved_tru_or_false_file_read == 'True':
             list_monitor_log.append('*** TEST Account Selected ***')
+            connect.logwriter('*** TEST Account Selected ***')
             return True
         elif testnet_saved_tru_or_false_file_read == 'False':
             list_monitor_log.append('*** REAL Account Selected ***')
+            connect.logwriter('*** REAL Account Selected ***')
             return False
         else:
-            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 618 *****')
+            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 633 *****')
+            connect.logwriter('***** ERROR in testnet_saved_tru_or_false - Error Code: 634 *****')
 
     @staticmethod
     def url():
@@ -3024,7 +3028,7 @@ class ConditionsCheck:
                 pass
 
             list_monitor_log.append('********** SENT ORDERS AFTER ADJUSTMENTS **********')
-
+            connect.logwriter('********** SENT ORDERS AFTER ADJUSTMENTS **********')
             # Para informar quais ordens foram enviadas
             time.sleep(0.2)
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent1))
@@ -4097,7 +4101,7 @@ class ConditionsCheck:
                     pass
 
                 list_monitor_log.append('********** SENT ORDERS **********')
-
+                connect.logwriter('********** SENT ORDERS **********')
                 # Para informar quais ordens foram enviadas
                 time.sleep(0.2)
                 list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent1))
@@ -4117,6 +4121,7 @@ class ConditionsCheck:
                     sent_options_adjusts_instrument1 is True or sent_options_adjusts_instrument2 is True or
                     sent_options_adjusts_instrument3 is True or sent_options_adjusts_instrument4 is True):
                 list_monitor_log.append('*** SENT ORDERS ADJUSTMENTS ***')
+                connect.logwriter(msg=str('*** SENT ORDERS ADJUSTMENTS ***'))
 
                 # Para informar quais ordens foram enviadas
                 time.sleep(0.2)
@@ -4519,7 +4524,7 @@ class ConditionsCheck:
         time.sleep(10)
         connect.cancel_all()
         list_monitor_log.append('There are NOT Future Orders to Send')
-
+        connect.logwriter('There are NOT Future Orders to Send')
     @staticmethod
     def targets_achieved():
         from lists import list_monitor_log
@@ -7459,6 +7464,7 @@ def run(ui):
                             aa = ConditionsCheck().position_option_smaller_max_position_instruments_()
                             if aa == 'position_option_smaller_max_position_instruments_no':
                                 list_monitor_log.append('*********** Option Position Bigger Max Position ***********')
+                                connect.logwriter('*********** Option Position Bigger Max Position ***********')
                                 if run_trade_future_on_off == 'on':
                                     run_trade_future()
                                 else:
@@ -7546,15 +7552,17 @@ def run(ui):
             finally:
                 pass
         if trading_on_off_for_msg == 'off':
+            from connection_spread import connect
             list_monitor_log.append('********** TRADING STOPPED **********')
-
+            connect.logwriter('********** TRADING STOPPED **********')
             sinal.start_signal_3.emit()
 
             btc_index_print_start_thread()
             pass
         else:
+            from connection_spread import connect
             list_monitor_log.append('**************** TRADING FINISHED **************** ')
-
+            connect.logwriter('********** TRADING FINISHED **********')
             sinal.start_signal_4.emit()
 
             btc_index_print_start_thread()
