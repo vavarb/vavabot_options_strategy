@@ -4525,6 +4525,7 @@ class ConditionsCheck:
         connect.cancel_all()
         list_monitor_log.append('There are NOT Future Orders to Send')
         connect.logwriter('There are NOT Future Orders to Send')
+
     @staticmethod
     def targets_achieved():
         from lists import list_monitor_log
