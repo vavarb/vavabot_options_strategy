@@ -6675,20 +6675,34 @@ def config(ui):
         from lists import list_monitor_log
 
         try:
-            if os.path.isfile('log_spread.log') is True:
-                if float(os.path.getsize('log_spread.log')) > 500000:
-                    os.unlink('log_spread.log')
+            if os.path.isfile('log_spread_backup.log') is True:
+                if float(os.path.getsize('log_spread_backup.log')) > 8000000:
+                    os.unlink('log_spread_backup.log')
+                    list_monitor_log.append('*** Deleted log_spread_backup.log (>8MB). ***')
                 else:
-                    pass
+                    list_monitor_log.append('*** Len log_spread_backup.log < 8MB. ***')
             else:
                 pass
 
+            if os.path.isfile('log_spread.log') is True:
+                if float(os.path.getsize('log_spread.log')) > 500000:
+                    with open('log_spread_backup.log', 'a') as file_backup:
+                        with open('log_spread.log', 'r') as log_file:
+                            file_backup.writelines(log_file)
+                            list_monitor_log.append('*** Appended log_spread.log into log_spread_backup.log ***')
+                    os.unlink('log_spread.log')
+                    list_monitor_log.append('*** Deleted and Created log_spread.log ***')
+                else:
+                    list_monitor_log.append('*** Len log_spread.log < 0.5MB. ***')
+            else:
+                list_monitor_log.append('*** Created log_spread.log ***')
+
         except Exception as er:
             from connection_spread import connect
-            list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
-                                    str(er) + '. Error Code 6689 *****')
-            connect.logwriter('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
-                              str(er) + '. Error Code 6691 *****')
+            list_monitor_log.append('***** ERROR in remove_log_spread_log_if_bigger_500kb_when_open_app(): ' +
+                                    str(er) + '. Error Code 6703 *****')
+            connect.logwriter('***** ERROR in remove_log_spread_log_if_bigger_500kb_when_open_app(): ' +
+                              str(er) + '. Error Code 6705 *****')
 
     def set_enabled_trigger():
         if ui.comboBox_value_given_2.currentText() == 'Set the cost of the Options Structure as trigger (optional)':
