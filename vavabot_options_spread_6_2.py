@@ -220,9 +220,33 @@ class Deribit:
             if 'error' in str(out):
                 if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
                     self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
+                    if str(msg['method']) == "private/get_position":
+                        out1 = '0'
+                        delay = self._delay(sender_rate_rate=sender_rate_rate)
+                        if delay > 0:
+                            time.sleep(delay)
+                        else:
+                            pass
+                        return float(out1)
+                    else:
+                        delay = self._delay(sender_rate_rate=sender_rate_rate)
+                        if delay > 0:
+                            time.sleep(delay)
+                        else:
+                            pass
+                        return out['error']
 
-                    return out['error']
-                elif str(msg['method']) =="public/get_last_trades_by_instrument":
+                elif str(msg['method']) == "private/get_position":
+                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
+                    out1 = '0'
+                    delay = self._delay(sender_rate_rate=sender_rate_rate)
+                    if delay > 0:
+                        time.sleep(delay)
+                    else:
+                        pass
+                    return float(out1)
+
+                elif str(msg['method']) == "public/get_last_trades_by_instrument":
                     self.logwriter(str(out) + ' ID: ' + str(msg['id']))
                     delay = self._delay(sender_rate_rate=sender_rate_rate)
                     if delay > 0:
@@ -263,16 +287,30 @@ class Deribit:
                         pass
                     return out['result']
 
-            elif str(msg['method']) =="public/get_last_trades_by_instrument":
+            elif str(msg['method']) == "public/get_last_trades_by_instrument":
                 delay = self._delay(sender_rate_rate=sender_rate_rate)
                 if delay > 0:
                     time.sleep(delay)
                 else:
                     pass
-                self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                    counter_send_order) + ' *****')
                 return out['result']['trades'][0]['price']
 
+            elif str(msg['method']) == "private/get_position":
+                if str(out['result']['size']) == 'None' or str(out['result']['size']) == 'none':
+                    out1 = '0'
+                    delay = self._delay(sender_rate_rate=sender_rate_rate)
+                    if delay > 0:
+                        time.sleep(delay)
+                    else:
+                        pass
+                    return float(out1)
+                else:
+                    delay = self._delay(sender_rate_rate=sender_rate_rate)
+                    if delay > 0:
+                        time.sleep(delay)
+                    else:
+                        pass
+                    return out['result']['size']
             else:
                 delay = self._delay(sender_rate_rate=sender_rate_rate)
                 if delay > 0:
