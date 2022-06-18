@@ -148,7 +148,7 @@ class Deribit:
     def sender_rate(self, counter_send_order_for_sender_rate, time_now):
         global sender_rate_dict
 
-        if float(time_now - sender_rate_dict['time_1']) >= 300:
+        if float(time_now - sender_rate_dict['time_1']) >= 10:
             delta_counter_send_order = float(
                 counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
             delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
@@ -163,6 +163,7 @@ class Deribit:
 
     def _delay(self, sender_rate_rate):
         global delay_delay
+        from lists import list_monitor_log
 
         if sender_rate_rate is False:
             return delay_delay
@@ -218,60 +219,38 @@ class Deribit:
                 counter_send_order_for_sender_rate=counter_send_order, time_now=time.time())
 
             if 'error' in str(out):
+                self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                    counter_send_order) + ' *****')
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+
                 if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
                     self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
-                    if str(msg['method']) == "private/get_position":
+                    if str(msg['id']) == '19':
                         out1 = '0'
-                        delay = self._delay(sender_rate_rate=sender_rate_rate)
-                        if delay > 0:
-                            time.sleep(delay)
-                        else:
-                            pass
                         return float(out1)
                     else:
-                        delay = self._delay(sender_rate_rate=sender_rate_rate)
-                        if delay > 0:
-                            time.sleep(delay)
-                        else:
-                            pass
                         return out['error']
 
-                elif str(msg['method']) == "private/get_position":
-                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                    delay = self._delay(sender_rate_rate=sender_rate_rate)
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        pass
+                elif str(msg['id']) == '19':
                     out1 = '0'
                     return float(out1)
 
-                elif str(msg['method']) == "public/get_last_trades_by_instrument":
-                    self.logwriter(str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order))
-                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order) + ' *****')
-                    delay = self._delay(sender_rate_rate=sender_rate_rate)
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        pass
-                    return out['error']
+                elif str(msg['id']) == '25':
+                    return 0
 
                 else:
-                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order) + ' *****')
-
-                    delay = self._delay(sender_rate_rate=sender_rate_rate)
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        pass
-                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order) + ' *****')
                     return out['error']
 
-            elif str(msg['method']) == 'public/set_heartbeat':
+            elif str(msg['id']) == '4':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
                 if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
                         out['result']) or '10028' in str(out['result']):
                     self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
@@ -281,14 +260,9 @@ class Deribit:
                     return 'too_many_requests'
 
                 else:
-                    delay = self._delay(sender_rate_rate=sender_rate_rate)
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        pass
                     return out['result']
 
-            elif str(msg['method']) == "public/get_last_trades_by_instrument":
+            elif str(msg['id']) == '18':
                 delay = self._delay(sender_rate_rate=sender_rate_rate)
                 if delay > 0:
                     time.sleep(delay)
@@ -296,22 +270,87 @@ class Deribit:
                     pass
                 return out['result']['trades'][0]['price']
 
-            elif str(msg['method']) == "private/get_position":
+            elif str(msg['id']) == '19':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
                 if str(out['result']['size']) == 'None' or str(out['result']['size']) == 'none':
                     out1 = '0'
-                    delay = self._delay(sender_rate_rate=sender_rate_rate)
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        pass
                     return float(out1)
                 else:
-                    delay = self._delay(sender_rate_rate=sender_rate_rate)
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        pass
                     return out['result']['size']
+
+            elif str(msg['id']) == '20':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                if str(out['result']['best_ask_price']) == 'null' or str(out['result']['best_ask_price']) == 'None':
+                    return 0
+                else:
+                    return out['result']['best_ask_price']
+
+            elif str(msg['id']) == '21':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                if str(out['result']['best_bid_price']) == 'null' or str(out['result']['best_bid_price']) == 'None':
+                    return 0
+                else:
+                    return out['result']['best_bid_price']
+
+            elif str(msg['id']) == '22':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                return out['result'][0]['mark_price']
+
+            elif str(msg['id']) == '23':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                if str(out['result']['best_bid_amount']) == 'null' or str(out['result']['best_bid_amount']) == 'None':
+                    return 0
+                else:
+                    return out['result']['best_bid_amount']
+
+            elif str(msg['id']) == '24':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                if str(out['result']['best_ask_amount']) == 'null' or str(out['result']['best_ask_amount']) == 'None':
+                    return 0
+                else:
+                    return out['result']['best_ask_amount']
+
+            elif str(msg['id']) == '25':
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                if len(out['result']['data']) == 0 or out['result']['data'] == 'ok' or out[
+                    'result']['data'] == 'OK' or out['result']['data'] == 'Ok' or out[
+                        'result'] == 'ok' or out['result'] == 'Ok' or out['result'] == 'OK':
+                    return 0
+                elif len(out['result']['data']) != 0:
+                    return out['result']['data'][-1][-1]
+                elif 'error' in str(out):
+                    return 0
+                else:
+                    return 0
+
             else:
                 delay = self._delay(sender_rate_rate=sender_rate_rate)
                 if delay > 0:
@@ -573,20 +612,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-            else:
-                pass
-            if str(out['result']['best_ask_price']) == 'null' or str(out['result']['best_ask_price']) == 'None':
-                return 0
-            else:
-                return out['result']['best_ask_price']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def bid_price(self, instrument_name=None):
         msg = \
@@ -598,20 +624,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-            else:
-                pass
-            if str(out['result']['best_bid_price']) == 'null' or str(out['result']['best_bid_price']) == 'None':
-                return 0
-            else:
-                return out['result']['best_bid_price']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def mark_price(self, instrument_name=None):
         msg = \
@@ -623,15 +636,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-            return out['result'][0]['mark_price']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def best_bid_amount(self, instrument_name=None):
         msg = \
@@ -643,20 +648,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-            else:
-                pass
-            if str(out['result']['best_bid_amount']) == 'null' or str(out['result']['best_bid_amount']) == 'None':
-                return 0
-            else:
-                return out['result']['best_bid_amount']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def best_ask_amount(self, instrument_name=None):
         msg = \
@@ -668,20 +660,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-            else:
-                pass
-            if str(out['result']['best_ask_amount']) == 'null' or str(out['result']['best_ask_amount']) == 'None':
-                return 0
-            else:
-                return out['result']['best_ask_amount']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def volatility_index_data(self, currency):
         timestamp_end = float(round(datetime.now().timestamp()) * 1000)
@@ -689,7 +668,7 @@ class Deribit:
         msg = \
             {
                 "jsonrpc": "2.0",
-                "id": 24,
+                "id": 25,
                 "method": "public/get_volatility_index_data",
                 "params": {
                     "currency": currency,
@@ -698,23 +677,7 @@ class Deribit:
                     "resolution": "1"
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if len(out['result']['data']) == 0 or out['result']['data'] == 'ok' or out[
-                'result']['data'] == 'OK' or out['result']['data'] == 'Ok' or out[
-                    'result'] == 'ok' or out['result'] == 'Ok' or out['result'] == 'OK':
-                return 0
-            elif len(out['result']['data']) != 0:
-                return out['result']['data'][-1][-1]
-            elif 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                return 0
-            else:
-                return 0
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(er) + 'ID: ' + str(msg['id']))
+        return self._sender(msg)
 
 
 class CredentialsSaved:
