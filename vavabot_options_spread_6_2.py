@@ -186,28 +186,47 @@ class Deribit:
             return delay_delay
 
     def _sender(self, msg):
-        from lists import list_monitor_log
         global counter_send_order
 
         counter_send_order = counter_send_order + 1
 
         try:
-            if str(msg['method']) == 'public/set_heartbeat':
+            if str(msg['id']) == '4':
                 self.logwriter(
                     str(msg['method']) + '(* Connection Test *)' + ' ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order))
-
-            elif str(msg['method']) == "private/buy" or str(msg['method']) == "private/sell":
-                instrument_name = str(msg['params']['instrument_name'])
-                instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
-                order_amount_instrument = str(msg['params']['amount'])
-                instrument_price = str(msg['params']['price'])
-                self.logwriter(str(instrument_name) +
-                               ': ' + str(instrument_direction) +
-                               ' ' + str(order_amount_instrument) +
-                               ' at ' + str(instrument_price) +
-                               ' ID: ' + str(msg['id']) +
-                               '_' + str(counter_send_order))
+            elif str(msg['method']) == 'private/buy' or str(msg['method']) == 'private/sell':
+                if str(msg['id']) == "8" or str(msg['id']) == "9":
+                    instrument_name = str(msg['params']['instrument_name'])
+                    instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
+                    order_amount_instrument = str(msg['params']['amount'])
+                    instrument_price = str(msg['params']['price'])
+                    self.logwriter(str(instrument_name) +
+                                   ': ' + str(instrument_direction) +
+                                   ' ' + str(order_amount_instrument) +
+                                   ' at ' + str(instrument_price) +
+                                   ' ID: ' + str(msg['id']) +
+                                   '_' + str(counter_send_order))
+                elif str(msg['id']) == "10" or str(msg['id']) == "11":
+                    instrument_name = str(msg['params']['instrument_name'])
+                    instrument_direction = str(msg['method']) + ' - Pos-Only: ' + str(msg['params']['post_only'])
+                    order_amount_instrument = str(msg['params']['amount'])
+                    instrument_price = str(msg['params']['price'])
+                    self.logwriter(str(instrument_name) +
+                                   ': ' + str(instrument_direction) +
+                                   ' ' + str(order_amount_instrument) +
+                                   ' at ' + str(instrument_price) +
+                                   ' ID: ' + str(msg['id']) +
+                                   '_' + str(counter_send_order))
+                elif str(msg['id']) == "12" or str(msg['id']) == "13":
+                    instrument_name = str(msg['params']['instrument_name'])
+                    instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
+                    order_amount_instrument = str(msg['params']['amount'])
+                    self.logwriter(str(instrument_name) +
+                                   ': ' + str(instrument_direction) +
+                                   ' ' + str(order_amount_instrument) +
+                                   ' ID: ' + str(msg['id']) +
+                                   '_' + str(counter_send_order))
 
             else:
                 self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
@@ -217,27 +236,28 @@ class Deribit:
 
             sender_rate_rate = self.sender_rate(
                 counter_send_order_for_sender_rate=counter_send_order, time_now=time.time())
+            delay = self._delay(sender_rate_rate=sender_rate_rate)
+
+            if delay > 0:
+                time.sleep(delay)
+            else:
+                pass
 
             if 'error' in str(out):
                 self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
                     counter_send_order) + ' *****')
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
 
                 if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
                     self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
                     if str(msg['id']) == '19':
-                        out1 = '0'
-                        return float(out1)
+                        return float(0)
+                    elif str(msg['id']) == '25':
+                        return 0
                     else:
                         return out['error']
 
                 elif str(msg['id']) == '19':
-                    out1 = '0'
-                    return float(out1)
+                    return float(0)
 
                 elif str(msg['id']) == '25':
                     return 0
@@ -246,11 +266,6 @@ class Deribit:
                     return out['error']
 
             elif str(msg['id']) == '4':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
                         out['result']) or '10028' in str(out['result']):
                     self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
@@ -263,106 +278,58 @@ class Deribit:
                     return out['result']
 
             elif str(msg['id']) == '18':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 return out['result']['trades'][0]['price']
 
             elif str(msg['id']) == '19':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if str(out['result']['size']) == 'None' or str(out['result']['size']) == 'none':
-                    out1 = '0'
-                    return float(out1)
+                    return float(0)
                 else:
                     return out['result']['size']
 
             elif str(msg['id']) == '20':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if str(out['result']['best_ask_price']) == 'null' or str(out['result']['best_ask_price']) == 'None':
                     return 0
                 else:
                     return out['result']['best_ask_price']
 
             elif str(msg['id']) == '21':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if str(out['result']['best_bid_price']) == 'null' or str(out['result']['best_bid_price']) == 'None':
                     return 0
                 else:
                     return out['result']['best_bid_price']
 
             elif str(msg['id']) == '22':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 return out['result'][0]['mark_price']
 
             elif str(msg['id']) == '23':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if str(out['result']['best_bid_amount']) == 'null' or str(out['result']['best_bid_amount']) == 'None':
                     return 0
                 else:
                     return out['result']['best_bid_amount']
 
             elif str(msg['id']) == '24':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if str(out['result']['best_ask_amount']) == 'null' or str(out['result']['best_ask_amount']) == 'None':
                     return 0
                 else:
                     return out['result']['best_ask_amount']
 
             elif str(msg['id']) == '25':
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 if len(out['result']['data']) == 0 or out['result']['data'] == 'ok' or out[
                     'result']['data'] == 'OK' or out['result']['data'] == 'Ok' or out[
                         'result'] == 'ok' or out['result'] == 'Ok' or out['result'] == 'OK':
                     return 0
-                elif len(out['result']['data']) != 0:
-                    return out['result']['data'][-1][-1]
                 elif 'error' in str(out):
                     return 0
+                elif len(out['result']['data']) != 0:
+                    return out['result']['data'][-1][-1]
                 else:
                     return 0
 
             else:
-                delay = self._delay(sender_rate_rate=sender_rate_rate)
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
                 return out['result']
 
         except Exception as er:
             self.logwriter('_sender error: ' + str(er) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
-            list_monitor_log.append(
-                '_sender error: ' + str(er) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
         finally:
             pass
 
