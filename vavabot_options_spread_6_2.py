@@ -72,16 +72,14 @@ class Deribit:
     # noinspection PyMethodMayBeStatic
     def logwriter(self, msg):
         from lists import list_monitor_log
-        global counter_send_order
 
         filename = 'log_spread.log'
-        counter_send_order = counter_send_order + 1
 
         try:
             out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
-            list_monitor_log.append(str(msg) + '_' + str(counter_send_order))
+            list_monitor_log.append(str(msg))
             with open(filename, 'a') as logwriter_file:
-                logwriter_file.write(str(out) + '_' + str(counter_send_order))
+                logwriter_file.write(str(out))
 
         except Exception as er:
             from connection_spread import connect
@@ -172,7 +170,9 @@ class Deribit:
 
         try:
             if str(msg['method']) == 'public/set_heartbeat':
-                self.logwriter(str(msg['method']) + '(* Connection Test *)' + ' ID: ' + str(msg['id']))
+                self.logwriter(
+                    str(msg['method']) + '(* Connection Test *)' + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order))
 
             elif str(msg['method']) == "private/buy" or str(msg['method']) == "private/sell":
                 instrument_name = str(msg['params']['instrument_name'])
@@ -183,10 +183,12 @@ class Deribit:
                                ': ' + str(instrument_direction) +
                                ' ' + str(order_amount_instrument) +
                                ' at ' + str(instrument_price) +
-                               ' ID: ' + str(msg['id']))
+                               ' ID: ' + str(msg['id']) +
+                               '_' + str(counter_send_order))
 
             else:
-                self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
+                self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order))
 
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
@@ -196,13 +198,13 @@ class Deribit:
 
             if 'error' in str(out):
                 if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
-                    list_monitor_log.append('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
+                    self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
 
                     return out['error']
 
                 else:
-                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                    list_monitor_log.append(str(out) + ' ID: ' + str(msg['id']))
+                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order) + ' *****')
 
                     if sender_rate_rate is False:
                         pass
@@ -226,16 +228,16 @@ class Deribit:
                         time.sleep(delay)
                     else:
                         pass
-
+                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order) + ' *****')
                     return out['error']
 
             elif str(msg['method']) == 'public/set_heartbeat':
                 if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
                         out['result']) or '10028' in str(out['result']):
-                    list_monitor_log.append(str('***************** ERROR too_many_requests ******************' + str(
-                        out) + str(msg['id'])))
                     self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
-                        out) + str(msg['id'])))
+                        out) + str(msg['id']) + '_' + str(
+                        counter_send_order)))
                     time.sleep(10)
                     return 'too_many_requests'
                 else:
@@ -291,8 +293,9 @@ class Deribit:
                 return out['result']
 
         except Exception as er:
-            self.logwriter('_sender error: ' + str(er) + ' ID: ' + str(msg['id']))
-            list_monitor_log.append('_sender error: ' + str(er) + ' ID: ' + str(msg['id']))
+            self.logwriter('_sender error: ' + str(er) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
+            list_monitor_log.append(
+                '_sender error: ' + str(er) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
         finally:
             pass
 
