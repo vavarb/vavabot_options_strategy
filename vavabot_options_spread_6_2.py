@@ -238,23 +238,23 @@ class Deribit:
 
                 elif str(msg['method']) == "private/get_position":
                     self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                    out1 = '0'
                     delay = self._delay(sender_rate_rate=sender_rate_rate)
                     if delay > 0:
                         time.sleep(delay)
                     else:
                         pass
-                    return float(out1)
+                    return out['error']
 
                 elif str(msg['method']) == "public/get_last_trades_by_instrument":
-                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
+                    self.logwriter(str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order))
+                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order) + ' *****')
                     delay = self._delay(sender_rate_rate=sender_rate_rate)
                     if delay > 0:
                         time.sleep(delay)
                     else:
                         pass
-                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order) + ' *****')
                     return out['error']
 
                 else:
