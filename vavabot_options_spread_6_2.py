@@ -195,33 +195,39 @@ class Deribit:
                 counter_send_order_for_sender_rate=counter_send_order, time_now=time.time())
 
             if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                list_monitor_log.append(str(out) + ' ID: ' + str(msg['id']))
+                if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
+                    list_monitor_log.append('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
 
-                if sender_rate_rate is False:
-                    pass
+                    return out['error']
+
                 else:
-                    list_monitor_log.append('*** Check Sent Orders Rate ***')
-                    self.logwriter(
-                        '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
-                    if sender_rate_rate >= 5:
-                        delay = round(delay + 0.01, 2)
-                        list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
-                        self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
+                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
+                    list_monitor_log.append(str(out) + ' ID: ' + str(msg['id']))
+
+                    if sender_rate_rate is False:
+                        pass
                     else:
-                        list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
-                        if delay >= 0.01:
-                            delay = round(delay - 0.01, 2)
-                            self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                        list_monitor_log.append('*** Check Sent Orders Rate ***')
+                        self.logwriter(
+                            '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+                        if sender_rate_rate >= 5:
+                            delay = round(delay + 0.01, 2)
+                            list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                            self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
                         else:
-                            self.logwriter('*** Setup Delay for send order Unmodified ***')
+                            list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                            if delay >= 0.01:
+                                delay = round(delay - 0.01, 2)
+                                self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                            else:
+                                self.logwriter('*** Setup Delay for send order Unmodified ***')
 
-                if delay > 0:
-                    time.sleep(delay)
-                else:
-                    pass
+                    if delay > 0:
+                        time.sleep(delay)
+                    else:
+                        pass
 
-                return out['error']
+                    return out['error']
 
             elif str(msg['method']) == 'public/set_heartbeat':
                 if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
@@ -541,8 +547,13 @@ class Deribit:
                 return float(out1)
             else:
                 if 'error' in str(out):
-                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                return out['result']['size']
+                    if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
+                        self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
+                    else:
+                        self.logwriter(str(out) + ' ID: ' + str(msg['id']))
+                    return out['error']
+                else:
+                    return out['result']['size']
         except Exception as er:
             self.logwriter('_sender error: ' + str(msg) + str(er))
 
