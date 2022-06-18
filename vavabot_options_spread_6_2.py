@@ -739,16 +739,13 @@ class CredentialsSaved:
     @staticmethod
     def testnet_saved_tru_or_false():
         from lists import list_monitor_log
-        from connection_spread import connect
         with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_tru_or_false_file:
             testnet_saved_tru_or_false_file_read = str(testnet_saved_tru_or_false_file.read())
         if testnet_saved_tru_or_false_file_read == 'True':
             list_monitor_log.append('*** TEST Account Selected ***')
-            connect.logwriter('*** TEST Account Selected ***')
             return True
         elif testnet_saved_tru_or_false_file_read == 'False':
             list_monitor_log.append('*** REAL Account Selected ***')
-            connect.logwriter('*** REAL Account Selected ***')
             return False
         else:
             list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 633 *****')
