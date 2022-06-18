@@ -551,7 +551,8 @@ class Deribit:
                         self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
                     else:
                         self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                    return out['error']
+                    out1 = '0'
+                    return float(out1)
                 else:
                     return out['result']['size']
         except Exception as er:
