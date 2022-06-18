@@ -222,6 +222,16 @@ class Deribit:
                     self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
 
                     return out['error']
+                elif str(msg['method']) =="public/get_last_trades_by_instrument":
+                    self.logwriter(str(out) + ' ID: ' + str(msg['id']))
+                    delay = self._delay(sender_rate_rate=sender_rate_rate)
+                    if delay > 0:
+                        time.sleep(delay)
+                    else:
+                        pass
+                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order) + ' *****')
+                    return out['error']
 
                 else:
                     self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
@@ -252,6 +262,16 @@ class Deribit:
                     else:
                         pass
                     return out['result']
+
+            elif str(msg['method']) =="public/get_last_trades_by_instrument":
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+                self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                    counter_send_order) + ' *****')
+                return out['result']['trades'][0]['price']
 
             else:
                 delay = self._delay(sender_rate_rate=sender_rate_rate)
@@ -490,15 +510,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if 'error' in str(out):
-                self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-            return out['result']['trades'][0]['price']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def get_position_size(self, instrument_name):
         msg = \
