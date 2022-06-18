@@ -243,7 +243,8 @@ class Deribit:
                         time.sleep(delay)
                     else:
                         pass
-                    return out['error']
+                    out1 = '0'
+                    return float(out1)
 
                 elif str(msg['method']) == "public/get_last_trades_by_instrument":
                     self.logwriter(str(out) + ' ID: ' + str(msg['id']) + '_' + str(
@@ -560,25 +561,7 @@ class Deribit:
                     "instrument_name": instrument_name
                 }
             }
-        try:
-            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']))
-            self._WSS.send(json.dumps(msg))
-            out = json.loads(self._WSS.recv())
-            if str(out['result']['size']) == 'None' or str(out['result']['size']) == 'none':
-                out1 = '0'
-                return float(out1)
-            else:
-                if 'error' in str(out):
-                    if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
-                        self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
-                    else:
-                        self.logwriter(str(out) + ' ID: ' + str(msg['id']))
-                    out1 = '0'
-                    return float(out1)
-                else:
-                    return out['result']['size']
-        except Exception as er:
-            self.logwriter('_sender error: ' + str(msg) + str(er))
+        return self._sender(msg)
 
     def ask_price(self, instrument_name=None):
         msg = \
