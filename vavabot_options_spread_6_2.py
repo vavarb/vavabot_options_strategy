@@ -7084,7 +7084,7 @@ def run(ui):
         info.clear()
 
     def receive_signal_por_print_monitor(info):
-        msg1 = str(info['msg'])
+        msg1 = str(info)
         msg2 = msg1.replace('\n', '')
         ui.textEdit_monitor.append(str(msg2))
 
