@@ -18,7 +18,7 @@ global trading_on_off_for_msg
 global send_future_orders_while
 global counter_send_order
 global sender_rate_dict
-global delay
+global delay_delay
 
 
 class Sinais(QtCore.QObject):
@@ -101,10 +101,10 @@ class Deribit:
         from lists import list_monitor_log
         global counter_send_order
         global sender_rate_dict
-        global delay
+        global delay_delay
 
         counter_send_order = 0
-        delay = 0
+        delay_delay = 0
 
         sender_rate_dict = dict()
         sender_rate_dict['time_1'] = time.time()
@@ -161,10 +161,32 @@ class Deribit:
         else:
             return False
 
+    def _delay(self, sender_rate_rate):
+        global delay_delay
+
+        if sender_rate_rate is False:
+            return delay_delay
+
+        else:
+            list_monitor_log.append('*** Check Sent Orders Rate ***')
+            self.logwriter(
+                '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+            if sender_rate_rate >= 5:
+                delay_delay = round(delay_delay + 0.01, 2)
+                list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                self.logwriter('*** Setup New Delay for send order: ' + str(delay_delay) + ' seconds ***')
+            else:
+                list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                if delay_delay >= 0.01:
+                    delay_delay = round(delay_delay - 0.01, 2)
+                    self.logwriter('*** Setup Delay for send order: ' + str(delay_delay) + ' seconds ***')
+                else:
+                    self.logwriter('*** Setup Delay for send order Unmodified ***')
+            return delay_delay
+
     def _sender(self, msg):
         from lists import list_monitor_log
         global counter_send_order
-        global delay
 
         counter_send_order = counter_send_order + 1
 
@@ -187,8 +209,7 @@ class Deribit:
                                '_' + str(counter_send_order))
 
             else:
-                self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order))
+                self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
 
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
@@ -206,24 +227,7 @@ class Deribit:
                     self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order) + ' *****')
 
-                    if sender_rate_rate is False:
-                        pass
-                    else:
-                        list_monitor_log.append('*** Check Sent Orders Rate ***')
-                        self.logwriter(
-                            '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
-                        if sender_rate_rate >= 5:
-                            delay = round(delay + 0.01, 2)
-                            list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
-                            self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
-                        else:
-                            list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
-                            if delay >= 0.01:
-                                delay = round(delay - 0.01, 2)
-                                self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
-                            else:
-                                self.logwriter('*** Setup Delay for send order Unmodified ***')
-
+                    delay = self._delay(sender_rate_rate=sender_rate_rate)
                     if delay > 0:
                         time.sleep(delay)
                     else:
@@ -240,56 +244,21 @@ class Deribit:
                         counter_send_order)))
                     time.sleep(10)
                     return 'too_many_requests'
-                else:
-                    if sender_rate_rate is False:
-                        pass
-                    else:
-                        list_monitor_log.append('*** Check Sent Orders Rate ***')
-                        self.logwriter(
-                            '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
-                        if sender_rate_rate >= 5:
-                            delay = round(delay + 0.01, 2)
-                            list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
-                            self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
-                        else:
-                            list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
-                            if delay >= 0.01:
-                                delay = round(delay - 0.01, 2)
-                                self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
-                            else:
-                                self.logwriter('*** Setup Delay for send order Unmodified ***')
 
+                else:
+                    delay = self._delay(sender_rate_rate=sender_rate_rate)
                     if delay > 0:
                         time.sleep(delay)
                     else:
                         pass
-
                     return out['result']
 
             else:
-                if sender_rate_rate is False:
-                    pass
-                else:
-                    list_monitor_log.append('*** Check Sent Orders Rate ***')
-                    self.logwriter(
-                        '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
-                    if sender_rate_rate >= 5:
-                        delay = round(delay + 0.01, 2)
-                        list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
-                        self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
-                    else:
-                        list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
-                        if delay >= 0.01:
-                            delay = round(delay - 0.01, 2)
-                            self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
-                        else:
-                            self.logwriter('*** Setup Delay for send order Unmodified ***')
-
+                delay = self._delay(sender_rate_rate=sender_rate_rate)
                 if delay > 0:
                     time.sleep(delay)
                 else:
                     pass
-
                 return out['result']
 
         except Exception as er:
