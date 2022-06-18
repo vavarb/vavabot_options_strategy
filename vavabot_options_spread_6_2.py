@@ -17,6 +17,8 @@ global run_target_on_off
 global trading_on_off_for_msg
 global send_future_orders_while
 global counter_send_order
+global sender_rate_dict
+global delay
 
 
 class Sinais(QtCore.QObject):
@@ -100,8 +102,15 @@ class Deribit:
 
         from lists import list_monitor_log
         global counter_send_order
+        global sender_rate_dict
+        global delay
 
         counter_send_order = 0
+        delay = 0
+
+        sender_rate_dict = dict()
+        sender_rate_dict['time_1'] = time.time()
+        sender_rate_dict['counter_send_order_for_sender_rate'] = 0
 
         timestamp = round(datetime.now().timestamp() * 1000)
         nonce = "abcd"
@@ -137,8 +146,29 @@ class Deribit:
             list_monitor_log.append('***** auth ERROR:' + ' error: ' + str(er) + ' *****')
             self.logwriter('***** auth ERROR:' + ' error: ' + str(er) + ' *****')
 
+    # noinspection PyMethodMayBeStatic
+    def sender_rate(self, counter_send_order_for_sender_rate, time_now):
+        global sender_rate_dict
+
+        if float(time_now - sender_rate_dict['time_1']) >= 300:
+            delta_counter_send_order = float(
+                counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
+            delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
+            rate_sender_orders = float(delta_counter_send_order) / float(delta_time_for_sender_rate)
+
+            sender_rate_dict['time_1'] = time_now
+            sender_rate_dict['counter_send_order_for_sender_rate'] = float(counter_send_order_for_sender_rate)
+
+            return round(rate_sender_orders, 2)
+        else:
+            return False
+
     def _sender(self, msg):
         from lists import list_monitor_log
+        global counter_send_order
+        global delay
+
+        counter_send_order = counter_send_order + 1
 
         try:
             if str(msg['method']) == 'public/set_heartbeat':
@@ -161,10 +191,38 @@ class Deribit:
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
 
+            sender_rate_rate = self.sender_rate(
+                counter_send_order_for_sender_rate=counter_send_order, time_now=time.time())
+
             if 'error' in str(out):
                 self.logwriter(str(out) + ' ID: ' + str(msg['id']))
                 list_monitor_log.append(str(out) + ' ID: ' + str(msg['id']))
+
+                if sender_rate_rate is False:
+                    pass
+                else:
+                    list_monitor_log.append('*** Check Sent Orders Rate ***')
+                    self.logwriter(
+                        '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+                    if sender_rate_rate >= 5:
+                        delay = round(delay + 0.01, 2)
+                        list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                        self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
+                    else:
+                        list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                        if delay >= 0.01:
+                            delay = round(delay - 0.01, 2)
+                            self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                        else:
+                            self.logwriter('*** Setup Delay for send order Unmodified ***')
+
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+
                 return out['error']
+
             elif str(msg['method']) == 'public/set_heartbeat':
                 if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
                         out['result']) or '10028' in str(out['result']):
@@ -175,8 +233,55 @@ class Deribit:
                     time.sleep(10)
                     return 'too_many_requests'
                 else:
+                    if sender_rate_rate is False:
+                        pass
+                    else:
+                        list_monitor_log.append('*** Check Sent Orders Rate ***')
+                        self.logwriter(
+                            '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+                        if sender_rate_rate >= 5:
+                            delay = round(delay + 0.01, 2)
+                            list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                            self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
+                        else:
+                            list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                            if delay >= 0.01:
+                                delay = round(delay - 0.01, 2)
+                                self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                            else:
+                                self.logwriter('*** Setup Delay for send order Unmodified ***')
+
+                    if delay > 0:
+                        time.sleep(delay)
+                    else:
+                        pass
+
                     return out['result']
+
             else:
+                if sender_rate_rate is False:
+                    pass
+                else:
+                    list_monitor_log.append('*** Check Sent Orders Rate ***')
+                    self.logwriter(
+                        '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+                    if sender_rate_rate >= 5:
+                        delay = round(delay + 0.01, 2)
+                        list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                        self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
+                    else:
+                        list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                        if delay >= 0.01:
+                            delay = round(delay - 0.01, 2)
+                            self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                        else:
+                            self.logwriter('*** Setup Delay for send order Unmodified ***')
+
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+
                 return out['result']
 
         except Exception as er:
@@ -602,6 +707,14 @@ class CredentialsSaved:
     @staticmethod
     def api_secret_saved():
         from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('api-key_spread.txt') is False:
+            with open('api-key_spread.txt', 'a') as api_key_save_file:
+                api_key_save_file.write(str('<Type your Deribit Key>'))
+        else:
+            pass
+
         with open('api-key_spread.txt', 'r') as api_secret_saved_file:
             api_secret_saved_file_read = str(api_secret_saved_file.read())
         list_monitor_log.append('*** API key: ' + str(api_secret_saved_file_read) + ' ***')
@@ -610,6 +723,14 @@ class CredentialsSaved:
     @staticmethod
     def secret_key_saved():
         from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('secret-key_spread.txt') is False:
+            with open('secret-key_spread.txt', 'a') as api_key_save_file:
+                api_key_save_file.write(str('<Type your Deribit Secret Key>'))
+        else:
+            pass
+
         with open('secret-key_spread.txt', 'r') as secret_key_saved_file:
             secret_key_saved_file_read = str(secret_key_saved_file.read())
         list_monitor_log.append('*** SECRET key: ' + str(secret_key_saved_file_read) + ' ***')
@@ -1849,7 +1970,7 @@ class ConditionsCheck:
             structure_option_mark_price_cost = float(Quote().structure_option_mark_price_cost())
             if float(structure_option_mark_price_cost) != 0:
                 trigger_percentage = abs(structure_option_market_cost / float(
-                        structure_option_mark_price_cost)) * 100
+                    structure_option_mark_price_cost)) * 100
                 if trigger_percentage > float(
                         value_in_mark_price_list_lines_file_structure_market_cost_trigger):
                     list_monitor_log.append('*** Structure MARKET price = ' +
@@ -1884,7 +2005,7 @@ class ConditionsCheck:
             structure_option_mark_price_cost = float(Quote().structure_option_mark_price_cost())
             if float(structure_option_mark_price_cost) != 0:
                 trigger_percentage = abs(structure_option_market_cost / float(
-                        structure_option_mark_price_cost)) * 100
+                    structure_option_mark_price_cost)) * 100
                 if trigger_percentage < float(
                         value_in_mark_price_list_lines_file_structure_market_cost_trigger):
                     list_monitor_log.append('*** Structure MARKET price = ' +
@@ -2361,7 +2482,7 @@ class ConditionsCheck:
 
                         if float(structure_option_mark_price_cost) != 0:
                             mark_percentage = abs(float(
-                                    structure_option_market_cost) / float(structure_option_mark_price_cost)) * 100
+                                structure_option_market_cost) / float(structure_option_mark_price_cost)) * 100
                             if mark_percentage <= abs(float(target_cost_structure_in)):
                                 list_monitor_log.append('*** Structure option MARKET price: ' +
                                                         str(mark_percentage) +
@@ -3082,13 +3203,13 @@ class ConditionsCheck:
                 instrument_number=3)
             instrument_amount4_for_bigger_rate_options_now = InstrumentsSaved().instrument_amount_saved(
                 instrument_number=4)
-            if instrument1_direction == 'sell' and instrument1_kind == 'option' and\
+            if instrument1_direction == 'sell' and instrument1_kind == 'option' and \
                     instrument_amount1_for_bigger_rate_options_now != 0:
                 instrument_amount1_for_bigger_rate_options_now = float(
                     instrument_amount1_for_bigger_rate_options_now) * -1
             else:
                 pass
-            if instrument2_direction == 'sell' and instrument2_kind == 'option' and\
+            if instrument2_direction == 'sell' and instrument2_kind == 'option' and \
                     instrument_amount2_for_bigger_rate_options_now != 0:
                 instrument_amount2_for_bigger_rate_options_now = float(
                     instrument_amount2_for_bigger_rate_options_now) * -1
@@ -3402,7 +3523,7 @@ class ConditionsCheck:
             smaller_bid_ask_amount_adjust_book_ratio_now_dict = dict()
             smaller_bid_ask_amount_adjust_book_ratio_now_dict.clear()
             #           Instrument 1
-            if float(bigger_rate_option_now) != 0 and instrument1_kind == 'option' and\
+            if float(bigger_rate_option_now) != 0 and instrument1_kind == 'option' and \
                     instrument1_amount != 'Unassigned' and abs(float(bigger_rate_option_now)) > abs(
                         float(instrument1_rate_options_now)):
                 # xx1 é o que falta negociar
@@ -3417,7 +3538,7 @@ class ConditionsCheck:
             else:
                 pass
             #           Instrument 2
-            if float(bigger_rate_option_now) != 0 and instrument2_kind == 'option' and\
+            if float(bigger_rate_option_now) != 0 and instrument2_kind == 'option' and \
                     instrument2_amount != 'Unassigned' and abs(float(bigger_rate_option_now)) > abs(
                         float(instrument2_rate_options_now)):
                 # xx2 é o que falta negociar
@@ -3432,7 +3553,7 @@ class ConditionsCheck:
             else:
                 pass
             #           Instrument 3
-            if float(bigger_rate_option_now) != 0 and instrument3_kind == 'option' and\
+            if float(bigger_rate_option_now) != 0 and instrument3_kind == 'option' and \
                     instrument3_amount != 'Unassigned' and abs(float(bigger_rate_option_now)) > abs(
                         float(instrument3_rate_options_now)):
                 # xx3 é o que falta negociar
@@ -3447,7 +3568,7 @@ class ConditionsCheck:
             else:
                 pass
             #           Instrument 4
-            if float(bigger_rate_option_now) != 0 and instrument4_kind == 'option' and\
+            if float(bigger_rate_option_now) != 0 and instrument4_kind == 'option' and \
                     instrument4_amount != 'Unassigned' and abs(float(bigger_rate_option_now)) > abs(
                         float(instrument4_rate_options_now)):
                 # xx4 é o que falta negociar
@@ -3869,7 +3990,7 @@ class ConditionsCheck:
                     sent_options_adjusts_instrument3 is False and sent_options_adjusts_instrument4 is False):
                 list_monitor_log.append('*** NO SENT ORDERS ADJUSTMENTS ***')
                 # colar aqui a primeira ordem de negociação
-            # *************************************************************************************************************
+                # *************************************************************************************************************
                 # ABAIXO PRIMEIRAS ORDENS ENVIADAS SE ACIMA NÃO HOUVER AJUSTES
                 # Para criar a variável para depois informar no list_monitor_log_append após informar 'ORDERS SENT'
                 list_monitor_log_append_for_msg_after_orders_sent1 = 'Instrument 1: NO ORDER SENT'
@@ -6020,7 +6141,7 @@ def instruments(ui):
                 list_for_signal.clear()
 
                 list_for_signal.append('Instrument(s) Syntax ERROR: ' + str(
-                        instrument_s_for_list_str2) + ' - Update ALL instruments to Unassigned')
+                    instrument_s_for_list_str2) + ' - Update ALL instruments to Unassigned')
                 list_for_signal.append('***** ERROR *****')
 
                 sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
@@ -6215,7 +6336,7 @@ def instruments(ui):
                 msg.exec_()
                 pass
             elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' and (int(float(
-                str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(str.replace(str(
+                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(str.replace(str(
                     ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -6675,12 +6796,12 @@ def instruments(ui):
 def config(ui):
     def set_version_and_icon():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Spread 6.1.3"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Spread 6.1.4"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        
+
     def set_date():
         date_now_instrument = QtCore.QDate.currentDate()
         ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
@@ -6693,12 +6814,12 @@ def config(ui):
         from lists import list_monitor_log
 
         try:
-            if os.path.isfile('log_spread_backup.log') is True:
-                if float(os.path.getsize('log_spread_backup.log')) > 8000000:
-                    os.unlink('log_spread_backup.log')
-                    list_monitor_log.append('*** Deleted log_spread_backup.log (>8MB). ***')
+            if os.path.isfile('log_arbitrage_backup.log') is True:
+                if float(os.path.getsize('log_arbitrage_backup.log')) > 8000000:
+                    os.unlink('log_arbitrage_backup.log')
+                    list_monitor_log.append('*** Deleted log_arbitrage_backup.log (>8MB). ***')
                 else:
-                    list_monitor_log.append('*** Len log_spread_backup.log < 8MB. ***')
+                    list_monitor_log.append('*** Len log_arbitrage_backup.log < 8MB. ***')
             else:
                 pass
 
