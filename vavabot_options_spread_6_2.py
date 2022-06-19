@@ -207,26 +207,6 @@ class Deribit:
                                    ' at ' + str(instrument_price) +
                                    ' ID: ' + str(msg['id']) +
                                    '_' + str(counter_send_order))
-                elif str(msg['id']) == "10" or str(msg['id']) == "11":
-                    instrument_name = str(msg['params']['instrument_name'])
-                    instrument_direction = str(msg['method']) + ' - Pos-Only: ' + str(msg['params']['post_only'])
-                    order_amount_instrument = str(msg['params']['amount'])
-                    instrument_price = str(msg['params']['price'])
-                    self.logwriter(str(instrument_name) +
-                                   ': ' + str(instrument_direction) +
-                                   ' ' + str(order_amount_instrument) +
-                                   ' at ' + str(instrument_price) +
-                                   ' ID: ' + str(msg['id']) +
-                                   '_' + str(counter_send_order))
-                elif str(msg['id']) == "12" or str(msg['id']) == "13":
-                    instrument_name = str(msg['params']['instrument_name'])
-                    instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
-                    order_amount_instrument = str(msg['params']['amount'])
-                    self.logwriter(str(instrument_name) +
-                                   ': ' + str(instrument_direction) +
-                                   ' ' + str(order_amount_instrument) +
-                                   ' ID: ' + str(msg['id']) +
-                                   '_' + str(counter_send_order))
                 else:
                     pass
 
