@@ -1,8 +1,10 @@
 
-from vavabot_options_strategy_6_3 import Deribit, CredentialsSaved
+from vavabot_options_strategy_6_3 import Deribit, CredentialsSaved, ConfigSaved
 import time
 from lists import list_monitor_log
 import threading
+
+ConfigSaved().remove_log_spread_log_if_bigger_500kb_when_open_app()
 
 connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
                   client_secret=CredentialsSaved.secret_key_saved(),

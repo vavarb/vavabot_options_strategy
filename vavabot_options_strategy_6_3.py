@@ -937,8 +937,10 @@ class ConfigSaved:
         with open('value_given_in.txt', 'r') as f7:
             f6 = f7.read()
             if 'BTC' in f6:
-                ui.textEdit_targets_saved.setText(ConfigSaved().targets_saved())
-                pass
+                ui.textEdit_targets_saved.setText(
+                    str.replace(ConfigSaved().targets_saved(),
+                                'Set the cost of the Options Structure as trigger (optional)',
+                                'Set Option Strategy Cost as TRIGGER (optional)'))
             elif 'USD' in f6:
                 with open('targets_spread.txt', 'r') as f4:
                     f4l = f4.readlines()
@@ -947,11 +949,11 @@ class ConfigSaved:
                     f4s3 = str(f4l[2])
                     f4s4 = str(f4l[3])
                     f4s5 = str(f4l[4])
-                    f4s6 = str(f4l[5])
+                    f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
+                                       'Set Option Strategy Cost as TRIGGER (optional)')
                     f5 = str.replace(f4s4, 'BTC', 'USD')
                     f6 = str.replace(f4s5, 'for target setting', 'for conditions')
                     ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
-                    pass
             elif 'Mark Price %' in f6:
                 with open('targets_spread.txt', 'r') as f4:
                     f4l = f4.readlines()
@@ -960,14 +962,16 @@ class ConfigSaved:
                     f4s3 = str(f4l[2])
                     f4s4 = str(f4l[3])
                     f4s5 = str(f4l[4])
-                    f4s6 = str(f4l[5])
+                    f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
+                                       'Set Option Strategy Cost as TRIGGER (optional)')
                     f5 = str.replace(f4s4, 'BTC', '% of the Mark Price')
                     f6 = str.replace(f4s5, 'for target setting', 'for conditions')
                     ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
-                    pass
             else:
-                ui.textEdit_targets_saved.setText(ConfigSaved().targets_saved())
-                pass
+                replace_text_for_print = str.replace(
+                    ConfigSaved().targets_saved(), 'Set the cost of the Options Structure as trigger (optional)',
+                    'Set Option Strategy Cost as TRIGGER (optional)')
+                ui.textEdit_targets_saved.setText(replace_text_for_print)
 
     @staticmethod
     def position_saved():
@@ -1082,14 +1086,14 @@ class Config:
                     pass
 
                 if str(ui.comboBox_value_given_2.currentText()) != \
-                        'Set the cost of the Options Structure as trigger (optional)':
+                        'Set Option Strategy Cost as TRIGGER (optional)':
                     lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
                     lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
                     file_targets.write('\n' + str(ui.comboBox_value_given_2.currentText()) +
                                        str(lcerl1_2_adjusted_dot))
                     pass
                 else:
-                    file_targets.write('\n' + str(ui.comboBox_value_given_2.currentText()))
+                    file_targets.write('\n' + str('Set the cost of the Options Structure as trigger (optional)'))
                     pass
 
             with open('value_given_in.txt', 'w') as file_value_given_in:
@@ -1641,24 +1645,21 @@ class Quote:
                     a1 = round(float(Quote().structure_option_market_cost()), 5)
                     a1_usd = round(float(a1) * f, 2)
                     if float(a) == 0:
-                        a1_a = 'Structure MARK Price = 0'
+                        a1_a = 'Strategy MARK Price = 0'
                         h = ''
                     else:
                         a1_a = round(abs(float(a1) / float(a)) * 100, 2)
-                        h = '% of the Structure MARK Price'
+                        h = '% of the Strategy MARK Price'
                     g = ' (' + str(a1_usd) + 'USD)'
 
                 quote_new_when_open_app_signal1_dict['lineEdit_22'] = str(
-                    'Structure MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
+                    'Strategy MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
                 quote_new_when_open_app_signal1_dict['lineEdit_23'] = str(
-                    'Structure MARKET Price: ' + str(a1) + g)
+                    'Strategy MARKET Price: ' + str(a1) + g)
                 quote_new_when_open_app_signal1_dict['lineEdit_21'] = str(
-                    'Structure MARKET Price cost ' + str(a1_a) + h)
+                    'Strategy MARKET Price cost ' + str(a1_a) + h)
 
                 sinal.quote_new_when_open_app_signal1.emit(quote_new_when_open_app_signal1_dict)
-                # ui.lineEdit_22.setText('Structure MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
-                # ui.lineEdit_23.setText('Structure MARKET Price: ' + str(a1) + g)
-                # ui.lineEdit_21.setText('Structure MARKET Price cost ' + str(a1_a) + h)
 
                 Quote().structure_option_greeks_quote()  # já chama signal (creir ter erro aqui)
                 Quote().last_trade_instrument_conditions_quote()  # já chama signal (creir ter erro aqui)
@@ -1722,17 +1723,17 @@ class Quote:
                     a1 = round(float(Quote().structure_option_market_cost()), 5)
                     a1_usd = round(float(a1) * f, 2)
                     if float(a) == 0:
-                        a1_a = 'Structure MARK Price = 0'
+                        a1_a = 'Strategy MARK Price = 0'
                         h = ''
                     else:
                         a1_a = round(abs(float(a1) / float(a)) * 100, 2)
-                        h = '% of the Structure MARK Price'
+                        h = '% of the Strategy MARK Price'
                     g = ' (' + str(a1_usd) + 'USD)'
 
                 quote_dict = dict()
-                quote_dict['text59'] = str('Structure MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
-                quote_dict['text61'] = str('Structure MARKET Price: ' + str(a1) + g)
-                quote_dict['text60'] = str('Structure MARKET Price cost: ' + str(a1_a) + h)
+                quote_dict['text59'] = str('Strategy MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
+                quote_dict['text61'] = str('Strategy MARKET Price: ' + str(a1) + g)
+                quote_dict['text60'] = str('Strategy MARKET Price cost: ' + str(a1_a) + h)
                 quote_dict_for_signal = quote_dict
                 sinal.quote_new_structure_cost_for_print_when_stopped_trading_signal1.emit(quote_dict_for_signal)
 
@@ -1797,9 +1798,9 @@ class ConditionsCheck:
             value_in_mark_price_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[5])
             list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN Mark Price % > *** \n')
-            list_monitor_log.append('*** Mark Price selected: Structure MARKET Price will be >' +
+            list_monitor_log.append('*** Mark Price selected: Strategy MARKET Price will be >' +
                                     str(value_in_mark_price_list_lines_file_structure_market_cost_trigger) +
-                                    '% of de Structure MARK Price ***')
+                                    '% of de Strategy MARK Price ***')
             # args modify
             structure_option_market_cost = float(Quote().structure_option_market_cost())
             structure_option_mark_price_cost = float(Quote().structure_option_mark_price_cost())
@@ -1808,15 +1809,15 @@ class ConditionsCheck:
                     structure_option_mark_price_cost)) * 100
                 if trigger_percentage > float(
                         value_in_mark_price_list_lines_file_structure_market_cost_trigger):
-                    list_monitor_log.append('*** Structure MARKET price = ' +
+                    list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
-                                            '% of the Structure MARK price ***')
+                                            '% of the Strategy MARK Price ***')
                     list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
                     return True
                 else:
-                    list_monitor_log.append('*** Structure MARKET price = ' +
+                    list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
-                                            '% of the Structure MARK price ***')
+                                            '% of the Strategy MARK Price ***')
                     list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
                     return False
             elif float(structure_option_mark_price_cost) == 0:
@@ -1832,9 +1833,9 @@ class ConditionsCheck:
             value_in_mark_price_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[5])
             list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN Mark Price % < *** \n')
-            list_monitor_log.append('*** Mark Price selected: Structure MARKET Price will be <' +
+            list_monitor_log.append('*** Mark Price selected: Strategy MARKET Price will be <' +
                                     str(value_in_mark_price_list_lines_file_structure_market_cost_trigger) +
-                                    '% of de Structure MARK Price ***')
+                                    '% of de Strategy MARK Price ***')
             # args modify
             structure_option_market_cost = float(Quote().structure_option_market_cost())
             structure_option_mark_price_cost = float(Quote().structure_option_mark_price_cost())
@@ -1843,15 +1844,15 @@ class ConditionsCheck:
                     structure_option_mark_price_cost)) * 100
                 if trigger_percentage < float(
                         value_in_mark_price_list_lines_file_structure_market_cost_trigger):
-                    list_monitor_log.append('*** Structure MARKET price = ' +
+                    list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
-                                            '% of the Structure MARK price ***')
+                                            '% of the Strategy MARK Price ***')
                     list_monitor_log.append('**** STRUCTURE COST TRIGGER FILLED ***')
                     return True
                 else:
-                    list_monitor_log.append('*** Structure MARKET price = ' +
+                    list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
-                                            '% of the Structure MARK price ***')
+                                            '% of the Strategy MARK Price ***')
                     list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
                     return False
             elif float(structure_option_mark_price_cost) == 0:
@@ -2399,7 +2400,7 @@ class ConditionsCheck:
                                                     str(structure_option_market_cost_usd) +
                                                     'USD < ' +
                                                     str(target_cost_structure_in) +
-                                                    'USD) Structure market cost target - Condition Filled - ***')
+                                                    'USD) Strategy MARKET cost target - Condition Filled - ***')
                             list_monitor_log.append('*** value_give_in_achieved USD is TRUE ***')
                             return True
                         else:
@@ -2425,7 +2426,7 @@ class ConditionsCheck:
                                                     str(structure_option_market_cost_usd) +
                                                     'USD > ' +
                                                     str(target_cost_structure_in) +
-                                                    'USD) Structure market cost targe - Condition Filled - ***')
+                                                    'USD) Strategy MARKET cost targe - Condition Filled - ***')
                             list_monitor_log.append('*** value_give_in_achieved USD is TRUE ***')
                             return True
                         else:
@@ -2462,7 +2463,7 @@ class ConditionsCheck:
                         list_monitor_log.append('*** Structure option market cost current (' +
                                                 str(structure_option_market_cost) + ' < ' +
                                                 str(target_cost_structure_in) +
-                                                ') Structure market cost target - '
+                                                ') Strategy MARKET cost target - '
                                                 'Structure option market cost - Condition Filled - ***')
                         list_monitor_log.append('*** value_give_in_achieved BTC is TRUE ***')
                         return True
@@ -2481,7 +2482,7 @@ class ConditionsCheck:
                         list_monitor_log.append('*** Structure option market cost current (' +
                                                 str(structure_option_market_cost) + ' > ' +
                                                 str(target_cost_structure_in) +
-                                                ') Structure market cost target - '
+                                                ') Strategy MARKET cost target - '
                                                 'Structure option market cost - Condition Filled - ***')
                         list_monitor_log.append('*** value_give_in_achieved BTC is TRUE ***')
                         return True
@@ -4628,18 +4629,18 @@ class ConditionsCheck:
                     a1 = round(float(Quote().structure_option_market_cost()), 5)
                     a1_usd = round(float(a1) * f, 2)
                     if float(a) == 0:
-                        a1_a = 'Structure MARK Price = 0'
+                        a1_a = 'Strategy MARK Price = 0'
                         h = ''
                     else:
                         a1_a = round(abs(float(a1) / float(a)) * 100, 2)
-                        h = '% of the Structure MARK Price'
+                        h = '% of the Strategy MARK Price'
                     g = ' (' + str(a1_usd) + 'USD)'
 
                 quote_dict = dict()
                 quote_dict.clear()
-                quote_dict['text59'] = str('Structure MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
-                quote_dict['text61'] = str('Structure MARKET Price: ' + str(a1) + g)
-                quote_dict['text60'] = str('Structure MARKET Price price: ' + str(a1_a) + h)
+                quote_dict['text59'] = str('Strategy MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
+                quote_dict['text61'] = str('Strategy MARKET Price: ' + str(a1) + g)
+                quote_dict['text60'] = str('Strategy MARKET Price price: ' + str(a1_a) + h)
 
                 sinal.structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading_signal_0.emit(
                     quote_dict)
@@ -5569,11 +5570,6 @@ def instruments(ui):
                                                                  'Instrument 2: ' + str(b1) + '\n' +
                                                                  'Instrument 3: ' + str(c1) + '\n' +
                                                                  'Instrument 4: ' + str(d1)))
-                # ui.textEdit_balance_2.clear()
-                # ui.textEdit_balance_2.setText('Instrument 1: ' + str(a1) + '\n' +
-                #                               'Instrument 2: ' + str(b1) + '\n' +
-                #                               'Instrument 3: ' + str(c1) + '\n' +
-                #                               'Instrument 4: ' + str(d1))
 
             except Exception as er:
                 connect.logwriter(str(er) + ' Error Code:: 5628')
@@ -5721,24 +5717,21 @@ def instruments(ui):
                 a1 = round(float(Quote().structure_option_market_cost()), 5)
                 a1_usd = round(float(a1) * f, 2)
                 if float(a) == 0:
-                    a1_a = 'Structure MARK Price = 0'
+                    a1_a = 'Strategy MARK Price = 0'
                     h = ''
                 else:
                     a1_a = round(abs(float(a1) / float(a)) * 100, 2)
-                    h = '% of the Structure MARK Price'
+                    h = '% of the Strategy MARK Price'
                 g = ' (' + str(a1_usd) + 'USD)'
 
             quote_new_when_open_app_signal1_dict['lineEdit_22'] = str(
-                'Structure MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
+                'Strategy MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
             quote_new_when_open_app_signal1_dict['lineEdit_23'] = str(
-                'Structure MARKET Price: ' + str(a1) + g)
+                'Strategy MARKET Price: ' + str(a1) + g)
             quote_new_when_open_app_signal1_dict['lineEdit_21'] = str(
-                'Structure MARKET Price cost ' + str(a1_a) + h)
+                'Strategy MARKET Price cost ' + str(a1_a) + h)
 
             sinal.quote_new_when_open_app_signal1.emit(quote_new_when_open_app_signal1_dict)
-            # ui.lineEdit_22.setText('Structure MARK Price: ' + str(a) + ' (' + str(a_usd) + 'USD)')
-            # ui.lineEdit_23.setText('Structure MARKET Price: ' + str(a1) + g)
-            # ui.lineEdit_21.setText('Structure MARKET Price cost ' + str(a1_a) + h)
 
             Quote().structure_option_greeks_quote()  # Já emite sinal para um signal
             Quote().last_trade_instrument_conditions_quote()  # Já emite sinal para um signal
@@ -5834,11 +5827,6 @@ def instruments(ui):
         textedit_balance_after_signal_dict['Instrument 4'] = str(max_position_instrument4_for_gui)
 
         sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
-        # ui.textEdit_balance_after.clear()
-        # ui.textEdit_balance_after.append('Instrument 1: ' + str(max_position_instrument1_for_gui))
-        # ui.textEdit_balance_after.append('Instrument 2: ' + str(max_position_instrument2_for_gui))
-        # ui.textEdit_balance_after.append('Instrument 3: ' + str(max_position_instrument3_for_gui))
-        # ui.textEdit_balance_after.append('Instrument 4: ' + str(max_position_instrument4_for_gui))
 
         if 'ERROR' in str(max_position_instrument1_for_gui):
             list_thread_when_open_app.append('Instrument 1 Syntax ERROR')
@@ -6390,11 +6378,6 @@ def instruments(ui):
         textedit_balance_after_signal_dict['Instrument 4'] = str(max_position_instrument4_for_gui)
 
         sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
-        # ui.textEdit_balance_after.clear()
-        # ui.textEdit_balance_after.append('Instrument 1: ' + str(max_position_instrument1_for_gui))
-        # ui.textEdit_balance_after.append('Instrument 2: ' + str(max_position_instrument2_for_gui))
-        # ui.textEdit_balance_after.append('Instrument 3: ' + str(max_position_instrument3_for_gui))
-        # ui.textEdit_balance_after.append('Instrument 4: ' + str(max_position_instrument4_for_gui))
 
         if 'ERROR' in str(max_position_instrument1_for_gui):
             msg = QtWidgets.QMessageBox()
@@ -6603,7 +6586,7 @@ def instruments(ui):
 
 # noinspection PyShadowingNames
 def config(ui):
-    def set_version_and_icon_and_texts():
+    def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 6.3"))
 
@@ -6615,9 +6598,9 @@ def config(ui):
 
         ui.label_29.setText("Buy or sell option strategy? (Select \"buy\" or \"sell\")")
 
-        ui.comboBox_value_given.setItemText(0, "Set option strategy cost instrument")
+        ui.comboBox_value_given.setItemText(0, "Set option strategy cost")
 
-        # ui.comboBox_value_given_2.setItemText(0, "Set the cost of the Options Structure as trigger (optional)")
+        ui.comboBox_value_given_2.setItemText(0, "Set Option Strategy Cost as TRIGGER (optional)")
 
         ui.pushButton_request_options_structure_cost.setText("UPDATE Option Strategy Cost")
 
@@ -6629,15 +6612,29 @@ def config(ui):
 
         ui.pushButton_submit_new_instruments.setText("SUBMIT new Trades")
 
-    def set_date():
+        # set date:
         date_now_instrument = QtCore.QDate.currentDate()
         ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet2.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet3.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet4.setDate(date_now_instrument.addDays(-1))
 
+        # Others old
+        ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
+        ui.pushButton_update_balance.setHidden(True)
+
+        ui.label_8.setText("Trade 1")
+        ui.label_9.setText("Trade 2")
+        ui.label_11.setText("Trade 3")
+        ui.label_10.setText("Trade 4")
+
+        ui.label_33.setText("Trade 4:")
+        ui.label_36.setText("Trade 3:")
+        ui.label_35.setText("Trade 2:")
+        ui.label_34.setText("Trade 1:")
+
     def set_enabled_trigger():
-        if ui.comboBox_value_given_2.currentText() == 'Set the cost of the Options Structure as trigger (optional)':
+        if ui.comboBox_value_given_2.currentText() == 'Set Option Strategy Cost as TRIGGER (optional)':
             ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
 
         else:
@@ -6648,7 +6645,7 @@ def config(ui):
                 ui.lineEdit_currency_exchange_rate_lower1.text() == '' or \
                 ui.lineEdit_buy_or_sell_structure1.currentText() == 'Set buy or sell' or \
                 ui.comboBox_value_given.currentText() == \
-                'Set option strategy cost instrument:' or \
+                'Set option strategy cost' or \
                 ui.lineEdit_spread_structure1.text() == '':
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -6730,14 +6727,10 @@ def config(ui):
             finally:
                 pass
 
-    ConfigSaved().remove_log_spread_log_if_bigger_500kb_when_open_app()
-    set_version_and_icon_and_texts()
-    set_date()
+    set_version_and_icon_and_texts_and_dates()
     ConfigSaved().target_saved_check()
-    ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
     ui.comboBox_value_given_2.currentTextChanged.connect(set_enabled_trigger)
     ui.pushButton_submit_new_targets.clicked.connect(targets_save)
-    ui.pushButton_update_balance.setHidden(True)
     ui.pushButton_update_balance_2.clicked.connect(position_now)
 
 
