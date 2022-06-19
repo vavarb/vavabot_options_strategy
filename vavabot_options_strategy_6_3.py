@@ -6619,7 +6619,7 @@ def config(ui):
 
         # ui.comboBox_value_given_2.setItemText(0, "Set the cost of the Options Structure as trigger (optional)")
 
-        ui.pushButton_request_options_structure_cost.setText("REQUEST Option Strategy Cost")
+        ui.pushButton_request_options_structure_cost.setText("UPDATE Option Strategy Cost")
 
         ui.label_57.setText("Structure Greeks:")
 
