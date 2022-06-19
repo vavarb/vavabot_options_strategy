@@ -6611,6 +6611,33 @@ def config(ui):
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
+        MainWindow.pushButton_submit_new_plot_payoff.setText(_translate("MainWindow", "Structure\nPayoff"))
+
+        MainWindow.label_29.setText(
+            _translate("MainWindow", "Buy or sell option strategy? (Select \"buy\" or \"sell\")"))
+
+        MainWindow.comboBox_value_given.setItemText(0, _translate("MainWindow",
+                                                            "Set option strategy cost instrument"))
+
+        self.comboBox_value_given_2.setItemText(0, _translate("MainWindow",
+                                                              "Set the cost of the Options Structure as trigger (optional)"))
+
+        self.pushButton_request_options_structure_cost.setText(
+            _translate("MainWindow", "REQUEST Options Structure Cost"))
+
+        self.label_57.setText(_translate("MainWindow", "Greeks Structure:"))
+
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_strutucture_quote),
+                                  _translate("MainWindow", "Structure"))
+
+        self.label_44.setText(_translate("MainWindow", "Greeks Structure:"))
+
+        self.pushButton_submit_new_instruments.setText(_translate("MainWindow", "SUBMIT new Instruments"))
+
+        self.pushButton_submit_new_plot_payoff.setText(_translate("MainWindow", "Structure\nPayoff"))
+
+
+
     def set_date():
         date_now_instrument = QtCore.QDate.currentDate()
         ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
@@ -6630,7 +6657,7 @@ def config(ui):
                 ui.lineEdit_currency_exchange_rate_lower1.text() == '' or \
                 ui.lineEdit_buy_or_sell_structure1.currentText() == 'Set buy or sell' or \
                 ui.comboBox_value_given.currentText() == \
-                'Set the cost of the Options Structure order will be  placed for the fixed value given in:' or \
+                'Set option strategy cost instrument:' or \
                 ui.lineEdit_spread_structure1.text() == '':
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
