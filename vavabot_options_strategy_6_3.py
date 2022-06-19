@@ -6603,7 +6603,7 @@ def instruments(ui):
 
 # noinspection PyShadowingNames
 def config(ui):
-    def set_version_and_icon():
+    def set_version_and_icon_and_texts():
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 6.3"))
 
@@ -6731,7 +6731,7 @@ def config(ui):
                 pass
 
     ConfigSaved().remove_log_spread_log_if_bigger_500kb_when_open_app()
-    set_version_and_icon()
+    set_version_and_icon_and_texts()
     set_date()
     ConfigSaved().target_saved_check()
     ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(False)
