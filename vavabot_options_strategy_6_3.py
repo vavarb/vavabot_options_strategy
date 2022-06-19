@@ -6616,13 +6616,10 @@ def config(ui):
         ui.label_29.setText("Buy or sell option strategy? (Select \"buy\" or \"sell\")")
 
         ui.comboBox_value_given.setItemText(0, "Set option strategy cost instrument")
-        '''
-        self.comboBox_value_given_2.setItemText(0, _translate("MainWindow",
-                                                              "Set the cost of the Options Structure as trigger (optional)"))
 
-        self.pushButton_request_options_structure_cost.setText(
-            _translate("MainWindow", "REQUEST Option Strategy Cost"))
-        '''
+        # ui.comboBox_value_given_2.setItemText(0, "Set the cost of the Options Structure as trigger (optional)")
+
+        ui.pushButton_request_options_structure_cost.setText("REQUEST Option Strategy Cost")
 
         ui.label_57.setText("Structure Greeks:")
 
