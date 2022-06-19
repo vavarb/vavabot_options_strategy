@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/vavabot_options_spread.iml" filepath="$PROJECT_DIR$/.idea/vavabot_options_spread.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/vavabot_options_strategy.iml" filepath="$PROJECT_DIR$/.idea/vavabot_options_strategy.iml" />
     </modules>
   </component>
 </project>
