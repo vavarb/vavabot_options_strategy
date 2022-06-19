@@ -266,8 +266,8 @@ class Deribit:
                     return out['error']
 
             elif str(msg['id']) == '4':
-                if 'too_many_requests' in str(out) or '10028' in str(out) or 'too_many_requests' in str(
-                        out['result']) or '10028' in str(out['result']):
+                if 'too_many_requests' in str(out) or '10028' in str(out['error']) or 'too_many_requests' in str(
+                        out['result']) or '10028' in str(out['error']):
                     self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
                         out) + str(msg['id']) + '_' + str(
                         counter_send_order)))
