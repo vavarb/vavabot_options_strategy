@@ -1,4 +1,4 @@
-Instrument 1: Unassigned
+Instrument 1: option buy 1 BTC-24JUN22-25000-C
 Instrument 2: Unassigned
 Instrument 3: Unassigned
 Instrument 4: Unassigned

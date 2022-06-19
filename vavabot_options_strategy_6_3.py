@@ -5301,7 +5301,7 @@ def instruments(ui):
             plt.plot(x_axis_list, y_axis_list)
             plt.minorticks_on()
             plt.axhline(y=0.5, color="black", linestyle=":")
-            plt.title('STRUCTURE PAYOFF')
+            plt.title('STRATEGY PAYOFF')
             plt.xlabel('Expiry Price')
             plt.ylabel('Loss/Gain')
 
@@ -6607,6 +6607,8 @@ def config(ui):
         ui.label_57.setText("Structure Greeks:")
 
         ui.tabWidget.setTabText(3, "Strategy")
+        ui.tabWidget.setTabText(1, "Trades")
+        ui.tabWidget.setTabText(2, "Setup")
 
         ui.label_44.setText("Strategy Greeks:")
 
