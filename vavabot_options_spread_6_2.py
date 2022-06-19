@@ -175,14 +175,14 @@ class Deribit:
             if sender_rate_rate >= 5:
                 delay_delay = round(delay_delay + 0.01, 2)
                 list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
-                self.logwriter('*** Setup New Delay for send order: ' + str(delay_delay) + ' seconds ***')
+                self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
             else:
                 list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
                 if delay_delay >= 0.01:
                     delay_delay = round(delay_delay - 0.01, 2)
-                    self.logwriter('*** Setup Delay for send order: ' + str(delay_delay) + ' seconds ***')
+                    self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
                 else:
-                    self.logwriter('*** Setup Delay for send order Unmodified ***')
+                    self.logwriter('*** Setup Delay to send order Unmodified ***')
             return delay_delay
 
     def _sender(self, msg):
@@ -227,6 +227,8 @@ class Deribit:
                                    ' ' + str(order_amount_instrument) +
                                    ' ID: ' + str(msg['id']) +
                                    '_' + str(counter_send_order))
+                else:
+                    pass
 
             else:
                 self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
@@ -370,30 +372,6 @@ class Deribit:
             }
         return self._sender(msg)
 
-    def disable_heartbeat(self):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 5,
-                "method": "public/disable_heartbeat",
-                "params": {
-
-                }
-            }
-        return self._sender(msg)
-
-    def get_position(self, instrument_name=None):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 6,
-                "method": "private/get_position",
-                "params": {
-                    "instrument_name": instrument_name
-                }
-            }
-        return self._sender(msg)
-
     def get_order_book(self, instrument_name=None):
         msg = \
             {
@@ -436,64 +414,6 @@ class Deribit:
             }
         return self._sender(msg)
 
-    def buy_pos_only(self, currency, amount, price):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 10,
-                "method": "private/buy",
-                "params": {
-                    "instrument_name": currency,
-                    "amount": amount,
-                    "price": price,
-                    "post_only": True
-                }
-            }
-        return self._sender(msg)
-
-    def sell_pos_only(self, currency, amount, price):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 11,
-                "method": "private/sell",
-                "params": {
-                    "instrument_name": currency,
-                    "amount": amount,
-                    "price": price,
-                    "post_only": True
-                }
-            }
-        return self._sender(msg)
-
-    def buy_market(self, currency, amount):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 12,
-                "method": "private/buy",
-                "params": {
-                    "instrument_name": currency,
-                    "amount": amount,
-                    "type": "market"
-                }
-            }
-        return self._sender(msg)
-
-    def sell_market(self, currency, amount):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 13,
-                "method": "private/sell",
-                "params": {
-                    "instrument_name": currency,
-                    "amount": amount,
-                    "type": "market"
-                }
-            }
-        return self._sender(msg)
-
     def cancel_all(self):
         msg = \
             {
@@ -506,20 +426,6 @@ class Deribit:
             }
         return self._sender(msg)
 
-    def get_instruments_future(self, currency):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 15,
-                "method": "public/get_instruments",
-                "params": {
-                    "currency": currency,
-                    "kind": "future",
-                    "expired": False
-                }
-            }
-        return self._sender(msg)
-
     def get_book_summary_by_instrument(self, instrument_name):
         msg = \
             {
@@ -528,19 +434,6 @@ class Deribit:
                 "method": "public/get_book_summary_by_instrument",
                 "params": {
                     "instrument_name": instrument_name
-                }
-            }
-        return self._sender(msg)
-
-    def close_position(self, instrument_name):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 17,
-                "method": "private/close_position",
-                "params": {
-                    "instrument_name": instrument_name,
-                    "type": "market"
                 }
             }
         return self._sender(msg)
@@ -7545,7 +7438,7 @@ def run(ui):
                                 bb = ConditionsCheck().min_max_price_option_buy_or_sell_order_by_mark_price()
                                 if bb == 'ok':
                                     list_monitor_log.append('*** Ratio between Bid/Ask offer and Mark Price '
-                                                            'OK (<30% ***')
+                                                            'OK (<30%) ***')
                                     list_monitor_log.append('*** Waiting for conditions to be filled ***')
                                     # Verifica se os alvos forma atingidos.
                                     cc = ConditionsCheck().targets_achieved()
