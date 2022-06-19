@@ -14,13 +14,13 @@ vavarb@yahoo.com
 This is a bot what send options strategies orders. It was developed in python and designed to be executed only on the Deribit Exchange.
   https://www.deribit.com/
 
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/ad2b1f500d2846dc9af0796e32d63adc2ee30824/img/img1.PNG'>
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img2.PNG'>
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img3.PNG'>
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img4.PNG'>
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img5.PNG'>
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img6.PNG'>
-<img src = 'https://github.com/vavarb/vavabot_options_spread/blob/9340cb76558bdc7f3faae18390a04143c248f71d/img/img7.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img1.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img2.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img3.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img4.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img5.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img6.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_options_strategy/blob/3b287cea93cd206a5fa0bb1b177c4c69fc2bc569/img/img7.PNG'>
 
 ## Getting Started
 - This project was devoloped:
@@ -46,9 +46,9 @@ Windows FireWall need disabled for .exe if there is a Deribit conection or SSL C
 ### Installation :arrow_forward:
   1. Clone the repo:
 ```
-git clone https://github.com/vavarb/vavabot_options_spread
+git clone https://github.com/vavarb/vavabot_options_strategy
 ```
-  2. Run vavabot_options_spread.py file
+  2. Run vavabot_options_strategy.py file
 
 #### Linux
 - If you use Linux Ubuntu 22.04 and the following error appears:
