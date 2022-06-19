@@ -557,27 +557,27 @@ class CredentialsSaved:
         return secret_key_saved_file_read
 
     @staticmethod
-    def testnet_saved_tru_or_false():
+    def testnet_saved_true_or_false():
         from lists import list_monitor_log
-        with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_tru_or_false_file:
-            testnet_saved_tru_or_false_file_read = str(testnet_saved_tru_or_false_file.read())
-        if testnet_saved_tru_or_false_file_read == 'True':
+        with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_true_or_false_file:
+            testnet_saved_true_or_false_file_read = str(testnet_saved_true_or_false_file.read())
+        if testnet_saved_true_or_false_file_read == 'True':
             list_monitor_log.append('*** TEST Account Selected ***')
             return True
-        elif testnet_saved_tru_or_false_file_read == 'False':
+        elif testnet_saved_true_or_false_file_read == 'False':
             list_monitor_log.append('*** REAL Account Selected ***')
             return False
         else:
-            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 633 *****')
-            connect.logwriter('***** ERROR in testnet_saved_tru_or_false - Error Code: 634 *****')
+            list_monitor_log.append('***** ERROR in testnet_saved_true_or_false - Error Code: 633 *****')
+            connect.logwriter('***** ERROR in testnet_saved_true_or_false - Error Code: 634 *****')
 
     @staticmethod
     def url():
         from lists import list_monitor_log
-        if CredentialsSaved.testnet_saved_tru_or_false() is True:
+        if CredentialsSaved.testnet_saved_true_or_false() is True:
             list_monitor_log.append('*** URL: ' + 'wss://test.deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://test.deribit.com/ws/api/v2'
-        elif CredentialsSaved.testnet_saved_tru_or_false() is False:
+        elif CredentialsSaved.testnet_saved_true_or_false() is False:
             list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://deribit.com/ws/api/v2'
         else:
@@ -4713,7 +4713,7 @@ def credentials(ui):
             pass  # cancel clicked
 
     def message_box_reboot1():
-        if CredentialsSaved.testnet_saved_tru_or_false() == '':
+        if CredentialsSaved.testnet_saved_true_or_false() == '':
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setText('You need\nSet Test or Real Account')
@@ -4735,7 +4735,7 @@ def credentials(ui):
 
     def message_box_reboot2():
         import sys
-        if CredentialsSaved.testnet_saved_tru_or_false() is True:
+        if CredentialsSaved.testnet_saved_true_or_false() is True:
             pass
         else:
             msg = QtWidgets.QMessageBox()
@@ -4766,10 +4766,10 @@ def credentials(ui):
                     pass  # cancel clicked
                     sys.exit()
             else:
-                if CredentialsSaved.testnet_saved_tru_or_false() is True:
+                if CredentialsSaved.testnet_saved_true_or_false() is True:
                     ui.radioButton_testnet_true.setChecked(True)
                     ui.radioButton_2_testnet_false.setChecked(False)
-                elif CredentialsSaved.testnet_saved_tru_or_false() is False:
+                elif CredentialsSaved.testnet_saved_true_or_false() is False:
                     ui.radioButton_testnet_true.setChecked(False)
                     ui.radioButton_2_testnet_false.setChecked(True)
                 else:
@@ -4779,7 +4779,7 @@ def credentials(ui):
 
     def message_box_reboot3():
         import sys
-        if CredentialsSaved.testnet_saved_tru_or_false() is False:
+        if CredentialsSaved.testnet_saved_true_or_false() is False:
             pass
         else:
             msg = QtWidgets.QMessageBox()
@@ -4810,10 +4810,10 @@ def credentials(ui):
                     pass  # cancel clicked
                     sys.exit()
             else:
-                if CredentialsSaved.testnet_saved_tru_or_false() is True:
+                if CredentialsSaved.testnet_saved_true_or_false() is True:
                     ui.radioButton_testnet_true.setChecked(True)
                     ui.radioButton_2_testnet_false.setChecked(False)
-                elif CredentialsSaved.testnet_saved_tru_or_false() is False:
+                elif CredentialsSaved.testnet_saved_true_or_false() is False:
                     ui.radioButton_testnet_true.setChecked(False)
                     ui.radioButton_2_testnet_false.setChecked(True)
                 else:
@@ -4828,7 +4828,7 @@ def credentials(ui):
         ui.lineEdit_api_secret_saved.setText(CredentialsSaved.secret_key_saved())
 
     def testnet_true_or_false_saved_print():
-        testnet_true_or_false_saved_print_file = CredentialsSaved.testnet_saved_tru_or_false()
+        testnet_true_or_false_saved_print_file = CredentialsSaved.testnet_saved_true_or_false()
         if testnet_true_or_false_saved_print_file is True:
             ui.lineEdit_testenet_true_or_false_satatus.setText('Test Account')
             ui.radioButton_testnet_true.setChecked(True)
