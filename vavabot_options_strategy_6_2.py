@@ -6611,32 +6611,26 @@ def config(ui):
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-        MainWindow.pushButton_submit_new_plot_payoff.setText(_translate("MainWindow", "Structure\nPayoff"))
+        ui.pushButton_submit_new_plot_payoff.setText("Strategy\nPayoff")
 
-        MainWindow.label_29.setText(
-            _translate("MainWindow", "Buy or sell option strategy? (Select \"buy\" or \"sell\")"))
+        ui.label_29.setText("Buy or sell option strategy? (Select \"buy\" or \"sell\")")
 
-        MainWindow.comboBox_value_given.setItemText(0, _translate("MainWindow",
-                                                            "Set option strategy cost instrument"))
-
+        ui.comboBox_value_given.setItemText(0, "Set option strategy cost instrument")
+        '''
         self.comboBox_value_given_2.setItemText(0, _translate("MainWindow",
                                                               "Set the cost of the Options Structure as trigger (optional)"))
 
         self.pushButton_request_options_structure_cost.setText(
-            _translate("MainWindow", "REQUEST Options Structure Cost"))
+            _translate("MainWindow", "REQUEST Option Strategy Cost"))
+        '''
 
-        self.label_57.setText(_translate("MainWindow", "Greeks Structure:"))
+        ui.label_57.setText("Structure Greeks:")
 
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_strutucture_quote),
-                                  _translate("MainWindow", "Structure"))
+        ui.tabWidget.setTabText(3, "Strategy")
 
-        self.label_44.setText(_translate("MainWindow", "Greeks Structure:"))
+        ui.label_44.setText("Strategy Greeks:")
 
-        self.pushButton_submit_new_instruments.setText(_translate("MainWindow", "SUBMIT new Instruments"))
-
-        self.pushButton_submit_new_plot_payoff.setText(_translate("MainWindow", "Structure\nPayoff"))
-
-
+        ui.pushButton_submit_new_instruments.setText("SUBMIT new Trades")
 
     def set_date():
         date_now_instrument = QtCore.QDate.currentDate()
