@@ -1758,7 +1758,7 @@ class Quote:
             except Exception as er:
                 connect.logwriter(str(er) + ' Error Code:: 1768')
                 list_monitor_log.append(str(er) + ' Error Code:: 1769')
-                list_monitor_log.append('********** Quote new structure cost for print in tab run'
+                list_monitor_log.append('********** Quote new Strategy cost for print in tab run'
                                         ' ERROR Error Code:: 1771 **********')
                 pass
             finally:
@@ -1783,39 +1783,39 @@ class ConditionsCheck:
             list_lines_file_structure_market_cost_trigger = lines_file_structure_market_cost_trigger[5].split()
 
         if 'Set' in str(lines_file_structure_market_cost_trigger):
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER NO SET (optional) ***')
+            list_monitor_log.append('*** STRATEGY COST TRIGGER NO SET (optional) ***')
             return True
 
         elif 'in BTC >' in str(lines_file_structure_market_cost_trigger):
             # arg fixed
             value_in_btc_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN BTC > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN BTC > ' +
                                     str(value_in_btc_list_lines_file_structure_market_cost_trigger) + ' ***')
             if Quote().structure_option_market_cost() > value_in_btc_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in BTC < ' in str(lines_file_structure_market_cost_trigger):
             value_in_btc_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN BTC < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN BTC < ' +
                                     str(value_in_btc_list_lines_file_structure_market_cost_trigger) + ' ***')
 
             if Quote().structure_option_market_cost() < value_in_btc_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Mark Price % > ' in str(lines_file_structure_market_cost_trigger):  # aqui tem ERRO
             value_in_mark_price_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[5])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN Mark Price % > *** \n')
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN Mark Price % > *** \n')
             list_monitor_log.append('*** Mark Price selected: Strategy MARKET Price will be >' +
                                     str(value_in_mark_price_list_lines_file_structure_market_cost_trigger) +
                                     '% of de Strategy MARK Price ***')
@@ -1830,17 +1830,17 @@ class ConditionsCheck:
                     list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
                                             '% of the Strategy MARK Price ***')
-                    list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                    list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                     return True
                 else:
                     list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
                                             '% of the Strategy MARK Price ***')
-                    list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                    list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                     return False
             elif float(structure_option_mark_price_cost) == 0:
                 list_monitor_log.append('*** MARK Price is 0 (ZERO) ***')
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
             else:
                 connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1855 *****'))
@@ -1850,7 +1850,7 @@ class ConditionsCheck:
         elif 'in Mark Price % < ' in str(lines_file_structure_market_cost_trigger):
             value_in_mark_price_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[5])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN Mark Price % < *** \n')
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN Mark Price % < *** \n')
             list_monitor_log.append('*** Mark Price selected: Strategy MARKET Price will be <' +
                                     str(value_in_mark_price_list_lines_file_structure_market_cost_trigger) +
                                     '% of de Strategy MARK Price ***')
@@ -1865,17 +1865,17 @@ class ConditionsCheck:
                     list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
                                             '% of the Strategy MARK Price ***')
-                    list_monitor_log.append('**** STRUCTURE COST TRIGGER FILLED ***')
+                    list_monitor_log.append('**** STRATEGY COST TRIGGER FILLED ***')
                     return True
                 else:
                     list_monitor_log.append('*** Strategy MARKET price = ' +
                                             str(trigger_percentage) +
                                             '% of the Strategy MARK Price ***')
-                    list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                    list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                     return False
             elif float(structure_option_mark_price_cost) == 0:
                 list_monitor_log.append('*** MARK Price is 0 (ZERO) ***')
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
             else:
                 connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1890 *****'))
@@ -1887,7 +1887,7 @@ class ConditionsCheck:
             instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
             value_in_usd_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN USD > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN USD > ' +
                                     str(value_in_usd_list_lines_file_structure_market_cost_trigger) + ' ***')
 
             # args modify
@@ -1897,10 +1897,10 @@ class ConditionsCheck:
             structure_option_market_cost_usd = structure_option_market_cost * currency_exchange_rate_mark_price
 
             if structure_option_market_cost_usd > value_in_usd_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in USD < ' in str(lines_file_structure_market_cost_trigger):
@@ -1908,7 +1908,7 @@ class ConditionsCheck:
             instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
             value_in_usd_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER IN USD < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER IN USD < ' +
                                     str(value_in_usd_list_lines_file_structure_market_cost_trigger) + ' ***')
 
             # args modify
@@ -1918,140 +1918,140 @@ class ConditionsCheck:
             structure_option_market_cost_usd = structure_option_market_cost * currency_exchange_rate_mark_price
 
             if structure_option_market_cost_usd < value_in_usd_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Vega > ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_vega = float(Quote().structure_mark_greek_cost()['vega'])
             value_in_vega_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN VEGA > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN VEGA > ' +
                                     str(value_in_vega_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_vega > value_in_vega_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Vega < ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_vega = float(Quote().structure_mark_greek_cost()['vega'])
             value_in_vega_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN VEGA < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN VEGA < ' +
                                     str(value_in_vega_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_vega < value_in_vega_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Delta > ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_delta = float(Quote().structure_mark_greek_cost()['delta'])
             value_in_delta_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN DELTA > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN DELTA > ' +
                                     str(value_in_delta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_delta > value_in_delta_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Delta < ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_delta = float(Quote().structure_mark_greek_cost()['delta'])
             value_in_delta_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN DELTA < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN DELTA < ' +
                                     str(value_in_delta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_delta < value_in_delta_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Theta > ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_theta = float(Quote().structure_mark_greek_cost()['theta'])
             value_in_theta_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN THETA > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN THETA > ' +
                                     str(value_in_theta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_theta > value_in_theta_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Theta < ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_theta = float(Quote().structure_mark_greek_cost()['theta'])
             value_in_theta_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN THETA < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN THETA < ' +
                                     str(value_in_theta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_theta < value_in_theta_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Gamma > ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_gamma = float(Quote().structure_mark_greek_cost()['gamma'])
             value_in_gamma_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN GAMMA > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN GAMMA > ' +
                                     str(value_in_gamma_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_gamma > value_in_gamma_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Gamma < ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_gamma = float(Quote().structure_mark_greek_cost()['gamma'])
             value_in_gamma_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN GAMMA < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN GAMMA < ' +
                                     str(value_in_gamma_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_gamma < value_in_gamma_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Rho > ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_rho = float(Quote().structure_mark_greek_cost()['rho'])
             value_in_rho_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN RHO > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN RHO > ' +
                                     str(value_in_rho_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_rho > value_in_rho_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Rho < ' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_rho = float(Quote().structure_mark_greek_cost()['rho'])
             value_in_rho_list_lines_file_structure_market_cost_trigger = float(
                 list_lines_file_structure_market_cost_trigger[3])
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN RHO < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN RHO < ' +
                                     str(value_in_rho_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_rho < value_in_rho_list_lines_file_structure_market_cost_trigger:
-                list_monitor_log.append('*** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('*** STRATEGY COST TRIGGER FILLED ***')
                 return True
             else:
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
         elif 'in Vol >' in str(lines_file_structure_market_cost_trigger):
@@ -2074,7 +2074,7 @@ class ConditionsCheck:
                 connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2085 *****'))
                 list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2086 ***')
 
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN ' + str(currency) + ' VOL > ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN ' + str(currency) + ' VOL > ' +
                                     str(value_in_btc_vol_list_lines_file_structure_market_cost_trigger) + ' ***')
 
             vol = float(connect.volatility_index_data(currency=currency))
@@ -2088,13 +2088,13 @@ class ConditionsCheck:
                 list_monitor_log.append('*** ' + str(currency) + ' Vol = ' +
                                         str(vol) +
                                         ' ***')
-                list_monitor_log.append('**** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('**** STRATEGY COST TRIGGER FILLED ***')
                 return True
             elif vol <= float(value_in_btc_vol_list_lines_file_structure_market_cost_trigger):
                 list_monitor_log.append('*** ' + str(currency) + ' Vol = ' +
                                         str(vol) +
                                         ' ***')
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
             else:
                 connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2111 *****'))
@@ -2120,7 +2120,7 @@ class ConditionsCheck:
                 currency = 'BTC'
                 list_monitor_log.append('*** ERROR in structure_market_cost_trigger Error Code:: 2132 ***')
 
-            list_monitor_log.append('*** STRUCTURE COST TRIGGER SELECTED IN ' + str(currency) + ' VOL < ' +
+            list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN ' + str(currency) + ' VOL < ' +
                                     str(value_in_btc_vol_list_lines_file_structure_market_cost_trigger) + ' ***')
 
             vol = float(connect.volatility_index_data(currency=currency))
@@ -2134,13 +2134,13 @@ class ConditionsCheck:
                 list_monitor_log.append('*** ' + str(currency) + ' Vol = ' +
                                         str(vol) +
                                         ' ***')
-                list_monitor_log.append('**** STRUCTURE COST TRIGGER FILLED ***')
+                list_monitor_log.append('**** STRATEGY COST TRIGGER FILLED ***')
                 return True
             elif vol >= float(value_in_btc_vol_list_lines_file_structure_market_cost_trigger):
                 list_monitor_log.append('*** ' + str(currency) + ' Vol = ' +
                                         str(vol) +
                                         ' ***')
-                list_monitor_log.append('*** WAITING STRUCTURE COST TRIGGER ***')
+                list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
             else:
                 connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2157 *****'))
@@ -2150,7 +2150,7 @@ class ConditionsCheck:
         else:
             connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2162 *****'))
             list_monitor_log.append(
-                '*** ERROR IN STRUCTURE COST TRIGGER - Error Code:: 2164 ***')
+                '*** ERROR IN STRATEGY COST TRIGGER - Error Code:: 2164 ***')
             return False
 
     def position_option_smaller_max_position_instrument(self, instrument_number=None):
@@ -2334,20 +2334,20 @@ class ConditionsCheck:
                             mark_percentage = abs(float(
                                 structure_option_market_cost) / float(structure_option_mark_price_cost)) * 100
                             if mark_percentage <= abs(float(target_cost_structure_in)):
-                                list_monitor_log.append('*** Structure option MARKET price: ' +
+                                list_monitor_log.append('*** Strategy option MARKET price: ' +
                                                         str(mark_percentage) +
-                                                        '% of the Structure option MARK price - CONDITION FILLED - ***')
+                                                        '% of the Strategy option MARK price - CONDITION FILLED - ***')
                                 list_monitor_log.append('*** value_give_in_achieved Mark % is TRUE ***')
                                 return True
                             else:
-                                list_monitor_log.append('Waiting structure option market cost <= ' +
+                                list_monitor_log.append('Waiting Strategy option market cost <= ' +
                                                         str(target_cost_structure_in) +
                                                         '% of the Mark cost')
 
                                 mark_percentage = abs(float(
                                     structure_option_market_cost) / float(structure_option_mark_price_cost)) * 100
 
-                                list_monitor_log.append('Structure option MARKET price is: ' +
+                                list_monitor_log.append('Strategy option MARKET price is: ' +
                                                         str(mark_percentage) +
                                                         '% of the MARK cost.')
                                 list_monitor_log.append('*** WAITING VALUE GIVEN TO BE FILLED ***')
@@ -2369,20 +2369,20 @@ class ConditionsCheck:
                             mark_percentage = abs(float(
                                 structure_option_market_cost) / float(structure_option_mark_price_cost)) * 100
                             if mark_percentage >= abs(float(target_cost_structure_in)):
-                                list_monitor_log.append('*** Structure option MARKET price: ' +
+                                list_monitor_log.append('*** Strategy option MARKET price: ' +
                                                         str(mark_percentage) +
-                                                        '% of the Structure option MARK price - CONDITION FILLED - ***')
+                                                        '% of the Strategy option MARK price - CONDITION FILLED - ***')
                                 list_monitor_log.append('*** value_give_in_achieved Mark % is TRUE ***')
                                 return True
                             else:
-                                list_monitor_log.append('Waiting structure option market cost >= ' +
+                                list_monitor_log.append('Waiting Strategy option market cost >= ' +
                                                         str(target_cost_structure_in) +
                                                         '% of the Mark cost')
 
                                 mark_percentage = abs(float(
                                     structure_option_market_cost) / float(structure_option_mark_price_cost)) * 100
 
-                                list_monitor_log.append('Structure option MARKET price is: ' +
+                                list_monitor_log.append('Strategy option MARKET price is: ' +
                                                         str(mark_percentage) +
                                                         '% of the MARK cost.')
                                 list_monitor_log.append('*** WAITING VALUE GIVEN TO BE FILLED ***')
@@ -2414,7 +2414,7 @@ class ConditionsCheck:
                             currency_exchange_rate_mark_price
 
                         if float(structure_option_market_cost_usd) <= float(target_cost_structure_in):
-                            list_monitor_log.append('*** Structure option market cost current (' +
+                            list_monitor_log.append('*** Strategy option market cost current (' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD < ' +
                                                     str(target_cost_structure_in) +
@@ -2422,10 +2422,10 @@ class ConditionsCheck:
                             list_monitor_log.append('*** value_give_in_achieved USD is TRUE ***')
                             return True
                         else:
-                            list_monitor_log.append('Waiting structure option market cost < ' +
+                            list_monitor_log.append('Waiting Strategy option market cost < ' +
                                                     str(target_cost_structure_in) +
                                                     'USD')
-                            list_monitor_log.append('Structure option market cost current: ' +
+                            list_monitor_log.append('Strategy option market cost current: ' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD')
                             list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
@@ -2440,7 +2440,7 @@ class ConditionsCheck:
                         structure_option_market_cost_usd = structure_option_market_cost * \
                             currency_exchange_rate_mark_price
                         if float(structure_option_market_cost_usd) >= float(target_cost_structure_in):
-                            list_monitor_log.append('*** Structure option market cost current (' +
+                            list_monitor_log.append('*** Strategy option market cost current (' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD > ' +
                                                     str(target_cost_structure_in) +
@@ -2448,10 +2448,10 @@ class ConditionsCheck:
                             list_monitor_log.append('*** value_give_in_achieved USD is TRUE ***')
                             return True
                         else:
-                            list_monitor_log.append('Waiting structure option market cost > ' +
+                            list_monitor_log.append('Waiting Strategy option market cost > ' +
                                                     str(target_cost_structure_in) +
                                                     'USD')
-                            list_monitor_log.append('Structure option market cost now: ' +
+                            list_monitor_log.append('Strategy option market cost now: ' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD')
                             list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
@@ -2478,17 +2478,17 @@ class ConditionsCheck:
                 if buy_or_sell_structure == 'buy':
                     structure_option_market_cost = float(Quote().structure_option_market_cost())
                     if float(structure_option_market_cost) <= float(target_cost_structure_in):
-                        list_monitor_log.append('*** Structure option market cost current (' +
+                        list_monitor_log.append('*** Strategy option market cost current (' +
                                                 str(structure_option_market_cost) + ' < ' +
                                                 str(target_cost_structure_in) +
                                                 ') Strategy MARKET cost target - '
-                                                'Structure option market cost - Condition Filled - ***')
+                                                'Strategy option market cost - Condition Filled - ***')
                         list_monitor_log.append('*** value_give_in_achieved BTC is TRUE ***')
                         return True
                     else:
-                        list_monitor_log.append('Waiting structure option market cost < ' +
+                        list_monitor_log.append('Waiting Strategy option market cost < ' +
                                                 str(target_cost_structure_in) + 'BTC')
-                        list_monitor_log.append('Structure option market cost current: ' +
+                        list_monitor_log.append('Strategy option market cost current: ' +
                                                 str(structure_option_market_cost) + 'BTC')
                         list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
                         return False
@@ -2497,17 +2497,17 @@ class ConditionsCheck:
                     structure_option_market_cost = float(Quote().structure_option_market_cost())
 
                     if float(structure_option_market_cost) >= float(target_cost_structure_in):
-                        list_monitor_log.append('*** Structure option market cost current (' +
+                        list_monitor_log.append('*** Strategy option market cost current (' +
                                                 str(structure_option_market_cost) + ' > ' +
                                                 str(target_cost_structure_in) +
                                                 ') Strategy MARKET cost target - '
-                                                'Structure option market cost - Condition Filled - ***')
+                                                'Strategy option market cost - Condition Filled - ***')
                         list_monitor_log.append('*** value_give_in_achieved BTC is TRUE ***')
                         return True
                     else:
-                        list_monitor_log.append('Waiting structure option market cost > ' +
+                        list_monitor_log.append('Waiting Strategy option market cost > ' +
                                                 str(target_cost_structure_in) + 'BTC')
-                        list_monitor_log.append('Structure option market cost now: ' +
+                        list_monitor_log.append('Strategy option market cost now: ' +
                                                 str(structure_option_market_cost) + 'BTC')
                         list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
                         return False
@@ -4506,10 +4506,6 @@ class ConditionsCheck:
                 if run_target_on_off == 'on':
                     list_monitor_log.append('*** Checking if Targets are filled ***')
 
-                    # print structure cost and BTC index in tab run (Acho que já está no start())
-                    # ConditionsCheck(). \
-                    #     structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
-
                     # Args modify
                     currency_exchange_rate_mark_price = float(connect.get_book_summary_by_instrument(
                         instrument_name=instrument_name_currency_exchange_rate)[0]['mark_price'])
@@ -4531,9 +4527,9 @@ class ConditionsCheck:
                                     run_target_on_off = 'on'
                                 else:
                                     connect.logwriter(
-                                        '********** ERROR -  Structure cost unassigned Error Code:: 4561 **********')
+                                        '********** ERROR -  Strategy cost unassigned Error Code:: 4561 **********')
                                     list_monitor_log.append(
-                                        '********** ERROR -  Structure cost unassigned Error Code:: 4563 **********')
+                                        '********** ERROR -  Strategy cost unassigned Error Code:: 4563 **********')
                                     pass
                             elif structure_market_cost_trigger_check is False:  # Opcional a configuração
                                 run_target_on_off = 'on'
@@ -4588,7 +4584,7 @@ class ConditionsCheck:
         from lists import list_monitor_log
 
         if led_color() == 'red':
-            list_monitor_log.append('********** Connection Offline - Waiting for BTC index and Structure Cost')
+            list_monitor_log.append('********** Connection Offline - Waiting for BTC index and Strategy Cost')
             time.sleep(3)
             pass
         else:
@@ -4667,7 +4663,7 @@ class ConditionsCheck:
                 from connection_spread import connect
                 connect.logwriter(str(er) + ' Error Code:: 4698')
                 list_monitor_log.append(str(er) + ' Error Code:: 4699')
-                list_monitor_log.append('********* ERROR - structure cost for tab run trade when started run trading'
+                list_monitor_log.append('********* ERROR - Strategy cost for tab run trade when started run trading'
                                         ' Error Code:: 4701 **********')
                 pass
             finally:
@@ -6622,7 +6618,7 @@ def config(ui):
 
         ui.pushButton_request_options_structure_cost.setText("UPDATE Option Strategy Cost")
 
-        ui.label_57.setText("Structure Greeks:")
+        ui.label_57.setText("Strategy Greeks:")
 
         ui.tabWidget.setTabText(3, "Strategy")
         ui.tabWidget.setTabText(1, "Trades")
@@ -7371,13 +7367,12 @@ def run(ui):
                             time.sleep(3)
                             pass
                         else:
-                            #  Print in tab Run Trading the BTC Index, Greeks and Structure dates
                             counter_run_trade_option = counter_run_trade_option - 1
                             sinal.chronometer_signal.emit(str(counter_run_trade_option))
                             if counter_run_trade_option == 0:
                                 ConditionsCheck(). \
                                     structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
-                                list_monitor_log.append('***** Update structure cost,'
+                                list_monitor_log.append('***** Update Strategy cost,'
                                                         ' greeks and BTC index for tab Run *****')
                                 sinal.chronometer_signal.emit(str(counter_run_trade_option))
                                 counter_run_trade_option = 11
