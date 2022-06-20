@@ -4856,6 +4856,35 @@ def credentials(ui):
 
 # noinspection PyShadowingNames
 def instruments(ui):
+    def instrument_expiration_construction_from_instrument_file(instrument_number=None):
+        file_open = 'instruments_spread.txt'
+        instrument_number_adjusted_to_list = int(instrument_number) - 1
+
+        # open file instruments
+
+        with open(file_open, 'r') as file_instruments:
+            lines_file_instruments = file_instruments.readlines()  # file instruments_spread.txt ==> lines
+            # Instrument
+            list_line_instrument = lines_file_instruments[instrument_number_adjusted_to_list].split(
+                '-')  # line ==> list
+            if 'Unassigned' in list_line_instrument[0]:
+                return False
+            elif 'option' in list_line_instrument[0]:
+                return list_line_instrument[1]
+            elif 'future' in list_line_instrument[0]:
+                if 'PERPETUAL' in list_line_instrument[1]:
+                    return True
+                else:
+                    return list_line_instrument[1]
+            else:
+                connect.logwriter(str(
+                    '*** Instrument ' + str(instrument_number) + ' Expiration ERROR - Error Code:: 4881 ***'))
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Instrument ' + str(instrument_number) + ' Expiration ERROR Error - Code:: 4884')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+
     def _payoff(kind, quantidade, cotacao, strike, premio):
         from connection_spread import connect
         from lists import list_monitor_log
@@ -5311,13 +5340,81 @@ def instruments(ui):
             plt.subplots_adjust(top=0.92, bottom=0.10, left=0.12, right=0.95, hspace=0.5,
                                 wspace=0.70)
 
-            plt.figure(2)
-            plt.plot(x_axis_list, y_axis_list)
-            plt.minorticks_on()
-            plt.axhline(y=0.5, color="black", linestyle=":")
-            plt.title('STRATEGY PAYOFF')
-            plt.xlabel('Expiry Price')
-            plt.ylabel('Loss/Gain')
+            instrument1_expiration = instrument_expiration_construction_from_instrument_file(1)
+            instrument2_expiration = instrument_expiration_construction_from_instrument_file(2)
+            instrument3_expiration = instrument_expiration_construction_from_instrument_file(3)
+            instrument4_expiration = instrument_expiration_construction_from_instrument_file(4)
+
+            instrument_expiration_list = []
+            instrument_expiration_list2 = []
+
+            instrument_expiration_list.clear()
+            instrument_expiration_list2.clear()
+
+            if instrument1_expiration is not False and instrument1_expiration is not True:
+                instrument_expiration_list.append(str.replace(str(instrument1_expiration), '\n', ''))
+            else:
+                instrument_expiration_list.append(instrument1_expiration)
+            if instrument2_expiration is not False and instrument2_expiration is not True:
+                instrument_expiration_list.append(str.replace(str(instrument2_expiration), '\n', ''))
+            else:
+                instrument_expiration_list.append(instrument2_expiration)
+            if instrument3_expiration is not False and instrument3_expiration is not True:
+                instrument_expiration_list.append(str.replace(str(instrument3_expiration), '\n', ''))
+            else:
+                instrument_expiration_list.append(instrument3_expiration)
+            if instrument4_expiration is not False and instrument4_expiration is not True:
+                instrument_expiration_list.append(str.replace(str(instrument4_expiration), '\n', ''))
+            else:
+                instrument_expiration_list.append(instrument4_expiration)
+
+            if len(instrument_expiration_list) >= 2:
+                for i in instrument_expiration_list:
+                    instrument_expiration_list2.append(i)
+
+                if False in instrument_expiration_list2:
+                    try:
+                        while True:
+                            instrument_expiration_list2.remove(False)
+                    except ValueError:
+                        pass
+                if True in instrument_expiration_list2:
+                    try:
+                        while True:
+                            instrument_expiration_list2.remove(True)
+                    except ValueError:
+                        pass
+
+                if len(instrument_expiration_list2) >= 1:
+                    plot_figure_2 = True
+                    for item1 in instrument_expiration_list:
+                        if item1 is True or item1 is False:
+                            pass
+                        else:
+                            if item1 != instrument_expiration_list2[0]:
+                                plot_figure_2 = False
+                            else:
+                                pass
+                else:
+                    plot_figure_2 = True
+            else:
+                plot_figure_2 = True
+
+            if plot_figure_2 is True:
+                plt.figure(2)
+                plt.plot(x_axis_list, y_axis_list)
+                plt.minorticks_on()
+                plt.axhline(y=0.5, color="black", linestyle=":")
+                plt.title('STRATEGY PAYOFF')
+                plt.xlabel('Expiry Price')
+                plt.ylabel('Loss/Gain')
+            else:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('STRATEGY PAYOFF IS ONLY AVAILABLE IF ALL EXPIRATIONS ARE THE SAME OR PERPETUAL. '
+                            'OTHERWISE, ONLY THE PAYOFF OF EACH SEPARATE INSTRUMENT WILL BE SHOWN.')
+                msg.setWindowTitle('***** INFO *****')
+                msg.exec_()
 
             plt.show()
 
