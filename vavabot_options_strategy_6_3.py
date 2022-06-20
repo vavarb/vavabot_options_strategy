@@ -937,17 +937,26 @@ class ConfigSaved:
         with open('value_given_in.txt', 'r') as f7:
             f6 = f7.read()
             if 'BTC' in f6:
-                ui.textEdit_targets_saved.setText(
-                    str.replace(ConfigSaved().targets_saved(),
-                                'Set the cost of the Options Structure as trigger (optional)',
-                                'Set Option Strategy Cost as TRIGGER (optional)'))
+                text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
+                text_to_textedit_targets_saved_if_btc_1 = str.replace(
+                                                                      text_to_textedit_targets_saved_if_btc,
+                                                                      'Set the cost of the Options Structure as '
+                                                                      'trigger (optional)',
+                                                                      'Set Option Strategy Cost as TRIGGER (optional)')
+                text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
+                                                                      'buy or sell the structure',
+                                                                      'Buy or sell strategy')
+                text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
+                                                                      'Structure cost should be',
+                                                                      'Strategy costshould be')
+                ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
             elif 'USD' in f6:
                 with open('targets_spread.txt', 'r') as f4:
                     f4l = f4.readlines()
                     f4s1 = str(f4l[0])
                     f4s2 = str(f4l[1])
-                    f4s3 = str(f4l[2])
-                    f4s4 = str(f4l[3])
+                    f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
+                    f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
                     f4s5 = str(f4l[4])
                     f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
                                        'Set Option Strategy Cost as TRIGGER (optional)')
@@ -959,8 +968,8 @@ class ConfigSaved:
                     f4l = f4.readlines()
                     f4s1 = str(f4l[0])
                     f4s2 = str(f4l[1])
-                    f4s3 = str(f4l[2])
-                    f4s4 = str(f4l[3])
+                    f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
+                    f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
                     f4s5 = str(f4l[4])
                     f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
                                        'Set Option Strategy Cost as TRIGGER (optional)')
@@ -968,10 +977,19 @@ class ConfigSaved:
                     f6 = str.replace(f4s5, 'for target setting', 'for conditions')
                     ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
             else:
-                replace_text_for_print = str.replace(
-                    ConfigSaved().targets_saved(), 'Set the cost of the Options Structure as trigger (optional)',
+                text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
+                text_to_textedit_targets_saved_if_btc_1 = str.replace(
+                    text_to_textedit_targets_saved_if_btc,
+                    'Set the cost of the Options Structure as '
+                    'trigger (optional)',
                     'Set Option Strategy Cost as TRIGGER (optional)')
-                ui.textEdit_targets_saved.setText(replace_text_for_print)
+                text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
+                                                                      'buy or sell the structure',
+                                                                      'Buy or sell strategy')
+                text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
+                                                                      'Structure cost should be',
+                                                                      'Strategy cost should be')
+                ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
 
     @staticmethod
     def position_saved():
