@@ -2232,7 +2232,7 @@ class ConditionsCheck:
                 position_option_smaller_max_position_instrument2 == 'instrument_run_trade_ok' or \
                 position_option_smaller_max_position_instrument3 == 'instrument_run_trade_ok' or \
                 position_option_smaller_max_position_instrument4 == 'instrument_run_trade_ok':
-            list_monitor_log.append('***** WAITING OPTIONS SETTINGS FOR TRADING')
+            list_monitor_log.append('***** WAITING FOR TRADING OPTIONS SETTINGS')
             return 'position_option_smaller_max_position_instruments_ok'
         else:
             connect.logwriter('********** ERROR IN OPTION POSITION SMALLER MAX POSITION INSTRUMENTS '
@@ -2323,7 +2323,7 @@ class ConditionsCheck:
                     target_cost_structure_in = float(list_line_target_cost_structure_in[6])
 
                 if 'Mark' in read_file_vgi:
-                    list_monitor_log.append('*** VALUE GIVE IN MARK PRICE % ***')
+                    list_monitor_log.append('*** STRATEGY COST SETTED:  MARK PRICE % ***')
                     buy_or_sell_structure = ConfigSaved().buy_or_sell_structure()
 
                     if buy_or_sell_structure == 'buy':
@@ -2350,7 +2350,7 @@ class ConditionsCheck:
                                 list_monitor_log.append('Strategy option MARKET price is: ' +
                                                         str(mark_percentage) +
                                                         '% of the MARK cost.')
-                                list_monitor_log.append('*** WAITING VALUE GIVEN TO BE FILLED ***')
+                                list_monitor_log.append('*** WAITING  STRATEGY COST TO BE FILLED ***')
                                 return False
                         elif float(structure_option_mark_price_cost) == 0:
                             connect.logwriter('*** MARK price is 0 (ZERO) Error Code:: 2369 ***')
@@ -2385,7 +2385,7 @@ class ConditionsCheck:
                                 list_monitor_log.append('Strategy option MARKET price is: ' +
                                                         str(mark_percentage) +
                                                         '% of the MARK cost.')
-                                list_monitor_log.append('*** WAITING VALUE GIVEN TO BE FILLED ***')
+                                list_monitor_log.append('*** WAITING  STRATEGY COST TO BE FILLED ***')
                                 return False
                         elif float(structure_option_mark_price_cost) == 0:
                             connect.logwriter('*** MARK price is 0 (ZERO) Error Code:: 2404 ***')
@@ -2401,7 +2401,7 @@ class ConditionsCheck:
                         return False
 
                 elif 'USD' in read_file_vgi:
-                    list_monitor_log.append('*** VALUE GIVE IN USD ***')
+                    list_monitor_log.append('*** STRATEGY COST SETTED:  USD ***')
                     buy_or_sell_structure = ConfigSaved().buy_or_sell_structure()
 
                     if buy_or_sell_structure == 'buy':
@@ -2428,7 +2428,7 @@ class ConditionsCheck:
                             list_monitor_log.append('Strategy option market cost current: ' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD')
-                            list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
+                            list_monitor_log.append('\n*** WAITING  STRATEGY COST TO BE FILLED ***')
                             return False
 
                     elif buy_or_sell_structure == 'sell':
@@ -2454,7 +2454,7 @@ class ConditionsCheck:
                             list_monitor_log.append('Strategy option market cost now: ' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD')
-                            list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
+                            list_monitor_log.append('\n*** WAITING  STRATEGY COST TO BE FILLED ***')
                             return False
                     else:
                         connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2474 *****')
@@ -2472,7 +2472,7 @@ class ConditionsCheck:
                     list_line_target_cost_structure_in = lines_ft[3].split()
                     target_cost_structure_in = float(list_line_target_cost_structure_in[6])
 
-                list_monitor_log.append('*** VALUE GIVE IN BTC ***')
+                list_monitor_log.append('*** STRATEGY COST SETTED:  BTC ***')
                 buy_or_sell_structure = ConfigSaved().buy_or_sell_structure()
 
                 if buy_or_sell_structure == 'buy':
@@ -2490,7 +2490,7 @@ class ConditionsCheck:
                                                 str(target_cost_structure_in) + 'BTC')
                         list_monitor_log.append('Strategy option market cost current: ' +
                                                 str(structure_option_market_cost) + 'BTC')
-                        list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
+                        list_monitor_log.append('\n*** WAITING  STRATEGY COST TO BE FILLED ***')
                         return False
 
                 elif buy_or_sell_structure == 'sell':
@@ -2509,7 +2509,7 @@ class ConditionsCheck:
                                                 str(target_cost_structure_in) + 'BTC')
                         list_monitor_log.append('Strategy option market cost now: ' +
                                                 str(structure_option_market_cost) + 'BTC')
-                        list_monitor_log.append('\n*** WAITING VALUE GIVEN TO BE FILLED ***')
+                        list_monitor_log.append('\n*** WAITING STRATEGY COST TO BE FILLED ***')
                         return False
                 else:
                     connect.logwriter('***** ERROR in value_give_in_achieved() Error Code:: 2530 *****')
