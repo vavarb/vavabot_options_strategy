@@ -6457,7 +6457,6 @@ def instruments(ui):
                         Config().position_before_trade_save()  # não tem 'ui' na função.
                         sinal.textedit_balance_settext_signal.emit(
                             str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
-                        # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
                         position_preview_to_gui()  # Já tem signal na função.
                         ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
                         ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
@@ -6699,7 +6698,7 @@ def instruments(ui):
 def config(ui):
     def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 6.3"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 6.4"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
