@@ -839,10 +839,23 @@ class Ui_MainWindow(object):
         self.label_27 = QtWidgets.QLabel(self.formLayoutWidget_2)
         self.label_27.setObjectName("label_27")
         self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_27)
+
         self.lineEdit_orders_rate = QtWidgets.QLineEdit(self.frame_4_targets)
-        self.lineEdit_orders_rate.setGeometry(QtCore.QRect(610, 136, 51, 20))
+        self.lineEdit_orders_rate.setGeometry(QtCore.QRect(610, 136, 32, 20))
         self.lineEdit_orders_rate.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.lineEdit_orders_rate.setObjectName("lineEdit_orders_rate")
+
+        self.pushButton_orders_rate = QtWidgets.QPushButton(self.frame_4_targets)
+        self.pushButton_orders_rate.setGeometry(QtCore.QRect(591, 160, 70, 35))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.pushButton_orders_rate.setFont(font)
+        self.pushButton_orders_rate.setStyleSheet("font: 8pt \"MS Shell Dlg 2\";")
+        self.pushButton_orders_rate.setObjectName("pushButton_submit_new_targets")
 
         self.pushButton_submit_new_targets = QtWidgets.QPushButton(self.frame_4_targets)
         self.pushButton_submit_new_targets.setGeometry(QtCore.QRect(560, 30, 101, 61))
@@ -957,6 +970,9 @@ class Ui_MainWindow(object):
         self.pushButton_update_balance_2.setStyleSheet("")
         self.pushButton_update_balance_2.setObjectName("pushButton_update_balance_2")
         self.formLayoutWidget_2.raise_()
+
+        self.pushButton_orders_rate.raise_()
+
         self.pushButton_submit_new_targets.raise_()
         self.textEdit_balance.raise_()
         self.label_42.raise_()
@@ -1717,7 +1733,10 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.comboBox_value_given_2, self.lineEdit_currency_exchange_rate_lower1_2)
         MainWindow.setTabOrder(self.lineEdit_currency_exchange_rate_lower1_2, self.pushButton_submit_new_targets)
         MainWindow.setTabOrder(self.pushButton_submit_new_targets, self.lineEdit_orders_rate)
-        MainWindow.setTabOrder(self.lineEdit_orders_rate, self.pushButton_update_balance)
+
+        MainWindow.setTabOrder(self.lineEdit_orders_rate, self.pushButton_orders_rate)
+        MainWindow.setTabOrder(self.pushButton_orders_rate, self.pushButton_update_balance)
+
         MainWindow.setTabOrder(self.pushButton_update_balance, self.pushButton_update_balance_2)
         MainWindow.setTabOrder(self.pushButton_update_balance_2, self.pushButton_request_options_structure_cost)
         MainWindow.setTabOrder(self.pushButton_request_options_structure_cost, self.pushButton_start_trading)
@@ -1809,6 +1828,10 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_instruments), _translate("MainWindow", "Instruments"))
         self.label_6.setText(_translate("MainWindow", "What instrument name to consider for conditions (Ex.: BTC-PERPETUAL, ETH-4SEP20):"))
         self.lineEdit_currency_exchange_rate_for_upper_and_lower1.setText(_translate("MainWindow", "BTC-PERPETUAL"))
+
+        self.lineEdit_orders_rate.setText(_translate("MainWindow", "5"))
+        self.pushButton_orders_rate.setText(_translate("MainWindow", "Orders/sec\nUpdate"))
+
         self.label_28.setText(_translate("MainWindow", "Trade if currency LOWER then (in USD):                                                                                   <"))
         self.label_29.setText(_translate("MainWindow", "Buy or sell the options structure? (Write \"buy\" or \"sell\")"))
         self.lineEdit_buy_or_sell_structure1.setItemText(0, _translate("MainWindow", "Set buy or sell"))
