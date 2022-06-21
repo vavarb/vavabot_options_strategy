@@ -839,6 +839,12 @@ class Ui_MainWindow(object):
         self.label_27 = QtWidgets.QLabel(self.formLayoutWidget_2)
         self.label_27.setObjectName("label_27")
         self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_27)
+
+        self.lineEdit_orders_rate = QtWidgets.QLineEdit(self.frame_4_targets)
+        self.lineEdit_orders_rate.setGeometry(QtCore.QRect(610, 136, 51, 20))
+        self.lineEdit_orders_rate.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.lineEdit_orders_rate.setObjectName("lineEdit_orders_rate")
+
         self.pushButton_submit_new_targets = QtWidgets.QPushButton(self.frame_4_targets)
         self.pushButton_submit_new_targets.setGeometry(QtCore.QRect(560, 30, 101, 61))
         font = QtGui.QFont()
@@ -1711,7 +1717,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.lineEdit_spread_structure1, self.comboBox_value_given_2)
         MainWindow.setTabOrder(self.comboBox_value_given_2, self.lineEdit_currency_exchange_rate_lower1_2)
         MainWindow.setTabOrder(self.lineEdit_currency_exchange_rate_lower1_2, self.pushButton_submit_new_targets)
-        MainWindow.setTabOrder(self.pushButton_submit_new_targets, self.pushButton_update_balance)
+        MainWindow.setTabOrder(self.pushButton_submit_new_targets, self.lineEdit_orders_rate)
+        MainWindow.setTabOrder(self.lineEdit_orders_rate, self.pushButton_update_balance)
         MainWindow.setTabOrder(self.pushButton_update_balance, self.pushButton_update_balance_2)
         MainWindow.setTabOrder(self.pushButton_update_balance_2, self.pushButton_request_options_structure_cost)
         MainWindow.setTabOrder(self.pushButton_request_options_structure_cost, self.pushButton_start_trading)
