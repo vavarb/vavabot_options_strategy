@@ -839,7 +839,6 @@ class Ui_MainWindow(object):
         self.label_27 = QtWidgets.QLabel(self.formLayoutWidget_2)
         self.label_27.setObjectName("label_27")
         self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_27)
-
         self.lineEdit_orders_rate = QtWidgets.QLineEdit(self.frame_4_targets)
         self.lineEdit_orders_rate.setGeometry(QtCore.QRect(610, 136, 51, 20))
         self.lineEdit_orders_rate.setStyleSheet("background-color: rgb(255, 255, 255);")
