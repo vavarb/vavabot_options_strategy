@@ -19,6 +19,7 @@ global send_future_orders_while
 global counter_send_order
 global sender_rate_dict
 global delay_delay
+global orders_per_second
 
 
 class Sinais(QtCore.QObject):
@@ -163,6 +164,7 @@ class Deribit:
 
     def _delay(self, sender_rate_rate):
         global delay_delay
+        global orders_per_second
         from lists import list_monitor_log
 
         if sender_rate_rate is False:
@@ -172,12 +174,14 @@ class Deribit:
             list_monitor_log.append('*** Check Sent Orders Rate ***')
             self.logwriter(
                 '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
-            if sender_rate_rate >= 5:
+            if sender_rate_rate >= orders_per_second:
                 delay_delay = round(delay_delay + 0.01, 2)
-                list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                list_monitor_log.append('*** Sent Orders Rate Checked: >= ' + str(orders_per_second) +
+                                        ' Orders/second ***')
                 self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
             else:
-                list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                list_monitor_log.append('*** Sent Orders Rate Checked: < ' + str(orders_per_second) +
+                                        ' Orders/second ***')
                 if delay_delay >= 0.01:
                     delay_delay = round(delay_delay - 0.01, 2)
                     self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
@@ -6839,8 +6843,31 @@ def config(ui):
             finally:
                 pass
 
+    def set_orders_rate():
+        global orders_per_second
+        from lists import list_monitor_log
+        from connection_spread import connect
+
+        orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
+
+        if orders_per_second_from_line_edit <= 0 or orders_per_second_from_line_edit == '':
+            orders_per_second = 5
+            ui.lineEdit_orders_rate.setText('5')
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+        else:
+            orders_per_second = orders_per_second_from_line_edit
+            ui.lineEdit_orders_rate.setText(str(orders_per_second))
+        list_monitor_log.append('*** Orders/Second target: <= ' + str(orders_per_second) + ' ***')
+        connect.logwriter('*** Orders/Second target: <= ' + str(orders_per_second) + ' ***')
+
     set_version_and_icon_and_texts_and_dates()
     ConfigSaved().target_saved_check()
+    set_orders_rate()
+    ui.pushButton_orders_rate.clicked.connect(set_orders_rate)
     ui.comboBox_value_given_2.currentTextChanged.connect(set_enabled_trigger)
     ui.pushButton_submit_new_targets.clicked.connect(targets_save)
     ui.pushButton_update_balance_2.clicked.connect(position_now)
