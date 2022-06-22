@@ -1101,11 +1101,11 @@ class Config:
         self.buy_or_sell_structure1 = buy_or_sell_structure1
         self.spread_structure1 = spread_structure1
 
-        if float(ui.lineEdit_currency_exchange_rate_upper1.text()) > \
-                float(ui.lineEdit_currency_exchange_rate_lower1.text()):
+        if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) > \
+                float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')):
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Trade if currency quote UPPER\nmust be LOWER then\nTrade if currency quote LOWER')
+            msg.setText('\'Trade if currency quote UPPER\'\nmust be LOWER then\n\'Trade if currency quote LOWER\'')
             msg.setWindowTitle('***** ERROR *****')
             msg.exec_()
             pass
@@ -1147,7 +1147,7 @@ class Config:
                 else:
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
-                    msg.setText('Syntax ERROR for buy or sell structure.\n Set buy or sell')
+                    msg.setText('Set Strategy BUY or SELL')
                     msg.setWindowTitle('***** ERROR *****')
                     msg.exec_()
                     pass
@@ -6853,15 +6853,71 @@ def config(ui):
             msg.exec_()
             pass
         else:
-            lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
-            Config().save_targets(
-                currency_exchange_rate_for_upper_and_lower1=lcerfual,
-                currency_exchange_rate_upper1=ui.lineEdit_currency_exchange_rate_upper1.text(),
-                currency_exchange_rate_lower1=ui.lineEdit_currency_exchange_rate_lower1.text(),
-                buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
-                spread_structure1=ui.lineEdit_spread_structure1.text()
-            )
-            pass
+            try:
+                if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) == 0 or \
+                         float(str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')) == 0 or \
+                         float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')) == 0:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                    msg.setText('Zero is NOT accepted')
+                    msg.setWindowTitle('***** ERROR *****')
+                    msg.exec_()
+                else:
+                    if str(ui.comboBox_value_given_2.currentText()) != \
+                            'Set Option Strategy Cost as TRIGGER (optional)':
+                        lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
+                        lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
+                        if str(lcerl1_2_adjusted_dot) == '':
+                            msg = QtWidgets.QMessageBox()
+                            msg.setIcon(QtWidgets.QMessageBox.Information)
+                            msg.setText('Set Option Strategy Cost as TRIGGER is Required')
+                            msg.setWindowTitle('***** ERROR *****')
+                            msg.exec_()
+                            pass
+                        else:
+                            try:
+                                if float(lcerl1_2_adjusted_dot) == 0:
+                                    msg = QtWidgets.QMessageBox()
+                                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                                    msg.setText('Set Option Strategy Cost as TRIGGER is Required\nZero is NOT accepted')
+                                    msg.setWindowTitle('***** ERROR *****')
+                                    msg.exec_()
+                                else:
+                                    lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
+                                    Config().save_targets(
+                                        currency_exchange_rate_for_upper_and_lower1=lcerfual,
+                                        currency_exchange_rate_upper1=str.replace(
+                                            ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.'),
+                                        currency_exchange_rate_lower1=str.replace(
+                                            ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.'),
+                                        buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
+                                        spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
+                                    )
+                            except ValueError:
+                                msg = QtWidgets.QMessageBox()
+                                msg.setIcon(QtWidgets.QMessageBox.Information)
+                                msg.setText('Only numbers are accepted')
+                                msg.setWindowTitle('***** ERROR *****')
+                                msg.exec_()
+                                pass
+                    else:
+                        lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
+                        Config().save_targets(
+                            currency_exchange_rate_for_upper_and_lower1=lcerfual,
+                            currency_exchange_rate_upper1=str.replace(
+                                ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.'),
+                            currency_exchange_rate_lower1=str.replace(
+                                ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.'),
+                            buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
+                            spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
+                        )
+            except ValueError:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Only numbers are accepted')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
 
     def position_now():
         from connection_spread import connect
