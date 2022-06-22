@@ -6224,299 +6224,347 @@ def instruments(ui):
             msg.exec_()
             pass
         else:
-            if (ui.lineEdit_currency_instrumet1.currentText() == 'BTC' and (
-                    ui.lineEdit_currency_instrumet2.currentText() == 'ETH' or
-                    ui.lineEdit_currency_instrumet3.currentText() == 'ETH' or
-                    ui.lineEdit_currency_instrumet4.currentText() == 'ETH'
-            )) or \
-                    (ui.lineEdit_currency_instrumet1.currentText() == 'ETH' and (
-                            ui.lineEdit_currency_instrumet2.currentText() == 'BTC' or
-                            ui.lineEdit_currency_instrumet3.currentText() == 'BTC' or
-                            ui.lineEdit_currency_instrumet4.currentText() == 'BTC'
-                    )):
-
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instruments currency must be the same')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' and (int(float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 1 Amount must be \n0.1 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and (float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) % 10 != 0):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 1 Amount must be \n10 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'o' and (int(float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 2 Amount must be \n0.1 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and (float(
-                    str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.')) % 10 != 0):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 2 Amount must be \n10 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'o' and (int(float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 3 Amount must be \n0.1 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and (float(
-                    str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.')) % 10 != 0):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 3 Amount must be \n10 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' and (int(float(
-                    str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(str.replace(str(
-                    ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 4 Amount must be \n0.1 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and (float(
-                    str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.')) % 10 != 0):
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 4 Amount must be \n10 multiple')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            else:
-                if ui.lineEdit_o_or_f_instrumet1.currentText() == '':
-                    instrument1_to_save = 'Instrument 1: Unassigned'
-                    instrument_name1_before_save = 'Unassigned'
-                elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'o':
-                    instrument1_to_save = str(
-                        'Instrument 1: option ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet1.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet1.text()) + '-' +
-                        str(ui.lineEdit_strike_instrumet1.text()) + '-' +
-                        str.upper(ui.lineEdit_c_or_p_instrumet1.currentText())
-                    )
-                    instrument_name1_before_save = str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-' + \
-                        str.upper(ui.lineEdit_maturity_instrumet1.text()) + '-' + \
-                        str(ui.lineEdit_strike_instrumet1.text()) + '-' + \
-                        str.upper(ui.lineEdit_c_or_p_instrumet1.currentText())
-                elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and \
-                        ui.checkBox_perpetual_1.isChecked() is False:
-                    instrument1_to_save = str(
-                        'Instrument 1: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet1.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet1.text())
-                    )
-                    instrument_name1_before_save = str.upper(ui.lineEdit_currency_instrumet1.currentText()) + \
-                        '-' + str.upper(ui.lineEdit_maturity_instrumet1.text())
-                elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and \
-                        ui.checkBox_perpetual_1.isChecked() is True:
-                    instrument1_to_save = str(
-                        'Instrument 1: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet1.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet1.currentText()) +
-                        '-PERPETUAL'
-                    )
-                    instrument_name1_before_save = \
-                        str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-PERPETUAL'
-                else:
-                    instrument1_to_save = 'Instrument 1: Unassigned'
-                    instrument_name1_before_save = 'Unassigned'
-
-                if ui.lineEdit_o_or_f_instrumet2.currentText() == '':
-                    instrument2_to_save = 'Instrument 2: Unassigned'
-                    instrument_name2_before_save = 'Unassigned'
-                elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'o':
-                    instrument2_to_save = str(
-                        'Instrument 2: option ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet2.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet2.text()) + '-' +
-                        str(ui.lineEdit_strike_instrumet2.text()) + '-' +
-                        str.upper(ui.lineEdit_c_or_p_instrumet2.currentText())
-                    )
-                    instrument_name2_before_save = str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-' + \
-                        str.upper(ui.lineEdit_maturity_instrumet2.text()) + '-' + \
-                        str(ui.lineEdit_strike_instrumet2.text()) + '-' + \
-                        str.upper(ui.lineEdit_c_or_p_instrumet2.currentText())
-                elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and \
-                        ui.checkBox_perpetual_2.isChecked() is False:
-                    instrument2_to_save = str(
-                        'Instrument 2: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet2.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet2.text())
-                    )
-                    instrument_name2_before_save = str.upper(ui.lineEdit_currency_instrumet2.currentText()) + \
-                        '-' + str.upper(ui.lineEdit_maturity_instrumet2.text())
-                elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and \
-                        ui.checkBox_perpetual_2.isChecked() is True:
-                    instrument2_to_save = str(
-                        'Instrument 2: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet2.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet2.currentText()) +
-                        '-PERPETUAL'
-                    )
-                    instrument_name2_before_save = \
-                        str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-PERPETUAL'
-                else:
-                    instrument2_to_save = 'Instrument 2: Unassigned'
-                    instrument_name2_before_save = 'Unassigned'
-
-                if ui.lineEdit_o_or_f_instrumet3.currentText() == '':
-                    instrument3_to_save = 'Instrument 3: Unassigned'
-                    instrument_name3_before_save = 'Unassigned'
-                elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'o':
-                    instrument3_to_save = str(
-                        'Instrument 3: option ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet3.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet3.text()) + '-' +
-                        str(ui.lineEdit_strike_instrumet3.text()) + '-' +
-                        str.upper(ui.lineEdit_c_or_p_instrumet3.currentText())
-                    )
-                    instrument_name3_before_save = str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-' + \
-                        str.upper(ui.lineEdit_maturity_instrumet3.text()) + '-' + \
-                        str(ui.lineEdit_strike_instrumet3.text()) + '-' + \
-                        str.upper(ui.lineEdit_c_or_p_instrumet3.currentText())
-                elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and \
-                        ui.checkBox_perpetual_3.isChecked() is False:
-                    instrument3_to_save = str(
-                        'Instrument 3: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet3.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet3.text())
-                    )
-                    instrument_name3_before_save = str.upper(ui.lineEdit_currency_instrumet3.currentText()) + \
-                        '-' + str.upper(ui.lineEdit_maturity_instrumet3.text())
-                elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and \
-                        ui.checkBox_perpetual_3.isChecked() is True:
-                    instrument3_to_save = str(
-                        'Instrument 3: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet3.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet3.currentText()) +
-                        '-PERPETUAL'
-                    )
-                    instrument_name3_before_save = \
-                        str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-PERPETUAL'
-                else:
-                    instrument3_to_save = 'Instrument 3: Unassigned'
-                    instrument_name3_before_save = 'Unassigned'
-                if ui.lineEdit_o_or_f_instrumet4.currentText() == '':
-                    instrument4_to_save = 'Instrument 4: Unassigned'
-                    instrument_name4_before_save = 'Unassigned'
-                elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o':
-                    instrument4_to_save = str(
-                        'Instrument 4: option ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet4.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet4.text()) + '-' +
-                        str(ui.lineEdit_strike_instrumet4.text()) + '-' +
-                        str.upper(ui.lineEdit_c_or_p_instrumet4.currentText())
-                    )
-                    instrument_name4_before_save = str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-' + \
-                        str.upper(ui.lineEdit_maturity_instrumet4.text()) + '-' + \
-                        str(ui.lineEdit_strike_instrumet4.text()) + '-' + \
-                        str.upper(ui.lineEdit_c_or_p_instrumet4.currentText())
-                elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and \
-                        ui.checkBox_perpetual_4.isChecked() is False:
-                    instrument4_to_save = str(
-                        'Instrument 4: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet4.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-' +
-                        str.upper(ui.lineEdit_maturity_instrumet4.text())
-                    )
-                    instrument_name4_before_save = str.upper(ui.lineEdit_currency_instrumet4.currentText()) + \
-                        '-' + str.upper(ui.lineEdit_maturity_instrumet4.text())
-                elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and \
-                        ui.checkBox_perpetual_4.isChecked() is True:
-                    instrument4_to_save = str(
-                        'Instrument 4: future ' +
-                        str(ui.lineEdit_buy_or_sell_instrumet4.currentText()) + ' ' +
-                        str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.') + ' ' +
-                        str.upper(ui.lineEdit_currency_instrumet4.currentText()) +
-                        '-PERPETUAL'
-                    )
-                    instrument_name4_before_save = \
-                        str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-PERPETUAL'
-                else:
-                    instrument4_to_save = 'Instrument 4: Unassigned'
-                    instrument_name4_before_save = 'Unassigned'
-
-                if led_color() == 'red':
+            try:
+                if (ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' and (
+                        str.replace(ui.lineEdit_amount_instrumet1.text(), ',', '.') == 0 or
+                        str.replace(ui.lineEdit_strike_instrumet1.text(), ',', '.') == 0
+                )) or \
+                        (ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and (
+                                str.replace(ui.lineEdit_amount_instrumet1.text(), ',', '.') == 0
+                        )) or \
+                        (ui.lineEdit_o_or_f_instrumet2.currentText() == 'o' and (
+                                str.replace(ui.lineEdit_amount_instrumet2.text(), ',', '.') == 0 or
+                                str.replace(ui.lineEdit_strike_instrumet2.text(), ',', '.') == 0
+                        )) or \
+                        (ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and (
+                                str.replace(ui.lineEdit_amount_instrumet2.text(), ',', '.') == 0
+                        )) or \
+                        (ui.lineEdit_o_or_f_instrumet3.currentText() == 'o' and (
+                                str.replace(ui.lineEdit_amount_instrumet3.text(), ',', '.') == 0 or
+                                str.replace(ui.lineEdit_strike_instrumet3.text(), ',', '.') == 0
+                        )) or \
+                        (ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and (
+                                str.replace(ui.lineEdit_amount_instrumet3.text(), ',', '.') == 0
+                        )) or \
+                        (ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' and (
+                                str.replace(ui.lineEdit_amount_instrumet4.text(), ',', '.') == 0 or
+                                str.replace(ui.lineEdit_strike_instrumet4.text(), ',', '.') == 0
+                        )) or \
+                        (ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and (
+                                str.replace(ui.lineEdit_amount_instrumet4.text(), ',', '.') == 0
+                        )):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
-                    msg.setText('Connection Offline\nInstrument don´t updated')
+                    msg.setText('Zero is NOT accept')
                     msg.setWindowTitle('***** ERROR *****')
                     msg.exec_()
+                    pass
                 else:
-                    if Instruments().instrument_check_available_before_save(
-                            instrument_name1=instrument_name1_before_save,
-                            instrument_name2=instrument_name2_before_save,
-                            instrument_name3=instrument_name3_before_save,
-                            instrument_name4=instrument_name4_before_save) \
-                            == 'instrument_check_available_before_save_OK':
-                        with open('instruments_spread.txt', 'w') as instruments_save_file:
-                            instruments_save_file.write(str(instrument1_to_save) + '\n' +
-                                                        str(instrument2_to_save) + '\n' +
-                                                        str(instrument3_to_save) + '\n' +
-                                                        str(instrument4_to_save)
-                                                        )
-                        instruments_saved_print_and_check_available()  # Não tem UI
-                        InstrumentsSaved().instruments_check()  # Não tem UI
-                        print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
-                        Config().position_before_trade_save()  # não tem 'ui' na função.
-                        sinal.textedit_balance_settext_signal.emit(
-                            str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
-                        position_preview_to_gui()  # Já tem signal na função.
-                        ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
-                        ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
+                    if (ui.lineEdit_currency_instrumet1.currentText() == 'BTC' and (
+                            ui.lineEdit_currency_instrumet2.currentText() == 'ETH' or
+                            ui.lineEdit_currency_instrumet3.currentText() == 'ETH' or
+                            ui.lineEdit_currency_instrumet4.currentText() == 'ETH'
+                    )) or \
+                            (ui.lineEdit_currency_instrumet1.currentText() == 'ETH' and (
+                                    ui.lineEdit_currency_instrumet2.currentText() == 'BTC' or
+                                    ui.lineEdit_currency_instrumet3.currentText() == 'BTC' or
+                                    ui.lineEdit_currency_instrumet4.currentText() == 'BTC'
+                            )):
 
-                    else:
                         msg = QtWidgets.QMessageBox()
                         msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument don´t updated')
+                        msg.setText('Instruments currency must be the same')
                         msg.setWindowTitle('***** ERROR *****')
                         msg.exec_()
                         pass
+                    elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' and (int(float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 1 Amount must be \n0.1 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and (float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) % 10 != 0):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 1 Amount must be \n10 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'o' and (int(float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 2 Amount must be \n0.1 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and (float(
+                            str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.')) % 10 != 0):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 2 Amount must be \n10 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'o' and (int(float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 3 Amount must be \n0.1 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and (float(
+                            str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.')) % 10 != 0):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 3 Amount must be \n10 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' and (int(float(
+                            str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
+                        str.replace(str(
+                            ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 4 Amount must be \n0.1 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and (float(
+                            str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.')) % 10 != 0):
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Instrument 4 Amount must be \n10 multiple')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                        pass
+                    else:
+                        if ui.lineEdit_o_or_f_instrumet1.currentText() == '':
+                            instrument1_to_save = 'Instrument 1: Unassigned'
+                            instrument_name1_before_save = 'Unassigned'
+                        elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'o':
+                            instrument1_to_save = str(
+                                'Instrument 1: option ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet1.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet1.text()) + '-' +
+                                str(ui.lineEdit_strike_instrumet1.text()) + '-' +
+                                str.upper(ui.lineEdit_c_or_p_instrumet1.currentText())
+                            )
+                            instrument_name1_before_save = str.upper(
+                                ui.lineEdit_currency_instrumet1.currentText()) + '-' + \
+                                str.upper(ui.lineEdit_maturity_instrumet1.text()) + '-' + \
+                                str(ui.lineEdit_strike_instrumet1.text()) + '-' + \
+                                str.upper(ui.lineEdit_c_or_p_instrumet1.currentText())
+                        elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and \
+                                ui.checkBox_perpetual_1.isChecked() is False:
+                            instrument1_to_save = str(
+                                'Instrument 1: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet1.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet1.text())
+                            )
+                            instrument_name1_before_save = str.upper(ui.lineEdit_currency_instrumet1.currentText()) + \
+                                '-' + str.upper(ui.lineEdit_maturity_instrumet1.text())
+                        elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and \
+                                ui.checkBox_perpetual_1.isChecked() is True:
+                            instrument1_to_save = str(
+                                'Instrument 1: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet1.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet1.currentText()) +
+                                '-PERPETUAL'
+                            )
+                            instrument_name1_before_save = \
+                                str.upper(ui.lineEdit_currency_instrumet1.currentText()) + '-PERPETUAL'
+                        else:
+                            instrument1_to_save = 'Instrument 1: Unassigned'
+                            instrument_name1_before_save = 'Unassigned'
+
+                        if ui.lineEdit_o_or_f_instrumet2.currentText() == '':
+                            instrument2_to_save = 'Instrument 2: Unassigned'
+                            instrument_name2_before_save = 'Unassigned'
+                        elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'o':
+                            instrument2_to_save = str(
+                                'Instrument 2: option ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet2.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet2.text()) + '-' +
+                                str(ui.lineEdit_strike_instrumet2.text()) + '-' +
+                                str.upper(ui.lineEdit_c_or_p_instrumet2.currentText())
+                            )
+                            instrument_name2_before_save = str.upper(
+                                ui.lineEdit_currency_instrumet2.currentText()) + '-' + \
+                                str.upper(ui.lineEdit_maturity_instrumet2.text()) + '-' + \
+                                str(ui.lineEdit_strike_instrumet2.text()) + '-' + \
+                                str.upper(ui.lineEdit_c_or_p_instrumet2.currentText())
+                        elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and \
+                                ui.checkBox_perpetual_2.isChecked() is False:
+                            instrument2_to_save = str(
+                                'Instrument 2: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet2.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet2.text())
+                            )
+                            instrument_name2_before_save = str.upper(ui.lineEdit_currency_instrumet2.currentText()) + \
+                                '-' + str.upper(ui.lineEdit_maturity_instrumet2.text())
+                        elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and \
+                                ui.checkBox_perpetual_2.isChecked() is True:
+                            instrument2_to_save = str(
+                                'Instrument 2: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet2.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet2.currentText()) +
+                                '-PERPETUAL'
+                            )
+                            instrument_name2_before_save = \
+                                str.upper(ui.lineEdit_currency_instrumet2.currentText()) + '-PERPETUAL'
+                        else:
+                            instrument2_to_save = 'Instrument 2: Unassigned'
+                            instrument_name2_before_save = 'Unassigned'
+
+                        if ui.lineEdit_o_or_f_instrumet3.currentText() == '':
+                            instrument3_to_save = 'Instrument 3: Unassigned'
+                            instrument_name3_before_save = 'Unassigned'
+                        elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'o':
+                            instrument3_to_save = str(
+                                'Instrument 3: option ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet3.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet3.text()) + '-' +
+                                str(ui.lineEdit_strike_instrumet3.text()) + '-' +
+                                str.upper(ui.lineEdit_c_or_p_instrumet3.currentText())
+                            )
+                            instrument_name3_before_save = str.upper(
+                                ui.lineEdit_currency_instrumet3.currentText()) + '-' + \
+                                str.upper(ui.lineEdit_maturity_instrumet3.text()) + '-' + \
+                                str(ui.lineEdit_strike_instrumet3.text()) + '-' + \
+                                str.upper(ui.lineEdit_c_or_p_instrumet3.currentText())
+                        elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and \
+                                ui.checkBox_perpetual_3.isChecked() is False:
+                            instrument3_to_save = str(
+                                'Instrument 3: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet3.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet3.text())
+                            )
+                            instrument_name3_before_save = str.upper(ui.lineEdit_currency_instrumet3.currentText()) + \
+                                '-' + str.upper(ui.lineEdit_maturity_instrumet3.text())
+                        elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and \
+                                ui.checkBox_perpetual_3.isChecked() is True:
+                            instrument3_to_save = str(
+                                'Instrument 3: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet3.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet3.currentText()) +
+                                '-PERPETUAL'
+                            )
+                            instrument_name3_before_save = \
+                                str.upper(ui.lineEdit_currency_instrumet3.currentText()) + '-PERPETUAL'
+                        else:
+                            instrument3_to_save = 'Instrument 3: Unassigned'
+                            instrument_name3_before_save = 'Unassigned'
+                        if ui.lineEdit_o_or_f_instrumet4.currentText() == '':
+                            instrument4_to_save = 'Instrument 4: Unassigned'
+                            instrument_name4_before_save = 'Unassigned'
+                        elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o':
+                            instrument4_to_save = str(
+                                'Instrument 4: option ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet4.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet4.text()) + '-' +
+                                str(ui.lineEdit_strike_instrumet4.text()) + '-' +
+                                str.upper(ui.lineEdit_c_or_p_instrumet4.currentText())
+                            )
+                            instrument_name4_before_save = str.upper(
+                                ui.lineEdit_currency_instrumet4.currentText()) + '-' + \
+                                str.upper(ui.lineEdit_maturity_instrumet4.text()) + '-' + \
+                                str(ui.lineEdit_strike_instrumet4.text()) + '-' + \
+                                str.upper(ui.lineEdit_c_or_p_instrumet4.currentText())
+                        elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and \
+                                ui.checkBox_perpetual_4.isChecked() is False:
+                            instrument4_to_save = str(
+                                'Instrument 4: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet4.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-' +
+                                str.upper(ui.lineEdit_maturity_instrumet4.text())
+                            )
+                            instrument_name4_before_save = str.upper(ui.lineEdit_currency_instrumet4.currentText()) + \
+                                '-' + str.upper(ui.lineEdit_maturity_instrumet4.text())
+                        elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and \
+                                ui.checkBox_perpetual_4.isChecked() is True:
+                            instrument4_to_save = str(
+                                'Instrument 4: future ' +
+                                str(ui.lineEdit_buy_or_sell_instrumet4.currentText()) + ' ' +
+                                str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.') + ' ' +
+                                str.upper(ui.lineEdit_currency_instrumet4.currentText()) +
+                                '-PERPETUAL'
+                            )
+                            instrument_name4_before_save = \
+                                str.upper(ui.lineEdit_currency_instrumet4.currentText()) + '-PERPETUAL'
+                        else:
+                            instrument4_to_save = 'Instrument 4: Unassigned'
+                            instrument_name4_before_save = 'Unassigned'
+
+                        if led_color() == 'red':
+                            msg = QtWidgets.QMessageBox()
+                            msg.setIcon(QtWidgets.QMessageBox.Information)
+                            msg.setText('Connection Offline\nInstrument don´t updated')
+                            msg.setWindowTitle('***** ERROR *****')
+                            msg.exec_()
+                        else:
+                            if Instruments().instrument_check_available_before_save(
+                                    instrument_name1=instrument_name1_before_save,
+                                    instrument_name2=instrument_name2_before_save,
+                                    instrument_name3=instrument_name3_before_save,
+                                    instrument_name4=instrument_name4_before_save) \
+                                    == 'instrument_check_available_before_save_OK':
+                                with open('instruments_spread.txt', 'w') as instruments_save_file:
+                                    instruments_save_file.write(str(instrument1_to_save) + '\n' +
+                                                                str(instrument2_to_save) + '\n' +
+                                                                str(instrument3_to_save) + '\n' +
+                                                                str(instrument4_to_save)
+                                                                )
+                                instruments_saved_print_and_check_available()  # Não tem UI
+                                InstrumentsSaved().instruments_check()  # Não tem UI
+                                print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
+                                Config().position_before_trade_save()  # não tem 'ui' na função.
+                                sinal.textedit_balance_settext_signal.emit(
+                                    str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
+                                position_preview_to_gui()  # Já tem signal na função.
+                                ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
+                                ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
+
+                            else:
+                                msg = QtWidgets.QMessageBox()
+                                msg.setIcon(QtWidgets.QMessageBox.Information)
+                                msg.setText('Instrument don´t updated')
+                                msg.setWindowTitle('***** ERROR *****')
+                                msg.exec_()
+                                pass
+            except ValueError:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Only Numbes are accepted')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
 
     def position_preview_to_gui():
         max_position_instrument1_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
