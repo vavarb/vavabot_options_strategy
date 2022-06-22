@@ -19,7 +19,6 @@ global send_future_orders_while
 global counter_send_order
 global sender_rate_dict
 global delay_delay
-global orders_per_second
 
 
 class Sinais(QtCore.QObject):
@@ -104,12 +103,13 @@ class Deribit:
         global sender_rate_dict
         global delay_delay
 
-        counter_send_order = 0
         delay_delay = 0
 
         sender_rate_dict = dict()
         sender_rate_dict['time_1'] = time.time()
-        sender_rate_dict['counter_send_order_for_sender_rate'] = 0
+        sender_rate_dict['counter_send_order_for_sender_rate'] = 1
+
+        counter_send_order = 0
 
         timestamp = round(datetime.now().timestamp() * 1000)
         nonce = "abcd"
@@ -149,7 +149,7 @@ class Deribit:
     def sender_rate(self, counter_send_order_for_sender_rate, time_now):
         global sender_rate_dict
 
-        if float(time_now - sender_rate_dict['time_1']) >= 60:
+        if float(time_now - sender_rate_dict['time_1']) >= 600:
             delta_counter_send_order = float(
                 counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
             delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
@@ -162,32 +162,42 @@ class Deribit:
         else:
             return False
 
-    def _delay(self, sender_rate_rate):
+    def _delay(self, sender_rate_rate_):
         global delay_delay
-        global orders_per_second
         from lists import list_monitor_log
 
-        if sender_rate_rate is False:
-            return delay_delay
-
-        else:
+        if sender_rate_rate_ is not False:
+            orders_per_second_ = float(ConfigSaved().orders_rate_saved())
+            
             list_monitor_log.append('*** Check Sent Orders Rate ***')
             self.logwriter(
-                '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
-            if sender_rate_rate >= orders_per_second:
-                delay_delay = round(delay_delay + 0.01, 2)
-                list_monitor_log.append('*** Sent Orders Rate Checked: >= ' + str(orders_per_second) +
+                '*** Sent Orders Rate: ' + str(sender_rate_rate_) + ' Orders/Second ***')
+            if float(sender_rate_rate_) > float(orders_per_second_):
+                delay_delay = round(delay_delay + ((1 / orders_per_second_) - (1 / sender_rate_rate_)), 2)
+                list_monitor_log.append('*** Sent Orders Rate Checked: > ' + str(orders_per_second_) +
                                         ' Orders/second ***')
                 self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
             else:
-                list_monitor_log.append('*** Sent Orders Rate Checked: < ' + str(orders_per_second) +
+                list_monitor_log.append('*** Sent Orders Rate Checked: < ' + str(orders_per_second_) +
                                         ' Orders/second ***')
-                if delay_delay >= 0.01:
-                    delay_delay = round(delay_delay - 0.01, 2)
-                    self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
-                else:
+                if delay_delay == 0:
                     self.logwriter('*** Setup Delay to send order Unmodified ***')
-            return delay_delay
+                else:
+                    if round(delay_delay - ((1 / sender_rate_rate_) - (1 / orders_per_second_)), 2) > 0:
+                        delay_delay = round(delay_delay - ((1 / sender_rate_rate_) - (1 / orders_per_second_)), 2)
+                        self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
+                    else:
+                        delay_delay = 0
+                        self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
+            if delay_delay < 0:
+                return 0
+            else:
+                return float(delay_delay)
+        else:
+            if delay_delay < 0:
+                return 0
+            else:
+                return float(delay_delay)
 
     def _sender(self, msg):
         global counter_send_order
@@ -220,9 +230,8 @@ class Deribit:
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
 
-            sender_rate_rate = self.sender_rate(
-                counter_send_order_for_sender_rate=counter_send_order, time_now=time.time())
-            delay = self._delay(sender_rate_rate=sender_rate_rate)
+            delay = self._delay(sender_rate_rate_=self.sender_rate(
+                counter_send_order_for_sender_rate=counter_send_order, time_now=time.time()))
 
             if delay > 0:
                 time.sleep(delay)
@@ -549,6 +558,7 @@ class CredentialsSaved:
         with open('api-key_spread.txt', 'r') as api_secret_saved_file:
             api_secret_saved_file_read = str(api_secret_saved_file.read())
         list_monitor_log.append('*** API key: ' + str(api_secret_saved_file_read) + ' ***')
+
         return api_secret_saved_file_read
 
     @staticmethod
@@ -894,6 +904,41 @@ class Instruments:
 class ConfigSaved:
     def __init__(self):
         self.self = self
+
+    @staticmethod
+    def orders_rate_saved():
+        from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write('5')
+        else:
+            pass
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        list_monitor_log.append('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+
+        return round(float(send_orders_rate_file_read), 2)
+
+    @staticmethod
+    def orders_rate_saved2():
+        from connection_spread import connect
+        import os
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write('5')
+        else:
+            pass
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
 
     @staticmethod
     def remove_log_spread_log_if_bigger_500kb_when_open_app():
@@ -6700,6 +6745,44 @@ def instruments(ui):
 
 # noinspection PyShadowingNames
 def config(ui):
+    def save_orders_rate():
+        from connection_spread import connect
+        import os
+
+        try:
+            orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
+        except ValueError:
+            orders_per_second_from_line_edit = float(5)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+
+        if orders_per_second_from_line_edit > 0:
+            orders_per_second = round(float(orders_per_second_from_line_edit), 2)
+
+        else:
+            orders_per_second = round(float(5), 2)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write(str(orders_per_second))
+        else:
+            with open('send_orders_rate.txt', 'w') as send_orders_rate_file:
+                send_orders_rate_file.write(str(orders_per_second))
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+
     def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 6.4"))
@@ -6841,36 +6924,15 @@ def config(ui):
                 msg.exec_()
                 pass
             finally:
-                pass
-
-    def set_orders_rate():
-        global orders_per_second
-        from lists import list_monitor_log
-        from connection_spread import connect
-
-        orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
-
-        if orders_per_second_from_line_edit <= 0 or orders_per_second_from_line_edit == '':
-            orders_per_second = 5
-            ui.lineEdit_orders_rate.setText('5')
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Order/Second must be > 0')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-        else:
-            orders_per_second = orders_per_second_from_line_edit
-            ui.lineEdit_orders_rate.setText(str(orders_per_second))
-        list_monitor_log.append('*** Orders/Second target: <= ' + str(orders_per_second) + ' ***')
-        connect.logwriter('*** Orders/Second target: <= ' + str(orders_per_second) + ' ***')
+                pass    
 
     set_version_and_icon_and_texts_and_dates()
     ConfigSaved().target_saved_check()
-    set_orders_rate()
-    ui.pushButton_orders_rate.clicked.connect(set_orders_rate)
     ui.comboBox_value_given_2.currentTextChanged.connect(set_enabled_trigger)
     ui.pushButton_submit_new_targets.clicked.connect(targets_save)
     ui.pushButton_update_balance_2.clicked.connect(position_now)
+    ConfigSaved().orders_rate_saved2()
+    ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
 
 
 # noinspection PyShadowingNames
@@ -7200,6 +7262,9 @@ def run(ui):
         ui.pushButton_submit_new_instruments.setEnabled(True)
         ui.pushButton_submit_new_plot_payoff.setEnabled(True)
         ui.pushButton_submit_new_targets.setEnabled(True)
+
+        ui.pushButton_orders_rate.setEnabled(True)
+        ui.pushButton_orders_rate.setEnabled(True)
 
     def btc_index_print():
         import time
@@ -7621,6 +7686,9 @@ def run(ui):
         ui.pushButton_submit_new_instruments.setEnabled(False)
         ui.pushButton_submit_new_plot_payoff.setEnabled(False)
         ui.pushButton_submit_new_targets.setEnabled(False)
+
+        ui.pushButton_orders_rate.setEnabled(False)
+        ui.pushButton_orders_rate.setEnabled(False)
 
     def start_thread_trade():
         import threading

@@ -1829,7 +1829,7 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "What instrument name to consider for conditions (Ex.: BTC-PERPETUAL, ETH-4SEP20):"))
         self.lineEdit_currency_exchange_rate_for_upper_and_lower1.setText(_translate("MainWindow", "BTC-PERPETUAL"))
 
-        self.lineEdit_orders_rate.setText(_translate("MainWindow", "5"))
+        # self.lineEdit_orders_rate.setText(_translate("MainWindow", "5"))
         self.pushButton_orders_rate.setText(_translate("MainWindow", "Orders/sec\nUpdate"))
 
         self.label_28.setText(_translate("MainWindow", "Trade if currency LOWER then (in USD):                                                                                   <"))
