@@ -149,7 +149,7 @@ class Deribit:
     def sender_rate(self, counter_send_order_for_sender_rate, time_now):
         global sender_rate_dict
 
-        if float(time_now - sender_rate_dict['time_1']) >= 600:
+        if float(time_now - sender_rate_dict['time_1']) >= 120:
             delta_counter_send_order = float(
                 counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
             delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
