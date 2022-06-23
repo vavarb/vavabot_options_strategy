@@ -7367,7 +7367,7 @@ def run(ui):
         ui.pushButton_submit_new_plot_payoff.setEnabled(True)
         ui.pushButton_submit_new_targets.setEnabled(True)
 
-        ui.pushButton_orders_rate.setEnabled(True)
+        ui.lineEdit_orders_rate.setEnabled(True)
         ui.pushButton_orders_rate.setEnabled(True)
 
     def btc_index_print():
@@ -7791,7 +7791,7 @@ def run(ui):
         ui.pushButton_submit_new_plot_payoff.setEnabled(False)
         ui.pushButton_submit_new_targets.setEnabled(False)
 
-        ui.pushButton_orders_rate.setEnabled(False)
+        ui.lineEdit_orders_rate.setEnabled(False)
         ui.pushButton_orders_rate.setEnabled(False)
 
     def start_thread_trade():
