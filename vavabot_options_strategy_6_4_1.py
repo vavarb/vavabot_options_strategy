@@ -120,6 +120,9 @@ class Deribit:
             digestmod=hashlib.sha256
         ).hexdigest().lower()
 
+        print(timestamp)
+        print(signature)
+        print(wss_url)
         try:
             self._WSS = create_connection(wss_url)
             msg = {
@@ -599,8 +602,8 @@ class CredentialsSaved:
             list_monitor_log.append('*** URL: ' + 'wss://test.deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://test.deribit.com/ws/api/v2'
         elif CredentialsSaved.testnet_saved_true_or_false() is False:
-            list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' Selected ***')
-            return 'wss://deribit.com/ws/api/v2'
+            list_monitor_log.append('*** URL: ' + 'wss://www.deribit.com/ws/api/v2' + ' Selected ***')
+            return 'wss://www.deribit.com/ws/api/v2'
         else:
             list_monitor_log.append('***** URL ERROR in testnet True or False - Error Code: 630 *****')
 
