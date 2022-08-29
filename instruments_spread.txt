@@ -1,4 +1,4 @@
-Instrument 1: option buy 1 BTC-24JUN22-20000-C
-Instrument 2: option sell 2 BTC-24JUN22-25000-C
-Instrument 3: option buy 1 BTC-24JUN22-30000-C
+Instrument 1: Unassigned
+Instrument 2: Unassigned
+Instrument 3: Unassigned
 Instrument 4: Unassigned
