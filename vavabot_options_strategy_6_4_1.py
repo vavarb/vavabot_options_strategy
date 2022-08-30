@@ -3056,6 +3056,7 @@ class ConditionsCheck:
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent3))
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent4))
 
+            time.sleep(10)
             connect.cancel_all()
 
         except Exception as er:
@@ -4123,6 +4124,7 @@ class ConditionsCheck:
                 list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent3))
                 list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent4))
 
+                time.sleep(10)
                 connect.cancel_all()
             # *************************************************************************************************************
             # se houver negociação de ajuste, chamar uma funçao para recalcular as variáveis com dados de mercado
@@ -4138,6 +4140,7 @@ class ConditionsCheck:
                 list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent3))
                 list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent4))
 
+                time.sleep(10)
                 connect.cancel_all()
                 ConditionsCheck().send_options_orders_like_first_time()
                 pass  # chamar uma funçao para recalcular as variáveis com dados do mercado
