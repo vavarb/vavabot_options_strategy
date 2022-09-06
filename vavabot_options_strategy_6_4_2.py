@@ -1104,6 +1104,9 @@ class Config:
         self.buy_or_sell_structure1 = buy_or_sell_structure1
         self.spread_structure1 = spread_structure1
 
+        from connection_spread import connect
+        from lists import list_monitor_log
+
         if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) > \
                 float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')):
             msg = QtWidgets.QMessageBox()
@@ -1117,6 +1120,20 @@ class Config:
                 file_targets = ft1
                 if buy_or_sell_structure1 == 'buy':
                     spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
+                    mark_price_percentage_yes_or_no = ui.comboBox_value_given.currentText()
+                    mppyon = mark_price_percentage_yes_or_no
+
+                    if spread_structure1_adjusted != ' ':
+                        if 'Mark Price %' in mppyon:
+                            pass
+                        elif 'USD' in mppyon or 'BTC' in mppyon:
+                            spread_structure1_adjusted = str(abs(float(spread_structure1_adjusted)) * -1)
+                        else:
+                            connect.logwriter("Code Error 1133")
+                            list_monitor_log.append("Code Error 1134")
+                    else:
+                        pass
+
                     spread_structure1_higher_or_less1 = '<'
                     file_targets.write(
                         'Trade if exchange rate upper then: ' + '> ' + currency_exchange_rate_upper1 + ' USD' +
@@ -1409,8 +1426,8 @@ class Quote:
         instrument2_mark_price_cost = float(Quote().instrument_mark_price_cost(instrument_number=2))
         instrument3_mark_price_cost = float(Quote().instrument_mark_price_cost(instrument_number=3))
         instrument4_mark_price_cost = float(Quote().instrument_mark_price_cost(instrument_number=4))
-        return abs(instrument1_mark_price_cost + instrument2_mark_price_cost + instrument3_mark_price_cost +
-                   instrument4_mark_price_cost)
+        return (instrument1_mark_price_cost + instrument2_mark_price_cost + instrument3_mark_price_cost +
+                instrument4_mark_price_cost)
 
     @staticmethod
     def structure_option_market_cost():
@@ -1418,7 +1435,7 @@ class Quote:
         instrument2_market_cost = Quote().instrument_market_cost(instrument_number=2)
         instrument3_market_cost = Quote().instrument_market_cost(instrument_number=3)
         instrument4_market_cost = Quote().instrument_market_cost(instrument_number=4)
-        return abs(
+        return (
             instrument1_market_cost + instrument2_market_cost + instrument3_market_cost + instrument4_market_cost)
 
     def instrument_mark_greek_cost(self, instrument_number):
@@ -2464,8 +2481,7 @@ class ConditionsCheck:
                             instrument_name=instrument_name_currency_exchange_rate)[0]['mark_price'])
                         structure_option_market_cost_usd = structure_option_market_cost * \
                             currency_exchange_rate_mark_price
-
-                        if float(structure_option_market_cost_usd) <= float(target_cost_structure_in):
+                        if float(structure_option_market_cost_usd) >= float(target_cost_structure_in):
                             list_monitor_log.append('*** Strategy option market cost current (' +
                                                     str(structure_option_market_cost_usd) +
                                                     'USD < ' +
@@ -2529,7 +2545,7 @@ class ConditionsCheck:
 
                 if buy_or_sell_structure == 'buy':
                     structure_option_market_cost = float(Quote().structure_option_market_cost())
-                    if float(structure_option_market_cost) <= float(target_cost_structure_in):
+                    if float(structure_option_market_cost) >= float(target_cost_structure_in):
                         list_monitor_log.append('*** Strategy option market cost current (' +
                                                 str(structure_option_market_cost) + ' < ' +
                                                 str(target_cost_structure_in) +
@@ -2547,7 +2563,6 @@ class ConditionsCheck:
 
                 elif buy_or_sell_structure == 'sell':
                     structure_option_market_cost = float(Quote().structure_option_market_cost())
-
                     if float(structure_option_market_cost) >= float(target_cost_structure_in):
                         list_monitor_log.append('*** Strategy option market cost current (' +
                                                 str(structure_option_market_cost) + ' > ' +
