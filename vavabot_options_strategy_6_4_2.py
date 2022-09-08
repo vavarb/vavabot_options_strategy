@@ -4764,6 +4764,13 @@ def credentials(ui):
             msg.setWindowTitle('INFO')
             msg.exec_()
             pass
+        elif ui.lineEdit_password == '':
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('You need to create a password\nto recover API credentials')
+            msg.setWindowTitle('INFO')
+            msg.exec_()
+            pass
         else:
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
