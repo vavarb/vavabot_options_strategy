@@ -120,9 +120,6 @@ class Deribit:
             digestmod=hashlib.sha256
         ).hexdigest().lower()
 
-        print(timestamp)
-        print(signature)
-        print(wss_url)
         try:
             self._WSS = create_connection(wss_url)
             msg = {
