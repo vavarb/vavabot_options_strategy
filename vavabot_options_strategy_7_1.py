@@ -172,7 +172,7 @@ class Deribit:
 
         if sender_rate_rate_ is not False:
             orders_per_second_ = float(ConfigSaved().orders_rate_saved())
-            
+
             list_monitor_log.append('*** Check Sent Orders Rate ***')
             self.logwriter(
                 '*** Sent Orders Rate: ' + str(sender_rate_rate_) + ' Orders/Second ***')
@@ -553,6 +553,7 @@ class CredentialsSaved:
         import os
         import base64
         from cryptography.fernet import Fernet
+        from cryptography.fernet import InvalidToken, InvalidSignature
         from cryptography.hazmat.primitives import hashes
         from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
         from lists import password_dict
@@ -584,8 +585,13 @@ class CredentialsSaved:
 
                 with open('api-key_spread.txt', 'rb') as enc_file:
                     encrypted = enc_file.read()
-                decrypted = f.decrypt(encrypted).decode('utf-8')
-                api_secret_saved_file_read = str(decrypted)
+                try:
+                    decrypted = f.decrypt(encrypted).decode('utf-8')
+                    api_secret_saved_file_read = str(decrypted)
+                except InvalidToken or InvalidSignature:
+                    api_secret_saved_file_read = str('<Type your Deribit Key>')
+                finally:
+                    pass
             else:
                 api_secret_saved_file_read = str('<Type your Deribit Key>')
 
@@ -596,6 +602,7 @@ class CredentialsSaved:
         import os
         import base64
         from cryptography.fernet import Fernet
+        from cryptography.fernet import InvalidToken, InvalidSignature
         from cryptography.hazmat.primitives import hashes
         from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
         from lists import password_dict
@@ -627,8 +634,13 @@ class CredentialsSaved:
 
                 with open('secret-key_spread.txt', 'rb') as enc_file:
                     encrypted = enc_file.read()
-                decrypted = f.decrypt(encrypted).decode('utf-8')
-                secret_key_saved_file_read = str(decrypted)
+                try:
+                    decrypted = f.decrypt(encrypted).decode('utf-8')
+                    secret_key_saved_file_read = str(decrypted)
+                except InvalidToken or InvalidSignature:
+                    secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
+                finally:
+                    pass
             else:
                 secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
 
@@ -982,20 +994,31 @@ class ConfigSaved:
 
     @staticmethod
     def orders_rate_saved2():
-        from connection_spread import connect
         import os
+        try:
+            from connection_spread import connect
+            if os.path.isfile('send_orders_rate.txt') is False:
+                with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                    send_orders_rate_file.write('5')
+            else:
+                pass
 
-        if os.path.isfile('send_orders_rate.txt') is False:
-            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
-                send_orders_rate_file.write('5')
-        else:
-            pass
+            with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+                send_orders_rate_file_read = str(send_orders_rate_file.read())
 
-        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
-            send_orders_rate_file_read = str(send_orders_rate_file.read())
+            ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+            connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+        except ImportError:
+            if os.path.isfile('send_orders_rate.txt') is False:
+                with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                    send_orders_rate_file.write('5')
+            else:
+                pass
 
-        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
-        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+            with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+                send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+            ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
 
     @staticmethod
     def remove_log_spread_log_if_bigger_500kb_when_open_app():
@@ -5027,6 +5050,15 @@ def credentials(ui):
             testnet_false_save_file.write('False')
         testnet_true_or_false_saved_print()
 
+    def need_password_counter_smaller_three():
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText('You need to create a password\nto recover API credentials')
+        msg.setWindowTitle('WARNING')
+        msg.exec_()
+        pass
+        time.sleep(0.5)
+
     def invalid_password():
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -5034,6 +5066,7 @@ def credentials(ui):
         msg.setWindowTitle('INFO')
         msg.exec_()
         pass
+        time.sleep(0.5)
 
     def invalid_password_counter_bigger_three():
         import os
@@ -5042,11 +5075,19 @@ def credentials(ui):
         msg.setText('Credentials will be reset\nAnd APP will be close')
         msg.setWindowTitle('INFO')
         msg.exec_()
-
+        pass
         os.unlink('api-key_spread.txt')
         os.unlink('secret-key_spread.txt')
         time.sleep(1)
         sys.exit()
+
+    def message_connection_only_public():
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText('Only public methods\nwill be executed')
+        msg.setWindowTitle('INFO')
+        msg.exec_()
+        pass
 
     def message_box_password_input():
         from connection_spread import connection1, connection_thread
@@ -5081,21 +5122,23 @@ def credentials(ui):
                 text, ok = QInputDialog().getText(le, "WARNING",
                                                   "Passwor to recovey API Credentials:", le.Normal,
                                                   QDir().home().dirName())
+                if ok is False:
+                    password_input = str(password_dict['pwd'])
+                    message_connection_only_public()
+                    connection1()
+                    connection_thread()
+                    api_key_saved_print()
+                    secret_key_saved_print()
+                    testnet_true_or_false_saved_print()
                 if ok and text:
                     le.setText(str(text))
                     if str(text) == 'User':
                         if need_password_counter <= 3:
-                            msg = QtWidgets.QMessageBox()
-                            msg.setIcon(QtWidgets.QMessageBox.Information)
-                            msg.setText('You need to create a password\nto recover API credentials')
-                            msg.setWindowTitle('WARNING')
-                            msg.exec_()
-
                             need_password_counter = need_password_counter + 1
+                            need_password_counter_smaller_three()
                         else:
                             invalid_password_counter_bigger_three()
                     else:
-                        from lists import list_thread_when_open_app
                         import base64
                         from cryptography.fernet import Fernet
                         from cryptography.hazmat.primitives import hashes
@@ -5103,7 +5146,6 @@ def credentials(ui):
                         from cryptography.fernet import InvalidToken, InvalidSignature
 
                         password_dict['pwd'] = str(text)
-                        password_input = str(password_dict['pwd'])
 
                         salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
                         kdf = PBKDF2HMAC(
@@ -5113,7 +5155,7 @@ def credentials(ui):
                             iterations=390000,
                         )
 
-                        key = base64.urlsafe_b64encode(kdf.derive(str(password_input).encode('utf-8')))
+                        key = base64.urlsafe_b64encode(kdf.derive(str(password_dict['pwd']).encode('utf-8')))
                         f = Fernet(key)
 
                         with open('api-key_spread.txt', 'rb') as enc_file:
@@ -5125,26 +5167,22 @@ def credentials(ui):
                             try:
                                 f.decrypt(encrypted1).decode('utf-8')
                                 f.decrypt(encrypted2).decode('utf-8')
-                            except InvalidToken as er1:
+                            except InvalidToken or InvalidSignature:
                                 invalid_password_counter = invalid_password_counter + 1
-                                list_thread_when_open_app.append(str(er1))
-                                invalid_password()
-                            except InvalidSignature as er2:
-                                invalid_password_counter = invalid_password_counter + 1
-                                list_thread_when_open_app.append(str(er2))
                                 invalid_password()
                             else:
+                                password_input = str(password_dict['pwd'])
                                 connection1()
                                 connection_thread()
+                                api_key_saved_print()
+                                secret_key_saved_print()
+                                testnet_true_or_false_saved_print()
                             finally:
                                 pass
                         else:
                             invalid_password_counter_bigger_three()
 
     message_box_password_input()
-    api_key_saved_print()
-    secret_key_saved_print()
-    testnet_true_or_false_saved_print()
     ui.pushButton_submit_new_credintals.clicked.connect(message_box_reboot1)
     ui.radioButton_testnet_true.clicked.connect(message_box_reboot2)
     ui.radioButton_2_testnet_false.clicked.connect(message_box_reboot3)
@@ -7275,7 +7313,7 @@ def config(ui):
                 msg.exec_()
                 pass
             finally:
-                pass    
+                pass
 
     set_version_and_icon_and_texts_and_dates()
     ConfigSaved().target_saved_check()
@@ -7445,20 +7483,32 @@ def run(ui):
     def lists_monitor():
         import time
         from lists import list_monitor_log
-        from connection_spread import connect
+        try:
+            from connection_spread import connect
+            counter = 0
+            led1 = led_color()
 
-        counter = 0
-        led1 = led_color()
+            if led1 == 'green':
+                sinal.led_color_green_signal.emit()
+            elif led1 == 'red':
+                sinal.led_color_red_signal.emit()
+            else:
+                connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6969 ***')
+                er1_str = str('*** ERROR - lists_monitor() Error Code:: 6970 ***')
+                sinal.error_in_list_monitor_signal.emit(er1_str)
+                pass
+        except ImportError:
+            counter = 0
+            led1 = led_color()
 
-        if led1 == 'green':
-            sinal.led_color_green_signal.emit()
-        elif led1 == 'red':
-            sinal.led_color_red_signal.emit()
-        else:
-            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6969 ***')
-            er1_str = str('*** ERROR - lists_monitor() Error Code:: 6970 ***')
-            sinal.error_in_list_monitor_signal.emit(er1_str)
-            pass
+            if led1 == 'green':
+                sinal.led_color_green_signal.emit()
+            elif led1 == 'red':
+                sinal.led_color_red_signal.emit()
+            else:
+                er1_str = str('*** ERROR - lists_monitor() Error Code:: 6970 ***')
+                sinal.error_in_list_monitor_signal.emit(er1_str)
+                pass
 
         while True:
             try:
@@ -7479,10 +7529,17 @@ def run(ui):
                         led1 = 'red'
                         sinal.led_color_red_signal.emit()
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6993 ***')
-                        er1_str = str('*** ERROR - lists_monitor() Error Code:: 6994 ***')
-                        sinal.error_in_list_monitor_signal.emit(er1_str)
-                        pass
+                        try:
+                            from connection_spread import connect
+                        except ImportError:
+                            er1_str = str('*** ERROR - lists_monitor() Error Code:: 6994 ***')
+                            sinal.error_in_list_monitor_signal.emit(er1_str)
+                            pass
+                        else:
+                            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 6993 ***')
+                            er1_str = str('*** ERROR - lists_monitor() Error Code:: 6994 ***')
+                            sinal.error_in_list_monitor_signal.emit(er1_str)
+                            pass
                 else:
                     pass
 
