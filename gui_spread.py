@@ -107,13 +107,13 @@ class Ui_MainWindow(object):
         self.pushButton_submit_new_credintals.setGeometry(QtCore.QRect(430, 150, 231, 61))
         # password line edit and label created
         self.label_password = QtWidgets.QLabel(self.frame_2_credentials)
-        self.label_password.setGeometry(QtCore.QRect(60, 145, 250, 31))
+        self.label_password.setGeometry(QtCore.QRect(30, 145, 315, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_password.setFont(font)
         self.label_password.setObjectName("label_password")
         self.lineEdit_password = QtWidgets.QLineEdit(self.frame_2_credentials)
-        self.lineEdit_password.setGeometry(QtCore.QRect(10, 173, 345, 31))
+        self.lineEdit_password.setGeometry(QtCore.QRect(10, 173, 350, 31))
         self.lineEdit_password.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.lineEdit_password.setClearButtonEnabled(False)
         self.lineEdit_password.setObjectName("lineEdit_password")
@@ -1768,7 +1768,7 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Update"))
         self.label_4.setText(_translate("MainWindow", "API Secret"))
 
-        self.label_password.setText(_translate("MainWindow", "Password to recover API credentials:"))
+        self.label_password.setText(_translate("MainWindow", "Type new password to recover API credentials:"))
 
         self.radioButton_testnet_true.setText(_translate("MainWindow", "TEST ACCOUNT"))
         self.radioButton_2_testnet_false.setText(_translate("MainWindow", "REAL ACCOUNT"))

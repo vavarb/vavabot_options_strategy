@@ -1,3 +1,6 @@
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QInputDialog, QLineEdit
+
 from gui_spread import *
 from connection_spread import *
 from websocket import create_connection
@@ -19,6 +22,7 @@ global send_future_orders_while
 global counter_send_order
 global sender_rate_dict
 global delay_delay
+global password_dict
 
 
 class Sinais(QtCore.QObject):
@@ -546,35 +550,88 @@ class CredentialsSaved:
 
     @staticmethod
     def api_secret_saved():
-        from lists import list_monitor_log
         import os
+        import base64
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+        from lists import password_dict
+        global password_dict
+
+        password1 = str(password_dict['pwd'])
 
         if os.path.isfile('api-key_spread.txt') is False:
             with open('api-key_spread.txt', 'a') as api_key_save_file:
                 api_key_save_file.write(str('<Type your Deribit Key>'))
+            api_secret_saved_file_read = str('<Type your Deribit Key>')
         else:
-            pass
+            with open('api-key_spread.txt', 'r') as file:
+                if '<Type your Deribit Key>' in str(file.read()):
+                    file_read = str('<Type your Deribit Key>')
+                else:
+                    file_read = 'True'
+            if file_read == 'True':
+                salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+                kdf = PBKDF2HMAC(
+                    algorithm=hashes.SHA256(),
+                    length=32,
+                    salt=salt,
+                    iterations=390000,
+                )
 
-        with open('api-key_spread.txt', 'r') as api_secret_saved_file:
-            api_secret_saved_file_read = str(api_secret_saved_file.read())
-        list_monitor_log.append('*** API key: ' + str(api_secret_saved_file_read) + ' ***')
+                key = base64.urlsafe_b64encode(kdf.derive(str(password1).encode('utf-8')))
+                f = Fernet(key)
+
+                with open('api-key_spread.txt', 'rb') as enc_file:
+                    encrypted = enc_file.read()
+                decrypted = f.decrypt(encrypted).decode('utf-8')
+                api_secret_saved_file_read = str(decrypted)
+            else:
+                api_secret_saved_file_read = str('<Type your Deribit Key>')
 
         return api_secret_saved_file_read
 
     @staticmethod
     def secret_key_saved():
-        from lists import list_monitor_log
         import os
+        import base64
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+        from lists import password_dict
+        global password_dict
+
+        password2 = str(password_dict['pwd'])
 
         if os.path.isfile('secret-key_spread.txt') is False:
-            with open('secret-key_spread.txt', 'a') as api_key_save_file:
-                api_key_save_file.write(str('<Type your Deribit Secret Key>'))
+            with open('secret-key_spread.txt', 'a') as secret_key_saved_file:
+                secret_key_saved_file.write(str('<Type your Deribit Secret Key>'))
+            secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
         else:
-            pass
+            with open('secret-key_spread.txt', 'r') as file:
+                if '<Type your Deribit Secret Key>' in str(file.read()):
+                    file_read = str('<Type your Deribit Secret Key>')
+                else:
+                    file_read = 'True'
+            if file_read == 'True':
+                salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+                kdf = PBKDF2HMAC(
+                    algorithm=hashes.SHA256(),
+                    length=32,
+                    salt=salt,
+                    iterations=390000,
+                )
 
-        with open('secret-key_spread.txt', 'r') as secret_key_saved_file:
-            secret_key_saved_file_read = str(secret_key_saved_file.read())
-        list_monitor_log.append('*** SECRET key: ' + str(secret_key_saved_file_read) + ' ***')
+                key = base64.urlsafe_b64encode(kdf.derive(str(password2).encode('utf-8')))
+                f = Fernet(key)
+
+                with open('secret-key_spread.txt', 'rb') as enc_file:
+                    encrypted = enc_file.read()
+                decrypted = f.decrypt(encrypted).decode('utf-8')
+                secret_key_saved_file_read = str(decrypted)
+            else:
+                secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
+
         return secret_key_saved_file_read
 
     @staticmethod
@@ -4741,6 +4798,8 @@ class ConditionsCheck:
 def credentials(ui):
     def message_box_reboot():
         import sys
+        from lists import password_dict
+        global password_dict
 
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -4750,6 +4809,7 @@ def credentials(ui):
         msg.addButton('Cancel', msg.RejectRole)
         pass
         if msg.exec_() == msg.Rejected:
+            password_dict['pwd'] = str(ui.lineEdit_password.text())
             api_key_save()  # ok clicked
             time.sleep(1)
             sys.exit()
@@ -4757,14 +4817,7 @@ def credentials(ui):
             pass  # cancel clicked
 
     def message_box_reboot1():
-        if CredentialsSaved.testnet_saved_true_or_false() == '':
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('You need\nSet Test or Real Account')
-            msg.setWindowTitle('INFO')
-            msg.exec_()
-            pass
-        elif ui.lineEdit_password == '':
+        if str(ui.lineEdit_password.text()) == '':
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setText('You need to create a password\nto recover API credentials')
@@ -4772,17 +4825,25 @@ def credentials(ui):
             msg.exec_()
             pass
         else:
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Test or Real Account\nIs Correct?')
-            msg.setWindowTitle('*** WARNING ***')
-            msg.addButton('Yes', msg.AcceptRole)
-            msg.addButton('No', msg.RejectRole)
-            pass
-            if msg.exec_() == msg.Rejected:
-                message_box_reboot()  # ok clicked
+            if CredentialsSaved.testnet_saved_true_or_false() == '':
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('You need\nSet Test or Real Account')
+                msg.setWindowTitle('INFO')
+                msg.exec_()
+                pass
             else:
-                pass  # cancel clicked
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Test or Real Account\nIs Correct?')
+                msg.setWindowTitle('*** WARNING ***')
+                msg.addButton('Yes', msg.AcceptRole)
+                msg.addButton('No', msg.RejectRole)
+                pass
+                if msg.exec_() == msg.Rejected:
+                    message_box_reboot()  # ok clicked
+                else:
+                    pass  # cancel clicked
 
     def message_box_reboot2():
         import sys
@@ -4900,14 +4961,60 @@ def credentials(ui):
             pass
 
     def api_key_save():
-        with open('api-key_spread.txt', 'w') as api_key_save_file:
-            api_key_save_file.write(str(ui.lineEdit_api_key_new.text()))
+        import base64
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+        from lists import password_dict
+        global password_dict
+
+        password3 = str(password_dict['pwd'])
+
+        salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=390000,
+        )
+
+        key = base64.urlsafe_b64encode(kdf.derive(str(password3).encode('utf-8')))
+        f = Fernet(key)
+        original = str(ui.lineEdit_api_key_new.text()).encode('utf-8')
+        token = f.encrypt(original)
+
+        with open('api-key_spread.txt', 'wb') as encrypted_file:
+            encrypted_file.write(token)
+
         secret_key_save()
         api_key_saved_print()
 
     def secret_key_save():
-        with open('secret-key_spread.txt', 'w') as secret_key_save_file:
-            secret_key_save_file.write(str(ui.lineEdit_api_secret_new.text()))
+        import base64
+        from cryptography.fernet import Fernet
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+        from lists import password_dict
+        global password_dict
+
+        password4 = str(password_dict['pwd'])
+
+        salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=390000,
+        )
+
+        key = base64.urlsafe_b64encode(kdf.derive(str(password4).encode('utf-8')))
+        f = Fernet(key)
+        original = str(ui.lineEdit_api_secret_new.text()).encode('utf-8')
+        token = f.encrypt(original)
+
+        with open('secret-key_spread.txt', 'wb') as encrypted_file:
+            encrypted_file.write(token)
+
         secret_key_saved_print()
 
     def testnet_true_save():
@@ -4920,6 +5027,51 @@ def credentials(ui):
             testnet_false_save_file.write('False')
         testnet_true_or_false_saved_print()
 
+    def message_box_password_input():
+        from connection_spread import connection1, connection_thread
+        import os
+        from lists import password_dict
+        global password_dict
+
+        if os.path.isfile('secret-key_spread.txt') is True:
+            with open('secret-key_spread.txt', 'r') as file1:
+                sks = file1.read()
+        else:
+            sks = '<Type your Deribit Secret Key>'
+
+        if os.path.isfile('api-key_spread.txt') is True:
+            with open('api-key_spread.txt', 'r') as file2:
+                a_s_saved = file2.read()
+        else:
+            a_s_saved = '<Type your Deribit Key>'
+
+        if '<Type your Deribit Key>' in str(a_s_saved) or '<Type your Deribit Secret Key>' in str(sks):
+            connection1()
+            connection_thread()
+        else:
+            password_input = 'User'
+            while password_input == 'User':
+                le = QLineEdit()
+
+                text, ok = QInputDialog().getText(le, "WARNING",
+                                                  "Passwor to recovey API Credentials:", le.Normal,
+                                                  QDir().home().dirName())
+                if ok and text:
+                    le.setText(str(text))
+                    if str(text) == 'User':
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('You need to create a password\nto recover API credentials')
+                        msg.setWindowTitle('WARNING')
+                        msg.exec_()
+                        pass
+                    else:
+                        password_dict['pwd'] = str(text)
+                        password_input = str(password_dict['pwd'])
+                        connection1()
+                        connection_thread()
+
+    message_box_password_input()
     api_key_saved_print()
     secret_key_saved_print()
     testnet_true_or_false_saved_print()

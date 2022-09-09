@@ -1,16 +1,19 @@
 
-from vavabot_options_strategy_6_4_2 import Deribit, CredentialsSaved, ConfigSaved
+from vavabot_options_strategy_7_1 import Deribit, CredentialsSaved, ConfigSaved
 import time
 from lists import list_monitor_log
 import threading
+global connect
 
 ConfigSaved().remove_log_spread_log_if_bigger_500kb_when_open_app()
-
-connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
-                  client_secret=CredentialsSaved.secret_key_saved(),
-                  wss_url=CredentialsSaved.url())
-
 led = 'red'
+
+
+def connection1():
+    global connect
+    connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
+                      client_secret=CredentialsSaved.secret_key_saved(),
+                      wss_url=CredentialsSaved.url())
 
 
 def led_color():
@@ -72,5 +75,6 @@ def connection():
             pass
 
 
-run_thread = threading.Thread(daemon=True, target=connection)
-run_thread.start()
+def connection_thread():
+    run_thread = threading.Thread(daemon=True, target=connection)
+    run_thread.start()
