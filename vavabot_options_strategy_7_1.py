@@ -5027,6 +5027,27 @@ def credentials(ui):
             testnet_false_save_file.write('False')
         testnet_true_or_false_saved_print()
 
+    def invalid_password():
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText('Invalid Password')
+        msg.setWindowTitle('INFO')
+        msg.exec_()
+        pass
+
+    def invalid_password_counter_bigger_three():
+        import os
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText('Credentials will be reset\nAnd APP will be close')
+        msg.setWindowTitle('INFO')
+        msg.exec_()
+
+        os.unlink('api-key_spread.txt')
+        os.unlink('secret-key_spread.txt')
+        time.sleep(1)
+        sys.exit()
+
     def message_box_password_input():
         from connection_spread import connection1, connection_thread
         import os
@@ -5050,8 +5071,12 @@ def credentials(ui):
             connection_thread()
         else:
             password_input = 'User'
+            invalid_password_counter = 0
+            need_password_counter = 0
+
             while password_input == 'User':
                 le = QLineEdit()
+                le.setText('Password')
 
                 text, ok = QInputDialog().getText(le, "WARNING",
                                                   "Passwor to recovey API Credentials:", le.Normal,
@@ -5059,17 +5084,62 @@ def credentials(ui):
                 if ok and text:
                     le.setText(str(text))
                     if str(text) == 'User':
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('You need to create a password\nto recover API credentials')
-                        msg.setWindowTitle('WARNING')
-                        msg.exec_()
-                        pass
+                        if need_password_counter <= 3:
+                            msg = QtWidgets.QMessageBox()
+                            msg.setIcon(QtWidgets.QMessageBox.Information)
+                            msg.setText('You need to create a password\nto recover API credentials')
+                            msg.setWindowTitle('WARNING')
+                            msg.exec_()
+
+                            need_password_counter = need_password_counter + 1
+                        else:
+                            invalid_password_counter_bigger_three()
                     else:
+                        from lists import list_thread_when_open_app
+                        import base64
+                        from cryptography.fernet import Fernet
+                        from cryptography.hazmat.primitives import hashes
+                        from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+                        from cryptography.fernet import InvalidToken, InvalidSignature
+
                         password_dict['pwd'] = str(text)
                         password_input = str(password_dict['pwd'])
-                        connection1()
-                        connection_thread()
+
+                        salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+                        kdf = PBKDF2HMAC(
+                            algorithm=hashes.SHA256(),
+                            length=32,
+                            salt=salt,
+                            iterations=390000,
+                        )
+
+                        key = base64.urlsafe_b64encode(kdf.derive(str(password_input).encode('utf-8')))
+                        f = Fernet(key)
+
+                        with open('api-key_spread.txt', 'rb') as enc_file:
+                            encrypted1 = enc_file.read()
+                        with open('secret-key_spread.txt', 'rb') as enc_file:
+                            encrypted2 = enc_file.read()
+
+                        if invalid_password_counter <= 3:
+                            try:
+                                f.decrypt(encrypted1).decode('utf-8')
+                                f.decrypt(encrypted2).decode('utf-8')
+                            except InvalidToken as er1:
+                                invalid_password_counter = invalid_password_counter + 1
+                                list_thread_when_open_app.append(str(er1))
+                                invalid_password()
+                            except InvalidSignature as er2:
+                                invalid_password_counter = invalid_password_counter + 1
+                                list_thread_when_open_app.append(str(er2))
+                                invalid_password()
+                            else:
+                                connection1()
+                                connection_thread()
+                            finally:
+                                pass
+                        else:
+                            invalid_password_counter_bigger_three()
 
     message_box_password_input()
     api_key_saved_print()
