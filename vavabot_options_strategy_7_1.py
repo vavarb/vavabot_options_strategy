@@ -1,4 +1,3 @@
-from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
 
 from gui_spread import *
@@ -552,8 +551,7 @@ class CredentialsSaved:
     def api_secret_saved():
         import os
         import base64
-        from cryptography.fernet import Fernet
-        from cryptography.fernet import InvalidToken, InvalidSignature
+        from cryptography.fernet import Fernet, InvalidToken, InvalidSignature
         from cryptography.hazmat.primitives import hashes
         from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
         from lists import password_dict
@@ -601,8 +599,7 @@ class CredentialsSaved:
     def secret_key_saved():
         import os
         import base64
-        from cryptography.fernet import Fernet
-        from cryptography.fernet import InvalidToken, InvalidSignature
+        from cryptography.fernet import Fernet, InvalidToken, InvalidSignature
         from cryptography.hazmat.primitives import hashes
         from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
         from lists import password_dict
@@ -4957,10 +4954,48 @@ def credentials(ui):
                     pass  # cancel clicked
 
     def api_key_saved_print():
-        ui.lineEdit_api_key_saved.setText(CredentialsSaved.api_secret_saved())
+        text = str(CredentialsSaved.api_secret_saved())
+
+        if text == '<Type your Deribit Key>':
+            ui.lineEdit_api_key_saved.setText(text)
+        else:
+            text1 = text[:3]
+            list_text1 = list(text1)
+            if len(text) >= 4:
+                text2 = text[3:]
+                list_text2 = list(text2)
+                for i in list_text2:
+                    list_text2[list_text2.index(i)] = '*'
+                list_text1.extend(list_text2)
+                text3 = "".join(list_text1)
+                ui.lineEdit_api_key_saved.setText(text3)
+            else:
+                for i in list_text1:
+                    list_text1[list_text1.index(i)] = '*'
+                text3 = "".join(list_text1)
+                ui.lineEdit_api_key_saved.setText(text3)
 
     def secret_key_saved_print():
-        ui.lineEdit_api_secret_saved.setText(CredentialsSaved.secret_key_saved())
+        text = str(CredentialsSaved.secret_key_saved())
+
+        if text == '<Type your Deribit Secret Key>':
+            ui.lineEdit_api_secret_saved.setText(text)
+        else:
+            text1 = text[:3]
+            list_text1 = list(text1)
+            if len(text) >= 4:
+                text2 = text[3:]
+                list_text2 = list(text2)
+                for i in list_text2:
+                    list_text2[list_text2.index(i)] = '*'
+                list_text1.extend(list_text2)
+                text3 = "".join(list_text1)
+                ui.lineEdit_api_secret_saved.setText(text3)
+            else:
+                for i in list_text1:
+                    list_text1[list_text1.index(i)] = '*'
+                text3 = "".join(list_text1)
+                ui.lineEdit_api_secret_saved.setText(text3)
 
     def testnet_true_or_false_saved_print():
         testnet_true_or_false_saved_print_file = CredentialsSaved.testnet_saved_true_or_false()
@@ -5120,8 +5155,8 @@ def credentials(ui):
                 le.setText('Password')
 
                 text, ok = QInputDialog().getText(le, "WARNING",
-                                                  "Passwor to recovey API Credentials:", le.Normal,
-                                                  QDir().home().dirName())
+                                                  "Password to recovey API Credentials:", le.Password)
+                # QDir().home().dirName())
                 if ok is False:
                     password_input = str(password_dict['pwd'])
                     message_connection_only_public()
@@ -5130,9 +5165,9 @@ def credentials(ui):
                     api_key_saved_print()
                     secret_key_saved_print()
                     testnet_true_or_false_saved_print()
-                if ok and text:
+                if ok:
                     le.setText(str(text))
-                    if str(text) == 'User':
+                    if str(text) == '':
                         if need_password_counter <= 3:
                             need_password_counter = need_password_counter + 1
                             need_password_counter_smaller_three()
@@ -5140,10 +5175,9 @@ def credentials(ui):
                             invalid_password_counter_bigger_three()
                     else:
                         import base64
-                        from cryptography.fernet import Fernet
+                        from cryptography.fernet import Fernet, InvalidToken, InvalidSignature
                         from cryptography.hazmat.primitives import hashes
                         from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-                        from cryptography.fernet import InvalidToken, InvalidSignature
 
                         password_dict['pwd'] = str(text)
 
