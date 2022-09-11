@@ -1822,13 +1822,13 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Spread 7.0"))
+        MainWindow.setWindowTitle(_translate("MainWindow", ""))
         self.label.setText(_translate("MainWindow", "API Key"))
         self.label_2.setText(_translate("MainWindow", "Saved"))
         self.label_3.setText(_translate("MainWindow", "Update"))
         self.label_4.setText(_translate("MainWindow", "API Secret"))
 
-        self.label_password.setText(_translate("MainWindow", "Type new password to recover API credentials:"))
+        self.label_password.setText(_translate("MainWindow", "Type password to recover API credentials:"))
 
         self.radioButton_testnet_true.setText(_translate("MainWindow", "TEST ACCOUNT"))
         self.radioButton_2_testnet_false.setText(_translate("MainWindow", "REAL ACCOUNT"))

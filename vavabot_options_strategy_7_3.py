@@ -5145,6 +5145,9 @@ def credentials(ui):
         if '<Type your Deribit Key>' in str(a_s_saved) or '<Type your Deribit Secret Key>' in str(sks):
             connection1()
             connection_thread()
+            api_key_saved_print()
+            secret_key_saved_print()
+            testnet_true_or_false_saved_print()
         else:
             password_input = 'User'
             invalid_password_counter = 0
@@ -7152,7 +7155,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.2"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.3"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
