@@ -167,5 +167,9 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 ## Buy me a coffe? ☕
 If you have found anything useful, and you want to support me, feel free to do it with ₿ITCOIN or Lightning Network! And many thanks in advance. 😁
 
-- Lightning Network Adress: ```vavarb@bipa.app```
-- ₿ITCOIN Adress: ```36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N```
+- Lightning Network Adress: 
+```
+vavarb@bipa.app
+```
+- ₿ITCOIN Adress: 
+```36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N```
