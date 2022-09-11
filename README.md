@@ -163,3 +163,9 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
   3. Commit your Changes (````git commit -m 'Add some AmazingFeature````)
   4. Push to the Branch (````git push origin feature/AmazingFeature````)
   5. Open a Pull Request
+
+## Buy me a coffe? ☕
+If you have found anything useful, and you want to support me, feel free to do it with ₿ITCOIN or Lightning Network! And many thanks in advance. 😁
+
+- Lightning Network Adress: vavarb@bipa.app
+- ₿ITCOIN Adress: 36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N
