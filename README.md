@@ -172,4 +172,6 @@ If you have found anything useful, and you want to support me, feel free to do i
 vavarb@bipa.app
 ```
 - ₿ITCOIN Adress: 
-```36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N```
+```
+36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N
+```
