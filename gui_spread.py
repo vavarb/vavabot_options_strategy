@@ -1822,7 +1822,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", ""))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy"))
         self.label.setText(_translate("MainWindow", "API Key"))
         self.label_2.setText(_translate("MainWindow", "Saved"))
         self.label_3.setText(_translate("MainWindow", "Update"))
