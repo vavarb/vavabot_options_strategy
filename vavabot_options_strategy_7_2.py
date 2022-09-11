@@ -2558,13 +2558,13 @@ class ConditionsCheck:
                         if float(structure_option_market_cost_usd) >= float(target_cost_structure_in):
                             list_monitor_log.append('*** Strategy option market cost current (' +
                                                     str(structure_option_market_cost_usd) +
-                                                    'USD < ' +
+                                                    'USD >= ' +
                                                     str(target_cost_structure_in) +
                                                     'USD) Strategy MARKET cost target - Condition Filled - ***')
                             list_monitor_log.append('*** value_give_in_achieved USD is TRUE ***')
                             return True
                         else:
-                            list_monitor_log.append('Waiting Strategy option market cost < ' +
+                            list_monitor_log.append('Waiting Strategy option market cost >= ' +
                                                     str(target_cost_structure_in) +
                                                     'USD')
                             list_monitor_log.append('Strategy option market cost current: ' +
@@ -2621,14 +2621,14 @@ class ConditionsCheck:
                     structure_option_market_cost = float(Quote().structure_option_market_cost())
                     if float(structure_option_market_cost) >= float(target_cost_structure_in):
                         list_monitor_log.append('*** Strategy option market cost current (' +
-                                                str(structure_option_market_cost) + ' < ' +
+                                                str(structure_option_market_cost) + ' >= ' +
                                                 str(target_cost_structure_in) +
                                                 ') Strategy MARKET cost target - '
                                                 'Strategy option market cost - Condition Filled - ***')
                         list_monitor_log.append('*** value_give_in_achieved BTC is TRUE ***')
                         return True
                     else:
-                        list_monitor_log.append('Waiting Strategy option market cost < ' +
+                        list_monitor_log.append('Waiting Strategy option market cost >= ' +
                                                 str(target_cost_structure_in) + 'BTC')
                         list_monitor_log.append('Strategy option market cost current: ' +
                                                 str(structure_option_market_cost) + 'BTC')
@@ -7152,7 +7152,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.1"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.2"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
@@ -7198,6 +7198,31 @@ def config(ui):
         ui.label_36.setText("Trade 3:")
         ui.label_35.setText("Trade 2:")
         ui.label_34.setText("Trade 1:")
+
+        # Set text License
+        try:
+            with open('LICENSE.txt', 'r') as license_txt_file:
+                license_txt = license_txt_file.read()
+                ui.textEdit_license.append(license_txt)
+        except FileNotFoundError:
+            license_txt = 'License file NOT found\n\nCopyright 2022 Vavarb vavarb@protonmail.com ' \
+                          'https://github.com/vavarb\n\nVisit: http://www.apache.org/licenses/LICENSE-2.0'
+            ui.textEdit_license.append(license_txt)
+        finally:
+            pass
+
+        # Set text Contact us
+        contact_text = 'Contact us: vavarb@protonmail.com\n' \
+                       'Source Code: https://github.com/vavarb/vavabot_options_strategy'
+        ui.textEdit_contact_us.append(contact_text)
+
+        # Set text Buy me a coffee
+        buy_me_a_coffee_text = 'Buy me a Coffe ☕? If you have found anything useful and you want to support me, ' \
+                               'feel free to do it with ₿ITCOIN or Lightning Network! And many thanks in advance. ' \
+                               '😁\n\n' \
+                               '>>> Lightning Network Adress: vavarb@bipa.app\n' \
+                               '>>> ₿ITCOIN Adress: 36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N'
+        ui.textEdit_buy_me_a_coffee.append(buy_me_a_coffee_text)
 
     def set_enabled_trigger():
         if ui.comboBox_value_given_2.currentText() == 'Set Option Strategy Cost as TRIGGER (optional)':

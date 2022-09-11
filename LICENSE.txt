@@ -1,4 +1,4 @@
-Copyright 2022 Vavarb vavarb@ptronmail.com https://github.com/vavarb
+Copyright 2022 Vavarb vavarb@protonmail.com https://github.com/vavarb
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1694,6 +1694,63 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        # tab_about 1 start
+        self.tab_about = QtWidgets.QWidget()
+        self.tab_about.setObjectName("tab_about")
+
+        self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_about)
+        self.gridLayout_13.setObjectName("gridLayout_13")
+        self.frame_5_about = QtWidgets.QFrame(self.tab_about)
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.frame_5_about.setFont(font)
+        self.frame_5_about.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_5_about.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_5_about.setObjectName("frame_5_about")
+        
+        self.textEdit_license = QtWidgets.QTextEdit(self.frame_5_about)
+        self.textEdit_license.setGeometry(QtCore.QRect(68, 196, 531, 175))
+        self.textEdit_license.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+                                            "")
+        self.textEdit_license.setUndoRedoEnabled(True)
+        self.textEdit_license.setReadOnly(True)
+        self.textEdit_license.setObjectName("textEdit_license")
+
+        self.label_license = QtWidgets.QLabel(self.frame_5_about)
+        self.label_license.setGeometry(QtCore.QRect(68, 164, 531, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_license.setFont(font)
+        self.label_license.setAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+        self.label_license.setObjectName("label_license")
+        self.label_license.raise_()
+
+        self.textEdit_contact_us = QtWidgets.QTextEdit(self.frame_5_about)
+        self.textEdit_contact_us.setGeometry(QtCore.QRect(68, 0, 531, 56))
+        self.textEdit_contact_us.setUndoRedoEnabled(True)
+        self.textEdit_contact_us.setReadOnly(True)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        self.textEdit_contact_us.setFont(font)
+        self.textEdit_contact_us.setObjectName("textEdit_contact_us")
+
+        self.textEdit_buy_me_a_coffee = QtWidgets.QTextEdit(self.frame_5_about)
+        self.textEdit_buy_me_a_coffee.setGeometry(QtCore.QRect(68, 62, 531, 112))
+        self.textEdit_buy_me_a_coffee.setUndoRedoEnabled(True)
+        self.textEdit_buy_me_a_coffee.setReadOnly(True)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        self.textEdit_buy_me_a_coffee.setFont(font)
+        self.textEdit_buy_me_a_coffee.setObjectName("textEdit_buy_me_a_coffee")
+
+        self.gridLayout_13.addWidget(self.frame_5_about, 0, 0, 1, 1)
+        self.tabWidget.addTab(self.tab_about, "")
+        # tab_about 1 the end
+
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
         self.checkBox_perpetual_1.clicked['bool'].connect(self.lineEdit_maturity_instrumet1.setDisabled)
@@ -1941,6 +1998,11 @@ class Ui_MainWindow(object):
 "Greeks"))
         self.checkBox_autoScrollBar.setText(_translate("MainWindow", "Auto Scroll Bar"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_run_trading), _translate("MainWindow", "Run Trading"))
+
+        # tab_about 2 start
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_about), _translate("MainWindow", "About"))
+        self.label_license.setText(_translate("MainWindow", "License"))
+        # tab_about 2 the end
 
 
 if __name__ == "__main__":
