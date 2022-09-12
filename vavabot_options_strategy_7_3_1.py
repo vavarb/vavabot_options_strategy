@@ -20,7 +20,6 @@ global trading_on_off_for_msg
 global send_future_orders_while
 global counter_send_order
 global sender_rate_dict
-global delay_delay
 global password_dict
 
 
@@ -62,7 +61,7 @@ class Sinais(QtCore.QObject):
 
 
 sinal = Sinais()
-
+delay_delay = 0
 
 class Deribit:
     def __init__(self, client_id=None, client_secret=None, wss_url=None):
@@ -105,8 +104,6 @@ class Deribit:
         global counter_send_order
         global sender_rate_dict
         global delay_delay
-
-        delay_delay = 0
 
         sender_rate_dict = dict()
         sender_rate_dict['time_1'] = time.time()

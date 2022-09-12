@@ -1752,7 +1752,7 @@ class Ui_MainWindow(object):
         # tab_about 1 the end
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(5)
         self.checkBox_perpetual_1.clicked['bool'].connect(self.lineEdit_maturity_instrumet1.setDisabled)
         self.checkBox_perpetual_2.clicked['bool'].connect(self.lineEdit_maturity_instrumet2.setDisabled)
         self.checkBox_perpetual_3.clicked['bool'].connect(self.lineEdit_maturity_instrumet3.setDisabled)
