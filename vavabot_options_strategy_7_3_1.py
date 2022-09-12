@@ -203,6 +203,8 @@ class Deribit:
         global counter_send_order
 
         counter_send_order = counter_send_order + 1
+        msg['id'] = int(str(msg['id']) + str(counter_send_order))
+        print(msg['id'])
 
         try:
             if str(msg['id']) == '4':
@@ -238,7 +240,7 @@ class Deribit:
             else:
                 pass
 
-            if 'error' in str(out):
+            if 'error' in str(out) or msg['id'] != out['id']:
                 self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
                     counter_send_order) + ' *****')
 
