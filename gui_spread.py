@@ -1709,7 +1709,7 @@ class Ui_MainWindow(object):
         self.frame_5_about.setObjectName("frame_5_about")
         
         self.textEdit_license = QtWidgets.QTextEdit(self.frame_5_about)
-        self.textEdit_license.setGeometry(QtCore.QRect(68, 196, 531, 175))
+        self.textEdit_license.setGeometry(QtCore.QRect(68, 196, 526, 175))
         self.textEdit_license.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                             "")
         self.textEdit_license.setUndoRedoEnabled(True)
@@ -1717,7 +1717,7 @@ class Ui_MainWindow(object):
         self.textEdit_license.setObjectName("textEdit_license")
 
         self.label_license = QtWidgets.QLabel(self.frame_5_about)
-        self.label_license.setGeometry(QtCore.QRect(68, 164, 531, 31))
+        self.label_license.setGeometry(QtCore.QRect(68, 164, 526, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -1728,7 +1728,7 @@ class Ui_MainWindow(object):
         self.label_license.raise_()
 
         self.textEdit_contact_us = QtWidgets.QTextEdit(self.frame_5_about)
-        self.textEdit_contact_us.setGeometry(QtCore.QRect(68, 0, 531, 56))
+        self.textEdit_contact_us.setGeometry(QtCore.QRect(68, 0, 526, 56))
         self.textEdit_contact_us.setUndoRedoEnabled(True)
         self.textEdit_contact_us.setReadOnly(True)
         font = QtGui.QFont()
@@ -1738,7 +1738,7 @@ class Ui_MainWindow(object):
         self.textEdit_contact_us.setObjectName("textEdit_contact_us")
 
         self.textEdit_buy_me_a_coffee = QtWidgets.QTextEdit(self.frame_5_about)
-        self.textEdit_buy_me_a_coffee.setGeometry(QtCore.QRect(68, 62, 531, 112))
+        self.textEdit_buy_me_a_coffee.setGeometry(QtCore.QRect(68, 62, 526, 112))
         self.textEdit_buy_me_a_coffee.setUndoRedoEnabled(True)
         self.textEdit_buy_me_a_coffee.setReadOnly(True)
         font = QtGui.QFont()
@@ -1746,6 +1746,14 @@ class Ui_MainWindow(object):
         font.setBold(True)
         self.textEdit_buy_me_a_coffee.setFont(font)
         self.textEdit_buy_me_a_coffee.setObjectName("textEdit_buy_me_a_coffee")
+
+        self.radioButton_agree = QtWidgets.QRadioButton(self.frame_5_about)
+        self.radioButton_agree.setGeometry(QtCore.QRect(595, 320, 105, 14))
+        self.radioButton_agree.setObjectName("radioButton_agree")
+
+        self.radioButton_disagree = QtWidgets.QRadioButton(self.frame_5_about)
+        self.radioButton_disagree.setGeometry(QtCore.QRect(595, 300, 105, 14))
+        self.radioButton_disagree.setObjectName("radioButton_disagree")
 
         self.gridLayout_13.addWidget(self.frame_5_about, 0, 0, 1, 1)
         self.tabWidget.addTab(self.tab_about, "")
@@ -2002,6 +2010,8 @@ class Ui_MainWindow(object):
         # tab_about 2 start
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_about), _translate("MainWindow", "About"))
         self.label_license.setText(_translate("MainWindow", "License"))
+        self.radioButton_agree.setText(_translate("MainWindow", "I Agree"))
+        self.radioButton_disagree.setText(_translate("MainWindow", "I Disagree"))
         # tab_about 2 the end
 
 

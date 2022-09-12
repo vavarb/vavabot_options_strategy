@@ -63,6 +63,7 @@ class Sinais(QtCore.QObject):
 sinal = Sinais()
 delay_delay = 0
 
+
 class Deribit:
     def __init__(self, client_id=None, client_secret=None, wss_url=None):
         self.client_id = client_id
@@ -8258,6 +8259,48 @@ def run(ui):
     ui.checkBox_autoScrollBar.clicked.connect(receive_autoscroll_monitor)
 
 
+# noinspection PyShadowingNam
+def about(ui):
+    def disagree_license_when_open_app():
+        ui.tab_credentials.setDisabled(True)
+        ui.tab_instruments.setDisabled(True)
+        ui.tab_targets.setDisabled(True)
+        ui.tab_strutucture_quote.setDisabled(True)
+        ui.tab_run_trading.setDisabled(True)
+
+    def disagree_license():
+        from connection_spread import connect
+
+        ui.tab_credentials.setDisabled(True)
+        ui.tab_instruments.setDisabled(True)
+        ui.tab_targets.setDisabled(True)
+        ui.tab_strutucture_quote.setDisabled(True)
+        ui.tab_run_trading.setDisabled(True)
+
+        connect.logwriter('License: I Disagreed')
+
+        ui.radioButton_agree.setEnabled(False)
+        ui.radioButton_disagree.setEnabled(False)
+
+    def agree_license():
+        from connection_spread import connect
+
+        ui.tab_credentials.setDisabled(False)
+        ui.tab_instruments.setDisabled(False)
+        ui.tab_targets.setDisabled(False)
+        ui.tab_strutucture_quote.setDisabled(False)
+        ui.tab_run_trading.setDisabled(False)
+
+        connect.logwriter('License: I Disagreed')
+
+        ui.radioButton_agree.setEnabled(False)
+        ui.radioButton_disagree.setEnabled(False)
+
+    disagree_license_when_open_app()
+    ui.radioButton_agree.clicked.connect(agree_license)
+    ui.radioButton_disagree.clicked.connect(disagree_license)
+
+
 if __name__ == "__main__":
     import sys
 
@@ -8271,4 +8314,5 @@ if __name__ == "__main__":
     quote(ui=ui)
     run(ui=ui)
     instruments(ui=ui)
+    about(ui=ui)
     sys.exit(app.exec_())
