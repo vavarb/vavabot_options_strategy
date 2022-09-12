@@ -204,7 +204,6 @@ class Deribit:
 
         counter_send_order = counter_send_order + 1
         msg['id'] = int(str(msg['id']) + str(counter_send_order))
-        print(msg['id'])
 
         try:
             if str(msg['id']) == '4':
