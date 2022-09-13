@@ -245,6 +245,7 @@ class Deribit:
                 if msg['id'] != out['id']:
                     self.logwriter(' ***** ERROR: msg ID != out ID' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order) + ' *****')
+                    self._WSS.shutdown()
                 else:
                     self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order) + ' *****')
