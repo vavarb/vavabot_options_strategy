@@ -7154,7 +7154,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.3"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.3.1"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
