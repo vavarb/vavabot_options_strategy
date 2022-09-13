@@ -204,15 +204,16 @@ class Deribit:
         global counter_send_order
 
         counter_send_order = counter_send_order + 1
+        msg_id_before_counter = msg['id']
         msg['id'] = int(str(msg['id']) + str(counter_send_order))
 
         try:
-            if str(msg['id']) == '4':
+            if str(msg_id_before_counter) == '4':
                 self.logwriter(
                     str(msg['method']) + '(* Connection Test *)' + ' ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order))
             elif str(msg['method']) == 'private/buy' or str(msg['method']) == 'private/sell':
-                if str(msg['id']) == "8" or str(msg['id']) == "9":
+                if str(msg_id_before_counter) == "8" or str(msg_id_before_counter) == "9":
                     instrument_name = str(msg['params']['instrument_name'])
                     instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
                     order_amount_instrument = str(msg['params']['amount'])
@@ -241,19 +242,23 @@ class Deribit:
                 pass
 
             if 'error' in str(out) or msg['id'] != out['id']:
-                self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                    counter_send_order) + ' *****')
+                if msg['id'] != out['id']:
+                    self.logwriter(' ***** ERROR: msg ID != out ID' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order) + ' *****')
+                else:
+                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                        counter_send_order) + ' *****')
 
                 if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
                     self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
-                    if str(msg['id']) == '19':
+                    if str(msg_id_before_counter) == '19':
                         return float(0)
-                    elif str(msg['id']) == '25':
+                    elif str(msg_id_before_counter) == '25':
                         return 0
                     else:
                         return out['error']
 
-                elif str(msg['id']) == '4':
+                elif str(msg_id_before_counter) == '4':
                     if '10028' in str(out['error']):
                         self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
                             out) + str(msg['id']) + '_' + str(
@@ -261,16 +266,16 @@ class Deribit:
                         time.sleep(10)
                         return 'too_many_requests'
 
-                elif str(msg['id']) == '19':
+                elif str(msg_id_before_counter) == '19':
                     return float(0)
 
-                elif str(msg['id']) == '25':
+                elif str(msg_id_before_counter) == '25':
                     return 0
 
                 else:
                     return out['error']
 
-            elif str(msg['id']) == '4':
+            elif str(msg_id_before_counter) == '4':
                 if 'too_many_requests' in str(out) or 'too_many_requests' in str(out['result']):
                     self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
                         out) + str(msg['id']) + '_' + str(
@@ -281,43 +286,43 @@ class Deribit:
                 else:
                     return out['result']
 
-            elif str(msg['id']) == '18':
+            elif str(msg_id_before_counter) == '18':
                 return out['result']['trades'][0]['price']
 
-            elif str(msg['id']) == '19':
+            elif str(msg_id_before_counter) == '19':
                 if str(out['result']['size']) == 'None' or str(out['result']['size']) == 'none':
                     return float(0)
                 else:
                     return out['result']['size']
 
-            elif str(msg['id']) == '20':
+            elif str(msg_id_before_counter) == '20':
                 if str(out['result']['best_ask_price']) == 'null' or str(out['result']['best_ask_price']) == 'None':
                     return 0
                 else:
                     return out['result']['best_ask_price']
 
-            elif str(msg['id']) == '21':
+            elif str(msg_id_before_counter) == '21':
                 if str(out['result']['best_bid_price']) == 'null' or str(out['result']['best_bid_price']) == 'None':
                     return 0
                 else:
                     return out['result']['best_bid_price']
 
-            elif str(msg['id']) == '22':
+            elif str(msg_id_before_counter) == '22':
                 return out['result'][0]['mark_price']
 
-            elif str(msg['id']) == '23':
+            elif str(msg_id_before_counter) == '23':
                 if str(out['result']['best_bid_amount']) == 'null' or str(out['result']['best_bid_amount']) == 'None':
                     return 0
                 else:
                     return out['result']['best_bid_amount']
 
-            elif str(msg['id']) == '24':
+            elif str(msg_id_before_counter) == '24':
                 if str(out['result']['best_ask_amount']) == 'null' or str(out['result']['best_ask_amount']) == 'None':
                     return 0
                 else:
                     return out['result']['best_ask_amount']
 
-            elif str(msg['id']) == '25':
+            elif str(msg_id_before_counter) == '25':
                 if len(out['result']['data']) == 0 or out['result']['data'] == 'ok' or out[
                     'result']['data'] == 'OK' or out['result']['data'] == 'Ok' or out[
                         'result'] == 'ok' or out['result'] == 'Ok' or out['result'] == 'OK':
@@ -6882,7 +6887,7 @@ def instruments(ui):
             except ValueError:
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Only Numbes are accepted')
+                msg.setText('Only Numbers are accepted')
                 msg.setWindowTitle('***** ERROR *****')
                 msg.exec_()
                 pass
