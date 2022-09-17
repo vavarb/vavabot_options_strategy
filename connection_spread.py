@@ -16,6 +16,11 @@ def connection1():
                       wss_url=CredentialsSaved.url())
 
 
+def set_led_red():
+    global led
+    led = 'red'
+
+
 def led_color():
     global led
     led_color1 = led
@@ -35,7 +40,7 @@ def connection():
                 led = 'green'
                 time.sleep(2)
                 pass
-            elif connect_set_heartbeat == 'too_many_requests':
+            elif 'too_many_requests' in str(connect_set_heartbeat) or '10028' in str(connect_set_heartbeat):
                 list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
                 connect.logwriter(str('***************** ERROR too_many_requests ******************'))
                 connect.cancel_all()
@@ -55,7 +60,7 @@ def connection():
                     connect.logwriter(str('***************** Reeturn Connection ******************'))
                     connect.cancel_all()
                     time.sleep(2)
-                elif connect_set_heartbeat2 == 'too_many_requests':
+                elif 'too_many_requests' in str(connect_set_heartbeat) or '10028' in str(connect_set_heartbeat):
                     list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
                     connect.logwriter(str('***************** ERROR too_many_requests ******************'))
                     connect.cancel_all()
@@ -70,6 +75,12 @@ def connection():
             time.sleep(10)
             list_monitor_log.append('********** Thread_connection - Connection ERROR ********** ' + str(e))
             connect.logwriter('********** Thread_connection - Connection ERROR ********** ' + str(e))
+            connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
+                              client_secret=CredentialsSaved.secret_key_saved(),
+                              wss_url=CredentialsSaved.url())
+            connect.cancel_all()
+            time.sleep(2)
+            connect.cancel_all()
             pass
         finally:
             pass

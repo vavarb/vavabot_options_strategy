@@ -1,3 +1,4 @@
+
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
 
 from gui_spread import *
@@ -18,9 +19,9 @@ global run_trade_future_on_off
 global run_target_on_off
 global trading_on_off_for_msg
 global send_future_orders_while
-global counter_send_order
 global sender_rate_dict
 global password_dict
+global counter_send_order_for_function
 
 
 class Sinais(QtCore.QObject):
@@ -62,6 +63,7 @@ class Sinais(QtCore.QObject):
 
 sinal = Sinais()
 delay_delay = 0
+delay = 0
 
 
 class Deribit:
@@ -87,11 +89,13 @@ class Deribit:
         except Exception as er:
             from connection_spread import connect
             from lists import list_monitor_log
+            global counter_send_order_for_function
+
             with open(filename, 'a') as logwriter_file:
                 logwriter_file.write(str(datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ")) +
                                      '***** ERROR except in logwriter: ' +
                                      str(er) + str(msg) +
-                                     '_' + str(counter_send_order) + ' *****')
+                                     '_' + str(counter_send_order_for_function) + ' *****')
             list_monitor_log.append('***** ERROR except in logwriter: ' + str(er) + ' *****')
         finally:
             pass
@@ -102,15 +106,15 @@ class Deribit:
         self.client_secret = client_secret
 
         from lists import list_monitor_log
-        global counter_send_order
         global sender_rate_dict
         global delay_delay
+        global counter_send_order_for_function
+
+        counter_send_order_for_function = 0
 
         sender_rate_dict = dict()
         sender_rate_dict['time_1'] = time.time()
         sender_rate_dict['counter_send_order_for_sender_rate'] = 1
-
-        counter_send_order = 0
 
         timestamp = round(datetime.now().timestamp() * 1000)
         nonce = "abcd"
@@ -122,7 +126,7 @@ class Deribit:
         ).hexdigest().lower()
 
         try:
-            self._WSS = create_connection(wss_url)
+            self._WSS = create_connection(wss_url, enable_multithread=True)
             msg = {
                 "jsonrpc": "2.0",
                 "id": 1,
@@ -200,19 +204,23 @@ class Deribit:
             else:
                 return float(delay_delay)
 
-    def _sender(self, msg):
-        global counter_send_order
+    @staticmethod
+    def counter_send_order_function():
+        global counter_send_order_for_function
 
-        counter_send_order = counter_send_order + 1
+        counter_send_order_for_function = counter_send_order_for_function + 1
+        return counter_send_order_for_function
+
+    def _sender(self, msg):
+        global delay
+        from connection_spread import led_color
+
+        counter_send_order = self.counter_send_order_function()
         msg_id_before_counter = msg['id']
         msg['id'] = int(str(msg['id']) + str(counter_send_order))
 
         try:
-            if str(msg_id_before_counter) == '4':
-                self.logwriter(
-                    str(msg['method']) + '(* Connection Test *)' + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order))
-            elif str(msg['method']) == 'private/buy' or str(msg['method']) == 'private/sell':
+            if str(msg['method']) == 'private/buy' or str(msg['method']) == 'private/sell':
                 if str(msg_id_before_counter) == "8" or str(msg_id_before_counter) == "9":
                     instrument_name = str(msg['params']['instrument_name'])
                     instrument_direction = str(msg['method']) + ' ' + str(msg['params']['type'])
@@ -226,7 +234,6 @@ class Deribit:
                                    '_' + str(counter_send_order))
                 else:
                     pass
-
             else:
                 self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
 
@@ -241,11 +248,18 @@ class Deribit:
             else:
                 pass
 
-            if 'error' in str(out) or msg['id'] != out['id']:
+            if counter_send_order % 100 == 0:
+                out['id'] = 10
+
+            if 'error' in str(out) or \
+                    (msg['id'] != out['id'] and msg_id_before_counter != 1 and led_color() == 'green' and
+                     msg_id_before_counter != 8 and msg_id_before_counter != 9):
                 if msg['id'] != out['id']:
-                    self.logwriter(' ***** ERROR: msg ID != out ID' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
+                    from connection_spread import set_led_red
+                    self.logwriter(' ***** ERROR: msg ID != out ID' + str(out) + ' * ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order) + ' *****')
-                    self._WSS.shutdown()
+                    time.sleep(5)
+                    raise ConnectionError
                 else:
                     self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
                         counter_send_order) + ' *****')
@@ -259,14 +273,6 @@ class Deribit:
                     else:
                         return out['error']
 
-                elif str(msg_id_before_counter) == '4':
-                    if '10028' in str(out['error']):
-                        self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
-                            out) + str(msg['id']) + '_' + str(
-                            counter_send_order)))
-                        time.sleep(10)
-                        return 'too_many_requests'
-
                 elif str(msg_id_before_counter) == '19':
                     return float(0)
 
@@ -275,17 +281,6 @@ class Deribit:
 
                 else:
                     return out['error']
-
-            elif str(msg_id_before_counter) == '4':
-                if 'too_many_requests' in str(out) or 'too_many_requests' in str(out['result']):
-                    self.logwriter(str('**************** ERROR too_many_requests *****************' + str(
-                        out) + str(msg['id']) + '_' + str(
-                        counter_send_order)))
-                    time.sleep(10)
-                    return 'too_many_requests'
-
-                else:
-                    return out['result']
 
             elif str(msg_id_before_counter) == '18':
                 return out['result']['trades'][0]['price']
@@ -369,7 +364,16 @@ class Deribit:
         return self._sender(msg)
 
     def set_heartbeat(self):
-        msg = \
+        global delay
+
+        counter_send_order1 = self.counter_send_order_function()
+
+        if delay > 0:
+            time.sleep(delay)
+        else:
+            pass
+
+        msg1 = \
             {
                 "jsonrpc": "2.0",
                 "id": 4,
@@ -378,7 +382,25 @@ class Deribit:
                     "interval": 60
                 }
             }
-        return self._sender(msg)
+
+        self._WSS.send(json.dumps(msg1))
+        out1 = json.loads(self._WSS.recv())
+
+        self.logwriter(
+            str(msg1['method']) + '(* Connection Test *)' + ' ID: ' + str(msg1['id']) + '_' + str(
+                counter_send_order1))
+
+        if 'error' in str(out1):
+            self.logwriter(str('**************** ERROR Connection Test *****************' + str(
+                out1) + str(out1['id']) + '_' + str(counter_send_order1)))
+            return 'error'
+        else:
+            if out1['id'] == 4:
+                return out1['result']
+            elif (isinstance(out1['id'], int) or isinstance(out1['id'], float)) and out1['id'] != 4:
+                return 'ok'
+            else:
+                return out1['result']
 
     def get_order_book(self, instrument_name=None):
         msg = \
