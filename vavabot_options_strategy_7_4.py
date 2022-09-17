@@ -5149,7 +5149,7 @@ def credentials(ui):
         pass
 
     def message_box_password_input():
-        from connection_spread import connection1, connection_thread
+        from connection_spread import connection1
         import os
         from lists import password_dict
         global password_dict
@@ -5168,7 +5168,6 @@ def credentials(ui):
 
         if '<Type your Deribit Key>' in str(a_s_saved) or '<Type your Deribit Secret Key>' in str(sks):
             connection1()
-            connection_thread()
             api_key_saved_print()
             secret_key_saved_print()
             testnet_true_or_false_saved_print()
@@ -5188,7 +5187,6 @@ def credentials(ui):
                     password_input = str(password_dict['pwd'])
                     message_connection_only_public()
                     connection1()
-                    connection_thread()
                     api_key_saved_print()
                     secret_key_saved_print()
                     testnet_true_or_false_saved_print()
@@ -5234,7 +5232,6 @@ def credentials(ui):
                             else:
                                 password_input = str(password_dict['pwd'])
                                 connection1()
-                                connection_thread()
                                 api_key_saved_print()
                                 secret_key_saved_print()
                                 testnet_true_or_false_saved_print()
@@ -7435,8 +7432,10 @@ def run(ui):
         info.clear()
 
     def position_now_when_open_app_signal(info):
+        from connection_spread import connection_thread
         ui.textEdit_balance_2.clear()
         ui.textEdit_balance_2.setText(str(info))
+        connection_thread()
 
     def last_trade_instrument_conditions_quote_signal(info):
         info_dict1 = str(info['lineEdit_24_btc_index_2'])
@@ -8316,7 +8315,7 @@ def about(ui):
         ui.tab_strutucture_quote.setDisabled(False)
         ui.tab_run_trading.setDisabled(False)
 
-        connect.logwriter('License: I Disagreed')
+        connect.logwriter('License: I Agreed')
 
         ui.radioButton_agree.setEnabled(False)
         ui.radioButton_disagree.setEnabled(False)

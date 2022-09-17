@@ -11,9 +11,18 @@ led = 'red'
 
 def connection1():
     global connect
+    global led
     connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
                       client_secret=CredentialsSaved.secret_key_saved(),
                       wss_url=CredentialsSaved.url())
+    connect_set_heartbeat = connect.set_heartbeat()
+    if connect_set_heartbeat == 'ok':
+        list_monitor_log.append('connection ok')
+        led = 'green'
+        time.sleep(2)
+        pass
+    else:
+        set_led_red()
 
 
 def set_led_red():
