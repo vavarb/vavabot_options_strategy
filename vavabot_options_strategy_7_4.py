@@ -248,9 +248,6 @@ class Deribit:
             else:
                 pass
 
-            if counter_send_order % 100 == 0:
-                out['id'] = 10
-
             if 'error' in str(out) or \
                     (msg['id'] != out['id'] and msg_id_before_counter != 1 and led_color() == 'green' and
                      msg_id_before_counter != 8 and msg_id_before_counter != 9):
