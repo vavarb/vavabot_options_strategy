@@ -243,7 +243,8 @@ class Deribit:
             delay = self._delay(sender_rate_rate_=self.sender_rate(
                 counter_send_order_for_sender_rate=counter_send_order, time_now=time.time()))
 
-            if delay > 0:
+            if delay > 0 and (msg_id_before_counter != 8 and msg_id_before_counter != 9 and
+                              msg_id_before_counter != 14):
                 time.sleep(delay)
             else:
                 pass
