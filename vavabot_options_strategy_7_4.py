@@ -7474,6 +7474,7 @@ def run(ui):
 
     def textedit_balance_settext_signal(info):
         ui.textEdit_balance.setText(str(info))
+        btc_index_print_start_thread()
 
     def msg_box_for_thread_when_open_app1_signal(info):
         msg_for_msg_box = str(info[0])
@@ -8276,7 +8277,6 @@ def run(ui):
     ui.pushButton_2.setEnabled(False)
     ui.pushButton.setEnabled(False)
     ui.pushButton_stop_arbitrage.setEnabled(False)
-    ui.pushButton.clicked.connect(btc_index_print_start_thread)
     ui.pushButton_start_trading.clicked.connect(start_trading)
     ui.pushButton_stop_arbitrage.clicked.connect(stop_trading)
     ui.textEdit_monitor.textChanged.connect(receive_autoscroll_monitor)
