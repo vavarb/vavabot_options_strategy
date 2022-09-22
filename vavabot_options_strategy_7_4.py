@@ -390,8 +390,8 @@ class Deribit:
                 counter_send_order1))
 
         if 'error' in str(out1):
-            self.logwriter(str('**************** ERROR Connection Test *****************' + str(
-                out1) + str(out1['id']) + '_' + str(counter_send_order1)))
+            self.logwriter('**************** Connection Test ERROR *****************\n*** msgOUT: ' + str(out1) +
+                           '*** \n*** msgOut ID: ' + str(out1['id']) + '_' + str(counter_send_order1) + ' ***')
             return 'error'
         else:
             if out1['id'] == 4:
