@@ -17,7 +17,7 @@ def connection1():
                       wss_url=CredentialsSaved.url())
     connect_set_heartbeat = connect.set_heartbeat()
     if connect_set_heartbeat == 'ok':
-        list_monitor_log.append('connection ok')
+        list_monitor_log.append('*** First Connection - connection ok ***')
         led = 'green'
         time.sleep(2)
         pass
@@ -45,19 +45,21 @@ def connection():
             global connect
             connect_set_heartbeat = connect.set_heartbeat()
             if connect_set_heartbeat == 'ok':
-                list_monitor_log.append('connection ok')
+                list_monitor_log.append('* Thread_connection - connection ok *')
                 led = 'green'
                 time.sleep(2)
                 pass
             elif 'too_many_requests' in str(connect_set_heartbeat) or '10028' in str(connect_set_heartbeat):
-                list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
-                connect.logwriter(str('***************** ERROR too_many_requests ******************'))
+                list_monitor_log.append(str('***************** Thread_connection - ERROR too_many_requests '
+                                            '******************'))
+                connect.logwriter(str('***************** Thread_connection - ERROR too_many_requests '
+                                      '******************'))
                 connect.cancel_all()
                 time.sleep(10)
                 connect.cancel_all()
             else:
-                list_monitor_log.append('********** Offline - Connection ERROR **********')
-                connect.logwriter(str('********** OffLine - Connection ERROR **********'))
+                list_monitor_log.append('********** Thread_connection - Offline - Connection ERROR **********')
+                connect.logwriter(str('********** Thread_connection -  OffLine - Connection ERROR **********'))
                 led = 'red'
                 time.sleep(2)
                 connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
@@ -65,13 +67,17 @@ def connection():
                                   wss_url=CredentialsSaved.url())
                 connect_set_heartbeat2 = connect.set_heartbeat()
                 if connect_set_heartbeat2 == 'ok':
-                    list_monitor_log.append(str('***************** Reeturn Connection ******************'))
-                    connect.logwriter(str('***************** Reeturn Connection ******************'))
+                    list_monitor_log.append(str('***************** Thread_connection - Reeturn Connection '
+                                                '******************'))
+                    connect.logwriter(str('***************** Thread_connection - Reeturn Connection '
+                                          '******************'))
                     connect.cancel_all()
                     time.sleep(2)
                 elif 'too_many_requests' in str(connect_set_heartbeat) or '10028' in str(connect_set_heartbeat):
-                    list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
-                    connect.logwriter(str('***************** ERROR too_many_requests ******************'))
+                    list_monitor_log.append(str('***************** Thread_connection - ERROR too_many_requests '
+                                                '******************'))
+                    connect.logwriter(str('***************** Thread_connection - ERROR too_many_requests '
+                                          '******************'))
                     connect.cancel_all()
                     time.sleep(10)
                     connect.cancel_all()
@@ -82,8 +88,8 @@ def connection():
         except Exception as e:
             led = 'red'
             time.sleep(10)
-            list_monitor_log.append('********** Thread_connection - Connection ERROR ********** ' + str(e))
-            connect.logwriter('********** Thread_connection - Connection ERROR ********** ' + str(e))
+            list_monitor_log.append('********** Thread_connection ERROR: ' + str(e) + ' - Offline - **********')
+            connect.logwriter('********** Thread_connection ERROR: ' + str(e) + ' - Offline - **********')
             connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
                               client_secret=CredentialsSaved.secret_key_saved(),
                               wss_url=CredentialsSaved.url())

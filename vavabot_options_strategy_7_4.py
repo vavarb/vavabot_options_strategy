@@ -252,17 +252,18 @@ class Deribit:
                     (msg['id'] != out['id'] and msg_id_before_counter != 1 and led_color() == 'green' and
                      msg_id_before_counter != 8 and msg_id_before_counter != 9):
                 if msg['id'] != out['id']:
-                    from connection_spread import set_led_red
-                    self.logwriter(' ***** ERROR: msg ID != out ID' + str(out) + ' * ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order) + ' *****')
+                    self.logwriter(' ***** ERROR: msgSentID != msgOutID *****\n***** msgSent: ' + str(msg) +
+                                   ' *****\n***** msgOut: ' + str(out) + ' *****\n*** msgSent ID: ' + str(msg['id']) +
+                                   '_' + str(counter_send_order) + ' ***''\n*** msgOut ID: ' + str(out['id']) + ' ***')
                     time.sleep(5)
                     raise ConnectionError
                 else:
-                    self.logwriter(' ***** ERROR: ' + str(out) + ' ID: ' + str(msg['id']) + '_' + str(
-                        counter_send_order) + ' *****')
+                    self.logwriter(' ***** _sender ERROR: msgOut: ' + str(out) + '*****\n ***msgSent ID: ' +
+                                   str(msg['id']) + '_' + str(counter_send_order) + ' ***')
 
                 if str(out['error']['code']) == '13009' or str(out['error']['code']) == '13004':
-                    self.logwriter('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
+                    self.logwriter('***** _sender msg - VERIFY CREDENTIALS - Type your Deribit API and Secret Keys '
+                                   '*****')
                     if str(msg_id_before_counter) == '19':
                         return float(0)
                     elif str(msg_id_before_counter) == '25':
@@ -331,7 +332,8 @@ class Deribit:
                 return out['result']
 
         except Exception as er:
-            self.logwriter('_sender error: ' + str(er) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
+            self.logwriter('***** _sender ERROR: ' + str(er) + ' msgSent ID: ' + str(msg['id']) +
+                           '_' + str(counter_send_order) + ' *****')
         finally:
             pass
 
