@@ -78,7 +78,7 @@ class Deribit:
     def logwriter(self, msg):
         from lists import list_monitor_log
 
-        filename = 'log_spread.log'
+        filename = 'log_strategy.log'
 
         try:
             out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
@@ -256,8 +256,8 @@ class Deribit:
                     self.logwriter(' ***** ERROR: msgSentID != msgOutID *****\n***** msgSent: ' + str(msg) +
                                    ' *****\n***** msgOut: ' + str(out) + ' *****\n*** msgSent ID: ' + str(msg['id']) +
                                    '_' + str(counter_send_order) + ' ***''\n*** msgOut ID: ' + str(out['id']) + ' ***')
-                    time.sleep(5)
-                    raise ConnectionError
+                    time.sleep(10)
+                    out = {'error': {'code': 'error'}}
                 else:
                     self.logwriter(' ***** _sender ERROR: msgOut: ' + str(out) + '*****\n ***msgSent ID: ' +
                                    str(msg['id']) + '_' + str(counter_send_order) + ' ***')
@@ -333,8 +333,15 @@ class Deribit:
                 return out['result']
 
         except Exception as er:
+            from connection_spread import connection_thread, run_thread
+            import threading
+
             self.logwriter('***** _sender ERROR: ' + str(er) + ' msgSent ID: ' + str(msg['id']) +
                            '_' + str(counter_send_order) + ' *****')
+            if run_thread.is_alive() is True:
+                pass
+            else:
+                connection_thread()
         finally:
             pass
 
@@ -363,7 +370,7 @@ class Deribit:
             }
         return self._sender(msg)
 
-    def set_heartbeat(self):
+    def test(self):
         global delay
 
         counter_send_order1 = self.counter_send_order_function()
@@ -377,14 +384,18 @@ class Deribit:
             {
                 "jsonrpc": "2.0",
                 "id": 4,
-                "method": "public/set_heartbeat",
+                "method": "public/test",
                 "params": {
-                    "interval": 60
                 }
             }
-
-        self._WSS.send(json.dumps(msg1))
-        out1 = json.loads(self._WSS.recv())
+        try:
+            self._WSS.send(json.dumps(msg1))
+            out1 = json.loads(self._WSS.recv())
+        except AttributeError as er1:
+            self.logwriter(
+                str('********** Connection Test Error: ' + str(er1) + ' **********\n msgSent ID: ' +
+                    str(msg1['id']) + '_' + str(counter_send_order1)))
+            return 'error'
 
         self.logwriter(
             str(msg1['method']) + '(* Connection Test *)' + ' ID: ' + str(msg1['id']) + '_' + str(
@@ -398,7 +409,7 @@ class Deribit:
             if out1['id'] == 4:
                 return out1['result']
             elif (isinstance(out1['id'], int) or isinstance(out1['id'], float)) and out1['id'] != 4:
-                return 'ok'
+                return 'version'
             else:
                 return out1['result']
 
@@ -565,6 +576,19 @@ class Deribit:
                     "start_timestamp": timestamp_start,
                     "end_timestamp": timestamp_end,
                     "resolution": "1"
+                }
+            }
+        return self._sender(msg)
+
+    def hello(self):
+        msg = \
+            {
+                "jsonrpc": "2.0",
+                "id": 26,
+                "method": "public/hello",
+                "params": {
+                    "client_name": "VavaBot - Options Strategy",
+                    "client_version": "7.5"
                 }
             }
         return self._sender(msg)
@@ -1050,27 +1074,27 @@ class ConfigSaved:
         from lists import list_monitor_log
 
         try:
-            if os.path.isfile('log_arbitrage_backup.log') is True:
-                if float(os.path.getsize('log_arbitrage_backup.log')) > 8000000:
-                    os.unlink('log_arbitrage_backup.log')
-                    list_monitor_log.append('*** Deleted log_arbitrage_backup.log (>8MB). ***')
+            if os.path.isfile('log_strategy_backup.log') is True:
+                if float(os.path.getsize('log_strategy_backup.log')) > 8000000:
+                    os.unlink('log_strategy_backup.log')
+                    list_monitor_log.append('*** Deleted log_strategy_backup.log (>8MB). ***')
                 else:
-                    list_monitor_log.append('*** Len log_arbitrage_backup.log < 8MB. ***')
+                    list_monitor_log.append('*** log_strategy_backup.log Size < 8MB. ***')
             else:
                 pass
 
-            if os.path.isfile('log_spread.log') is True:
-                if float(os.path.getsize('log_spread.log')) > 500000:
-                    with open('log_spread_backup.log', 'a') as file_backup:
-                        with open('log_spread.log', 'r') as log_file:
+            if os.path.isfile('log_strategy.log') is True:
+                if float(os.path.getsize('log_strategy.log')) > 500000:
+                    with open('log_strategy_backup.log', 'a') as file_backup:
+                        with open('log_strategy.log', 'r') as log_file:
                             file_backup.writelines(log_file)
-                            list_monitor_log.append('*** Appended log_spread.log into log_spread_backup.log ***')
-                    os.unlink('log_spread.log')
-                    list_monitor_log.append('*** Deleted and Created log_spread.log ***')
+                            list_monitor_log.append('*** Appended log_strategy.log into log_strategy_backup.log ***')
+                    os.unlink('log_strategy.log')
+                    list_monitor_log.append('*** Deleted and Created log_strategy.log ***')
                 else:
-                    list_monitor_log.append('*** Len log_spread.log < 0.5MB. ***')
+                    list_monitor_log.append('*** log_strategy.log Size < 0.5MB. ***')
             else:
-                list_monitor_log.append('*** Created log_spread.log ***')
+                list_monitor_log.append('*** Created log_strategy.log ***')
 
         except Exception as er:
             from connection_spread import connect
@@ -1731,7 +1755,7 @@ class Quote:
 
     @staticmethod
     def quote_new():
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         from lists import list_monitor_log
 
         if led_color() == 'red':
@@ -1861,7 +1885,7 @@ class Quote:
 
     @staticmethod
     def quote_new_structure_cost_for_print_when_stopped_trading():
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         from lists import list_monitor_log
 
         if led_color() == 'red':
@@ -4445,7 +4469,7 @@ class ConditionsCheck:
 
     def send_future_orders(self, instrument_number=None):
         self.instrument_number = instrument_number
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         from lists import list_monitor_log
         global send_future_orders_while
 
@@ -4656,6 +4680,7 @@ class ConditionsCheck:
     @staticmethod
     def targets_achieved():
         from lists import list_monitor_log
+        from connection_spread import led_color
         import time
         global run_target_on_off
         global trading_on_off_for_msg
@@ -4752,6 +4777,7 @@ class ConditionsCheck:
     @staticmethod
     def structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading():
         import time
+        from connection_spread import led_color
         from lists import list_monitor_log
 
         if led_color() == 'red':
@@ -6031,7 +6057,7 @@ def instruments(ui):
 
     def position_now_when_open_app():
         global list_thread_when_open_app
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         from lists import list_monitor_log, list_thread_when_open_app
 
         instrument1_name = instrument_name_construction_from_file_when_open_app(instrument_number=1)
@@ -6124,7 +6150,7 @@ def instruments(ui):
         ui.pushButton.setEnabled(False)
 
     def quote_new_when_open_app():
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         from lists import list_thread_when_open_app
         global list_thread_when_open_app
 
@@ -6381,6 +6407,7 @@ def instruments(ui):
 
     def instruments_saved_print_and_check_available_when_open_app():
         from lists import list_monitor_log, list_thread_when_open_app
+        from connection_spread import led_color
         global list_thread_when_open_app
 
         if led_color() == 'red':  # Erro depois ver o que fazer com esta mensagem box
@@ -6491,6 +6518,7 @@ def instruments(ui):
             pass
 
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
+        from connection_spread import led_color
         date_now_instrument = QtCore.QDate.currentDate()
         if (ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' and (
                 ui.lineEdit_buy_or_sell_instrumet1.currentText() == '' or
@@ -7179,7 +7207,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.3.1"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.5"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
@@ -7339,7 +7367,7 @@ def config(ui):
                 pass
 
     def position_now():
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         from lists import list_monitor_log
 
         instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
@@ -7572,6 +7600,7 @@ def run(ui):
     def lists_monitor():
         import time
         from lists import list_monitor_log
+        from connection_spread import led_color
         try:
             from connection_spread import connect
             counter = 0
@@ -7679,6 +7708,7 @@ def run(ui):
 
     def receive_greeks_signal(greeks):
         from lists import list_monitor_log
+        from connection_spread import led_color
         c = dict(greeks)
         if led_color() == 'red':
             pass
@@ -7709,6 +7739,7 @@ def run(ui):
 
     def receive_greeks_signal1(greeks):
         from lists import list_monitor_log
+        from connection_spread import led_color
         c = dict(greeks)
         if led_color() == 'red':
             pass
@@ -7767,6 +7798,7 @@ def run(ui):
         import time
         global index_greeks_print_on_off
         from lists import list_monitor_log
+        from connection_spread import led_color
 
         index_greeks_print_on_off = 'on'
 
@@ -7823,7 +7855,7 @@ def run(ui):
     def run_trade_future():
         import time
         from lists import list_monitor_log
-        from connection_spread import connect
+        from connection_spread import connect, led_color
         global trading_on_off
         global run_trade_future_on_off
         global run_trade_option_on_off
@@ -7960,6 +7992,7 @@ def run(ui):
     # noinspection PyMethodMayBeStatic
     def structure_mark_greek_cost_signal(greeks):
         from lists import list_monitor_log
+        from connection_spread import led_color
         c = dict(greeks)
         if led_color() == 'red':
             pass
@@ -8019,6 +8052,7 @@ def run(ui):
     def start():
         import time
         from lists import list_monitor_log
+        from connection_spread import led_color
         global trading_on_off
         global run_trade_future_on_off
         global run_trade_option_on_off

@@ -1,5 +1,5 @@
 
-from vavabot_options_strategy_7_4_1 import Deribit, CredentialsSaved, ConfigSaved
+from vavabot_options_strategy_7_5 import Deribit, CredentialsSaved, ConfigSaved
 import time
 from lists import list_monitor_log
 import threading
@@ -15,19 +15,28 @@ def connection1():
     connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
                       client_secret=CredentialsSaved.secret_key_saved(),
                       wss_url=CredentialsSaved.url())
-    connect_set_heartbeat = connect.set_heartbeat()
-    if connect_set_heartbeat == 'ok':
-        list_monitor_log.append('*** First Connection - connection ok ***')
+    connection_test = connect.test()
+    if 'version' in str(connection_test):
+        connect.logwriter('*** First Connection - connection ok ***')
         led = 'green'
+        hello = connect.hello()
+        connect.logwriter(str(hello))
         time.sleep(2)
+
         pass
     else:
+        list_monitor_log.append('********** First Connection - Connection Error **********')
         set_led_red()
 
 
 def set_led_red():
     global led
     led = 'red'
+
+
+def set_led_green():
+    global led
+    led = 'green'
 
 
 def led_color():
@@ -43,13 +52,14 @@ def connection():
     while True:
         try:
             global connect
-            connect_set_heartbeat = connect.set_heartbeat()
-            if connect_set_heartbeat == 'ok':
+            connection_test = connect.test()
+            if 'version' in str(connection_test):
                 list_monitor_log.append('* Thread_connection - connection ok *')
-                led = 'green'
                 time.sleep(2)
-                pass
-            elif 'too_many_requests' in str(connect_set_heartbeat) or '10028' in str(connect_set_heartbeat):
+                connect.cancel_all()
+                set_led_green()
+                break
+            elif 'too_many_requests' in str(connection_test) or '10028' in str(connection_test):
                 list_monitor_log.append(str('***************** Thread_connection - ERROR too_many_requests '
                                             '******************'))
                 connect.logwriter(str('***************** Thread_connection - ERROR too_many_requests '
@@ -65,15 +75,16 @@ def connection():
                 connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
                                   client_secret=CredentialsSaved.secret_key_saved(),
                                   wss_url=CredentialsSaved.url())
-                connect_set_heartbeat2 = connect.set_heartbeat()
-                if connect_set_heartbeat2 == 'ok':
+                connection_test2 = connect.test()
+                if 'version' in str(connection_test2):
                     list_monitor_log.append(str('***************** Thread_connection - Reeturn Connection '
                                                 '******************'))
                     connect.logwriter(str('***************** Thread_connection - Reeturn Connection '
                                           '******************'))
                     connect.cancel_all()
-                    time.sleep(2)
-                elif 'too_many_requests' in str(connect_set_heartbeat) or '10028' in str(connect_set_heartbeat):
+                    set_led_green()
+                    break
+                elif 'too_many_requests' in str(connection_test2) or '10028' in str(connection_test2):
                     list_monitor_log.append(str('***************** Thread_connection - ERROR too_many_requests '
                                                 '******************'))
                     connect.logwriter(str('***************** Thread_connection - ERROR too_many_requests '
@@ -81,7 +92,6 @@ def connection():
                     connect.cancel_all()
                     time.sleep(10)
                     connect.cancel_all()
-                    pass
                 else:
                     pass
 
@@ -101,6 +111,10 @@ def connection():
             pass
 
 
+run_thread = threading.Thread(daemon=True, target=connection, name='run_thread')
+
+
 def connection_thread():
-    run_thread = threading.Thread(daemon=True, target=connection)
+    global run_thread
+    run_thread = threading.Thread(daemon=True, target=connection, name='run_thread')
     run_thread.start()

@@ -1,6 +1,6 @@
 api-key_spread.txt
 secret-key_spread.txt
-log_spread.log
+log_strategy.log
 log_spread_backup.log
 pyinstaller.py
 send_orders_rate.txt
