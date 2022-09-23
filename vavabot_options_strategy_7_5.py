@@ -6863,7 +6863,10 @@ def instruments(ui):
                                                                 str(instrument4_to_save)
                                                                 )
                                 instruments_saved_print_and_check_available()  # Não tem UI
-                                InstrumentsSaved().instruments_check()  # Não tem UI
+                                textedit_instruments_saved_settext_signal_str = str(
+                                    InstrumentsSaved().instruments_check())
+                                sinal.textedit_instruments_saved_settext_signal.emit(
+                                    textedit_instruments_saved_settext_signal_str)
                                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
                                 Config().position_before_trade_save()  # não tem 'ui' na função.
                                 sinal.textedit_balance_settext_signal.emit(
