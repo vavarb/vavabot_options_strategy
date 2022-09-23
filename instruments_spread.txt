@@ -1,4 +1,4 @@
-Instrument 1: option buy 0.1 BTC-30SEP22-20000-C
-Instrument 2: option buy 0.1 BTC-30SEP22-20000-P
-Instrument 3: option sell 0.1 BTC-30SEP22-19000-C
-Instrument 4: option sell 0.1 BTC-30SEP22-19000-P
+Instrument 1: option buy 0.1 BTC-30SEP22-20000-P
+Instrument 2: option sell 0.1 BTC-30SEP22-19000-P
+Instrument 3: Unassigned
+Instrument 4: Unassigned
