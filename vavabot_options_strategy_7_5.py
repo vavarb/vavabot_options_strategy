@@ -7858,10 +7858,14 @@ def run(ui):
         ui.pushButton_start_trading.setEnabled(True)
 
     def btc_index_print_start_thread():
+        import threading
         sinal.btc_index_print_start_thread_signal.emit()
 
-        btc_index_print_thread = threading.Thread(daemon=True, target=btc_index_print)
-        btc_index_print_thread.start()
+        btc_index_print_thread = threading.Thread(daemon=True, target=btc_index_print, name='btc_index_print_thread')
+        if btc_index_print_thread.is_alive() is True:
+            pass
+        else:
+            btc_index_print_thread.start()
 
     def run_trade_future():
         import time
