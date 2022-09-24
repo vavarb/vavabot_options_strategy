@@ -7519,7 +7519,8 @@ def run(ui):
 
     def textedit_balance_settext_signal(info):
         ui.textEdit_balance.setText(str(info))
-        btc_index_print_start_thread()
+
+        # btc_index_print_start_thread()
 
     def msg_box_for_thread_when_open_app1_signal(info):
         msg_for_msg_box = str(info[0])
@@ -8336,6 +8337,7 @@ def run(ui):
     ui.pushButton_stop_arbitrage.clicked.connect(stop_trading)
     ui.textEdit_monitor.textChanged.connect(receive_autoscroll_monitor)
     ui.checkBox_autoScrollBar.clicked.connect(receive_autoscroll_monitor)
+    btc_index_print_start_thread()
 
 
 # noinspection PyShadowingNam
