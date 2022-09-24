@@ -590,7 +590,7 @@ class Deribit:
                 "method": "public/hello",
                 "params": {
                     "client_name": "VavaBot - Options Strategy",
-                    "client_version": "7.5"
+                    "client_version": "7.5.1"
                 }
             }
         return self._sender(msg)
@@ -7157,7 +7157,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates_signal_receive():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.5"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.5.1"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
