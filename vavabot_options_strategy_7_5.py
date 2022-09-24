@@ -7520,8 +7520,6 @@ def run(ui):
     def textedit_balance_settext_signal(info):
         ui.textEdit_balance.setText(str(info))
 
-        # btc_index_print_start_thread()
-
     def msg_box_for_thread_when_open_app1_signal(info):
         msg_for_msg_box = str(info[0])
         title_for_msg_box = str(info[1])
@@ -7866,10 +7864,7 @@ def run(ui):
         sinal.btc_index_print_start_thread_signal.emit()
 
         btc_index_print_thread = threading.Thread(daemon=True, target=btc_index_print, name='btc_index_print_thread')
-        if btc_index_print_thread.is_alive() is True:
-            pass
-        else:
-            btc_index_print_thread.start()
+        btc_index_print_thread.start()
 
     def run_trade_future():
         import time
@@ -8114,7 +8109,6 @@ def run(ui):
                                                         ' greeks and BTC index for tab Run *****')
                                 sinal.chronometer_signal.emit(str(counter_run_trade_option))
                                 counter_run_trade_option = 11
-                                time.sleep(2)
                             else:
                                 pass
 
