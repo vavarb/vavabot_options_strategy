@@ -7157,10 +7157,10 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates_signal_receive():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.6"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.7"))
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
+        icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve.ico"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
         ui.pushButton_submit_new_plot_payoff.setText("Strategy\nPayoff")
