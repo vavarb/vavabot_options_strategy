@@ -7248,10 +7248,10 @@ def config(ui):
         # set date time
         ui.date_time_start.raise_()
         ui.date_time_end.raise_()
-        ui.label_date_time_start.raise_()
+        ui.checkbox_date_time_end.raise_()
         ui.label_date_time_end.raise_()
-        ui.label_date_time_start.setText('Trading Start:')
-        ui.label_date_time_end.setText('Trading End:')
+        ui.checkbox_date_time_start.setText('Trading Start:')
+        ui.checkbox_date_time_end.setText('Trading End:')
 
     def set_version_and_icon_and_texts_and_dates():
         sinal.set_version_and_icon_and_texts_and_dates_signal.emit()

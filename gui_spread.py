@@ -942,29 +942,31 @@ class Ui_MainWindow(object):
 
         # date time start and end - start
         self.date_time_start = QtWidgets.QDateTimeEdit(self.frame_4_targets)
-        self.date_time_start.setGeometry(QtCore.QRect(557, 138, 110, 17))
+        self.date_time_start.setGeometry(QtCore.QRect(554, 138, 112, 17))
         self.date_time_start.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.date_time_start.setCalendarPopup(True)
         font = QtGui.QFont()
         font.setPointSize(8)
         self.date_time_start.setFont(font)
         self.date_time_start.setObjectName("date_time_start")
 
         self.date_time_end = QtWidgets.QDateTimeEdit(self.frame_4_targets)
-        self.date_time_end.setGeometry(QtCore.QRect(557, 158, 110, 17))
+        self.date_time_end.setGeometry(QtCore.QRect(554, 158, 112, 17))
         self.date_time_end.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.date_time_end.setCalendarPopup(True)
         self.date_time_end.setFont(font)
         self.date_time_end.setObjectName("date_time_end")
 
-        self.label_date_time_start = QtWidgets.QLabel(self.frame_4_targets)
-        self.label_date_time_start.setGeometry(QtCore.QRect(460, 138, 80, 17))
+        self.checkbox_date_time_start = QtWidgets.QCheckBox(self.frame_4_targets)
+        self.checkbox_date_time_start.setGeometry(QtCore.QRect(456, 138, 95, 17))
         font.setBold(True)
-        self.label_date_time_start.setFont(font)
-        self.label_date_time_start.setObjectName("label_date_time_start")
+        self.checkbox_date_time_start.setFont(font)
+        self.checkbox_date_time_start.setObjectName("checkbox_date_time_start")
 
-        self.label_date_time_end = QtWidgets.QLabel(self.frame_4_targets)
-        self.label_date_time_end.setGeometry(QtCore.QRect(460, 158, 80, 17))
-        self.label_date_time_end.setFont(font)
-        self.label_date_time_end.setObjectName("label_date_time_end")
+        self.checkbox_date_time_end = QtWidgets.QCheckBox(self.frame_4_targets)
+        self.checkbox_date_time_end.setGeometry(QtCore.QRect(456, 158, 95, 17))
+        self.checkbox_date_time_end.setFont(font)
+        self.checkbox_date_time_end.setObjectName("checkbox_date_time_end")
         # date time and end - end
 
         self.pushButton_submit_new_targets = QtWidgets.QPushButton(self.frame_4_targets)
