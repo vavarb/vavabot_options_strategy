@@ -7244,7 +7244,7 @@ def config(ui):
         # set date time
         ui.date_time_start.raise_()
         ui.date_time_end.raise_()
-        ui.checkbox_date_time_end.raise_()
+        ui.checkbox_date_time_start.raise_()
         ui.checkbox_date_time_end.raise_()
         ui.checkbox_date_time_start.setText('Trading Start:')
         ui.checkbox_date_time_end.setText('Trading End:')
