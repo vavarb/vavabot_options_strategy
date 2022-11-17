@@ -7159,10 +7159,6 @@ def config(ui):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.7"))
 
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve.ico"),
-                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
-
         ui.pushButton_submit_new_plot_payoff.setText("Strategy\nPayoff")
 
         ui.label_29.setText("Buy or sell option strategy? (Select \"buy\" or \"sell\")")
@@ -7249,7 +7245,7 @@ def config(ui):
         ui.date_time_start.raise_()
         ui.date_time_end.raise_()
         ui.checkbox_date_time_end.raise_()
-        ui.label_date_time_end.raise_()
+        ui.checkbox_date_time_end.raise_()
         ui.checkbox_date_time_start.setText('Trading Start:')
         ui.checkbox_date_time_end.setText('Trading End:')
 
