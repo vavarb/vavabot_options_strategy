@@ -7157,7 +7157,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates_signal_receive():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.7"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.6"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
@@ -7171,6 +7171,8 @@ def config(ui):
 
         ui.comboBox_value_given_2.setItemText(0, "Set Option Strategy Cost as TRIGGER (optional)")
 
+        ui.checkBox_reduce_only.setText("Reduce Only")
+
         ui.pushButton_request_options_structure_cost.setText("UPDATE Option Strategy Cost")
 
         ui.label_57.setText("Strategy Greeks:")
@@ -7182,6 +7184,8 @@ def config(ui):
         ui.label_44.setText("Strategy Greeks:")
 
         ui.pushButton_submit_new_instruments.setText("SUBMIT new Trades")
+
+        ui.checkBox_autoScrollBar.setChecked(True)
 
         # set date:
         date_now_instrument = QtCore.QDate.currentDate()
@@ -7228,6 +7232,20 @@ def config(ui):
                                '>>> Lightning Network Adress: vavarb@bipa.app\n' \
                                '>>> ₿ITCOIN Adress: 36RbpSZVNiSxK69kNMH3WHFJqAhfXppU5N'
         ui.textEdit_buy_me_a_coffee.append(buy_me_a_coffee_text)
+
+        # Set Text reduce only
+        ui.label_18.setText('Buy or Sell')
+
+        ui.check_box_reduce_only_1.setText(' ')
+        ui.check_box_reduce_only_2.setText(' ')
+        ui.check_box_reduce_only_3.setText(' ')
+        ui.check_box_reduce_only_4.setText(' ')
+
+        ui.label_reduce_only.setText('Reduce\nOnly:')
+        ui.label_reduce_only.raise_()
+
+        # Set Text strategy name
+        ui.label_strategy_name.setText('Strategy Name:')
 
     def set_version_and_icon_and_texts_and_dates():
         sinal.set_version_and_icon_and_texts_and_dates_signal.emit()
