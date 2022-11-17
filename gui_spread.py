@@ -885,8 +885,6 @@ class Ui_MainWindow(object):
         self.comboBox_value_given.addItem("")
         self.comboBox_value_given.addItem("")
         self.comboBox_value_given.addItem("")
-        # self.comboBox_value_given.addItem("")
-        # self.comboBox_value_given.setItemText(4, "")
         self.formLayout_2.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.comboBox_value_given)
         self.lineEdit_spread_structure1 = QtWidgets.QLineEdit(self.formLayoutWidget_2)
         self.lineEdit_spread_structure1.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -926,12 +924,12 @@ class Ui_MainWindow(object):
         self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_27)
 
         self.lineEdit_orders_rate = QtWidgets.QLineEdit(self.frame_4_targets)
-        self.lineEdit_orders_rate.setGeometry(QtCore.QRect(610, 171, 32, 20))
+        self.lineEdit_orders_rate.setGeometry(QtCore.QRect(610, 177, 32, 16))
         self.lineEdit_orders_rate.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.lineEdit_orders_rate.setObjectName("lineEdit_orders_rate")
 
         self.pushButton_orders_rate = QtWidgets.QPushButton(self.frame_4_targets)
-        self.pushButton_orders_rate.setGeometry(QtCore.QRect(591, 195, 70, 35))
+        self.pushButton_orders_rate.setGeometry(QtCore.QRect(591, 196, 70, 35))
         font = QtGui.QFont()
         font.setFamily("MS Shell Dlg 2")
         font.setPointSize(12)
@@ -942,23 +940,32 @@ class Ui_MainWindow(object):
         self.pushButton_orders_rate.setStyleSheet("font: 8pt \"MS Shell Dlg 2\";")
         self.pushButton_orders_rate.setObjectName("pushButton_submit_new_targets")
 
-        self.checkBox_reduce_only = QtWidgets.QCheckBox(self.frame_4_targets)
-        self.checkBox_reduce_only.setGeometry(QtCore.QRect(581, 115, 91, 17))
+        # date time start and end - start
+        self.date_time_start = QtWidgets.QDateTimeEdit(self.frame_4_targets)
+        self.date_time_start.setGeometry(QtCore.QRect(557, 138, 110, 17))
+        self.date_time_start.setStyleSheet("background-color: rgb(255, 255, 255);")
         font = QtGui.QFont()
         font.setPointSize(8)
-        self.checkBox_reduce_only.setFont(font)
-        self.checkBox_reduce_only.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.checkBox_reduce_only.setObjectName("checkBox_reduce_only")
+        self.date_time_start.setFont(font)
+        self.date_time_start.setObjectName("date_time_start")
 
-        self.textEdit_reduce_only_saved = QtWidgets.QTextEdit(self.frame_4_targets)
-        self.textEdit_reduce_only_saved.setGeometry(QtCore.QRect(581, 135, 80, 23))
-        font = QtGui.QFont()
+        self.date_time_end = QtWidgets.QDateTimeEdit(self.frame_4_targets)
+        self.date_time_end.setGeometry(QtCore.QRect(557, 158, 110, 17))
+        self.date_time_end.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.date_time_end.setFont(font)
+        self.date_time_end.setObjectName("date_time_end")
+
+        self.label_date_time_start = QtWidgets.QLabel(self.frame_4_targets)
+        self.label_date_time_start.setGeometry(QtCore.QRect(460, 138, 80, 17))
         font.setBold(True)
-        font.setWeight(75)
-        self.textEdit_reduce_only_saved.setFont(font)
-        self.textEdit_reduce_only_saved.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.textEdit_reduce_only_saved.setReadOnly(True)
-        self.textEdit_reduce_only_saved.setObjectName("textEdit_reduce_only_saved")
+        self.label_date_time_start.setFont(font)
+        self.label_date_time_start.setObjectName("label_date_time_start")
+
+        self.label_date_time_end = QtWidgets.QLabel(self.frame_4_targets)
+        self.label_date_time_end.setGeometry(QtCore.QRect(460, 158, 80, 17))
+        self.label_date_time_end.setFont(font)
+        self.label_date_time_end.setObjectName("label_date_time_end")
+        # date time and end - end
 
         self.pushButton_submit_new_targets = QtWidgets.QPushButton(self.frame_4_targets)
         self.pushButton_submit_new_targets.setGeometry(QtCore.QRect(560, 30, 101, 61))
@@ -1018,7 +1025,7 @@ class Ui_MainWindow(object):
         self.label_12 = QtWidgets.QLabel(self.frame_4_targets)
         self.label_12.setGeometry(QtCore.QRect(440, 150, 141, 81))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_12.setFont(font)
@@ -1073,9 +1080,6 @@ class Ui_MainWindow(object):
         self.pushButton_update_balance_2.setStyleSheet("")
         self.pushButton_update_balance_2.setObjectName("pushButton_update_balance_2")
         self.formLayoutWidget_2.raise_()
-
-        self.checkBox_reduce_only.raise_()
-        self.textEdit_reduce_only_saved.raise_()
 
         self.pushButton_orders_rate.raise_()
 
@@ -1911,8 +1915,9 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.lineEdit_spread_structure1, self.comboBox_value_given_2)
         MainWindow.setTabOrder(self.comboBox_value_given_2, self.lineEdit_currency_exchange_rate_lower1_2)
 
-        MainWindow.setTabOrder(self.lineEdit_currency_exchange_rate_lower1_2, self.checkBox_reduce_only)
-        MainWindow.setTabOrder(self.checkBox_reduce_only, self.pushButton_submit_new_targets)
+        MainWindow.setTabOrder(self.lineEdit_currency_exchange_rate_lower1_2, self.date_time_start)
+        MainWindow.setTabOrder(self.date_time_start, self.date_time_end)
+        MainWindow.setTabOrder(self.date_time_end, self.pushButton_submit_new_targets)
 
         MainWindow.setTabOrder(self.pushButton_submit_new_targets, self.lineEdit_orders_rate)
 
@@ -2058,7 +2063,7 @@ class Ui_MainWindow(object):
         self.label_42.setText(_translate("MainWindow", "Instruments balance BEFORE trade:"))
         self.pushButton_update_balance.setText(_translate("MainWindow", "UPDATE\n"
                                                                         " Balance"))
-        self.label_12.setText(_translate("MainWindow", "Conditions saved"))
+        self.label_12.setText(_translate("MainWindow", "<= Conditions saved"))
         self.label_43.setText(_translate("MainWindow", "Preview balance AFTER trade:"))
         self.label_59.setText(_translate("MainWindow", "Current Positions:"))
         self.pushButton_update_balance_2.setText(_translate("MainWindow", "UPDATE\n"

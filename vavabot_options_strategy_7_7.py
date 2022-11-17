@@ -7171,8 +7171,6 @@ def config(ui):
 
         ui.comboBox_value_given_2.setItemText(0, "Set Option Strategy Cost as TRIGGER (optional)")
 
-        ui.checkBox_reduce_only.setText("Reduce Only")
-
         ui.pushButton_request_options_structure_cost.setText("UPDATE Option Strategy Cost")
 
         ui.label_57.setText("Strategy Greeks:")
@@ -7246,6 +7244,14 @@ def config(ui):
 
         # Set Text strategy name
         ui.label_strategy_name.setText('Strategy Name:')
+
+        # set date time
+        ui.date_time_start.raise_()
+        ui.date_time_end.raise_()
+        ui.label_date_time_start.raise_()
+        ui.label_date_time_end.raise_()
+        ui.label_date_time_start.setText('Trading Start:')
+        ui.label_date_time_end.setText('Trading End:')
 
     def set_version_and_icon_and_texts_and_dates():
         sinal.set_version_and_icon_and_texts_and_dates_signal.emit()
