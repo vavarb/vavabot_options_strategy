@@ -7202,7 +7202,18 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates_signal_receive():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Options Strategy 7.7"))
+        setup = ConfigParser(
+            allow_no_value=True,
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = dict(setup['DEFAULT'])
+        name = default_setup['name']
+        version = default_setup['version']
+        strategy_name = default_setup['strategy_name']
+        main_windows_title = str(
+            name + ' ' + version + '                    *** Strategy Name: ' + strategy_name + ' ***')
+        MainWindow.setWindowTitle(_translate("MainWindow", main_windows_title))
 
         ui.pushButton_submit_new_plot_payoff.setText("Strategy\nPayoff")
 
