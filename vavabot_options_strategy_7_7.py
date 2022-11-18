@@ -1,5 +1,6 @@
 
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
+from configparser import ConfigParser
 
 from gui_spread import *
 from connection_spread import *
@@ -583,14 +584,22 @@ class Deribit:
         return self._sender(msg)
 
     def hello(self):
+        setup = ConfigParser(
+            allow_no_value=True,
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = dict(setup['DEFAULT'])
+        name = default_setup['name']
+        version = default_setup['version']
         msg = \
             {
                 "jsonrpc": "2.0",
                 "id": 26,
                 "method": "public/hello",
                 "params": {
-                    "client_name": "VavaBot - Options Strategy",
-                    "client_version": "7.7"
+                    "client_name": str(name),
+                    "client_version": str(version)
                 }
             }
         return self._sender(msg)
@@ -1156,6 +1165,42 @@ class ConfigSaved:
             lines_file = file.readlines()  # file instruments_spread.txt ==> lines
             list_line_file = lines_file[3].split()  # line ==> list
             return float(list_line_file[6])
+
+    @staticmethod
+    def setup_ini_check():
+        from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('setup.ini') is False:
+            config = ConfigParser()
+
+            dict_setup_default = {
+                'name': 'VavaBot - Options Strategy',
+                'version': '7.7',
+                'date': '2022',
+                'strategy_name': 'None'
+            }
+            config['DEFAULT'] = dict_setup_default
+
+            config['reduce_only'] = {}
+            reduce_only = config['reduce_only']
+            reduce_only['instrument1'] = 'False'
+            reduce_only['instrument2'] = 'False'
+            reduce_only['instrument3'] = 'False'
+            reduce_only['instrument4'] = 'False'
+
+            config['date_time'] = {}
+            date_time = config['date_time']
+            date_time['start_ischeck'] = 'False'
+            date_time['start'] = 'None'
+            date_time['end_ischeck'] = 'False'
+            date_time['end'] = 'None'
+
+            with open('setup.ini', 'w') as configfile:
+                config.write(configfile)
+            list_monitor_log.append('***** Setup.ini file created *****')
+        else:
+            list_monitor_log.append('***** There is a setup.ini file *****')
 
 
 class Config:

@@ -6,6 +6,7 @@ import threading
 global connect
 
 ConfigSaved().remove_log_spread_log_if_bigger_500kb_when_open_app()
+ConfigSaved().setup_ini_check()
 led = 'red'
 
 
