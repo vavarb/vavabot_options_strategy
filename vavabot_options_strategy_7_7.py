@@ -1172,33 +1172,7 @@ class ConfigSaved:
         import os
 
         if os.path.isfile('setup.ini') is False:
-            config = ConfigParser()
-
-            dict_setup_default = {
-                'name': 'VavaBot - Options Strategy',
-                'version': '7.7',
-                'date': '2022',
-                'strategy_name': 'None'
-            }
-            config['DEFAULT'] = dict_setup_default
-
-            config['reduce_only'] = {}
-            reduce_only = config['reduce_only']
-            reduce_only['instrument1'] = 'False'
-            reduce_only['instrument2'] = 'False'
-            reduce_only['instrument3'] = 'False'
-            reduce_only['instrument4'] = 'False'
-
-            config['date_time'] = {}
-            date_time = config['date_time']
-            date_time['start_ischeck'] = 'False'
-            date_time['start'] = 'None'
-            date_time['end_ischeck'] = 'False'
-            date_time['end'] = 'None'
-
-            with open('setup.ini', 'w') as configfile:
-                config.write(configfile)
-            list_monitor_log.append('***** Setup.ini file created *****')
+            Config().setup_ini_creator()
         else:
             list_monitor_log.append('***** There is a setup.ini file *****')
 
@@ -1439,6 +1413,38 @@ class Config:
                                instrument_number=instrument_number)) * -1)
                 else:
                     pass
+
+    @staticmethod
+    def setup_ini_creator():
+        from lists import list_monitor_log
+
+        config = ConfigParser()
+
+        dict_setup_default = {
+            'name': 'VavaBot - Options Strategy',
+            'version': '7.7',
+            'date': '2022',
+            'strategy_name': 'None'
+        }
+        config['DEFAULT'] = dict_setup_default
+
+        config['reduce_only'] = {}
+        reduce_only = config['reduce_only']
+        reduce_only['instrument1'] = 'False'
+        reduce_only['instrument2'] = 'False'
+        reduce_only['instrument3'] = 'False'
+        reduce_only['instrument4'] = 'False'
+
+        config['date_time'] = {}
+        date_time = config['date_time']
+        date_time['start_ischeck'] = 'False'
+        date_time['start'] = 'None'
+        date_time['end_ischeck'] = 'False'
+        date_time['end'] = 'None'
+
+        with open('setup.ini', 'w') as configfile:
+            config.write(configfile)
+        list_monitor_log.append('***** Setup.ini file created *****')
 
 
 class Quote:
