@@ -7202,6 +7202,7 @@ def config(ui):
 
     def set_version_and_icon_and_texts_and_dates_signal_receive():
         _translate = QtCore.QCoreApplication.translate
+
         setup = ConfigParser(
             allow_no_value=True,
             strict=False
