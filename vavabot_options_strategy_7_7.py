@@ -59,6 +59,7 @@ class Sinais(QtCore.QObject):
     pushbutton_2_click_signal = QtCore.pyqtSignal()
     set_version_and_icon_and_texts_and_dates_signal = QtCore.pyqtSignal()
     target_saved_check_signal = QtCore.pyqtSignal()
+    strategy_name_update_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -6479,6 +6480,9 @@ def instruments(ui):
                 ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
                 quote_new_when_open_app()  # Tem varias ui
                 ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
+
+                Config().setup_ini_creator()
+                sinal.strategy_name_update_signal.emit()
                 pass
             else:
                 print_greeks_by_instrument()  # já se repete em:  ui.textEdit_targets_saved_3.append('Change1')
@@ -6513,6 +6517,8 @@ def instruments(ui):
             pass
 
             ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
+            Config().setup_ini_creator()
+            sinal.strategy_name_update_signal.emit()
             pass
 
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
@@ -6925,6 +6931,7 @@ def instruments(ui):
                                 position_preview_to_gui()  # Já tem signal na função.
                                 ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
                                 ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
+                                strategy_name_save()
 
                             else:
                                 msg = QtWidgets.QMessageBox()
@@ -7145,6 +7152,38 @@ def instruments(ui):
             daemon=True, target=instruments_saved_print_and_check_available_when_open_app)
         instruments_saved_print_and_check_available_when_open_app_thread.start()
 
+    def strategy_name_update_signal():
+        _translate = QtCore.QCoreApplication.translate
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = dict(setup['DEFAULT'])
+        name = default_setup['name']
+        version = default_setup['version']
+        strategy_name = default_setup['strategy_name']
+        main_windows_title = str(
+            name + ' ' + version + '                    *** Strategy Name: ' + strategy_name + ' ***')
+        MainWindow.setWindowTitle(_translate("MainWindow", main_windows_title))
+
+    def strategy_name_save():
+        strategy_name = str(ui.line_edit_strategy_name.text())
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = setup['DEFAULT']
+        default_setup['strategy_name'] = strategy_name
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+
+        sinal.strategy_name_update_signal.emit()
+
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
     ui.textEdit_targets_saved_4.setHidden(True)
@@ -7164,6 +7203,7 @@ def instruments(ui):
     ui.textEdit_targets_saved_3.textChanged.connect(msg_box_for_thread_when_open_app2)
     ui.textEdit_targets_saved_4.textChanged.connect(msg_box_for_thread_when_open_app3)
     instruments_saved_print_and_check_available_when_open_app_thread_def()
+    sinal.strategy_name_update_signal.connect(strategy_name_update_signal)
 
 
 # noinspection PyShadowingNames
