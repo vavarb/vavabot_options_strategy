@@ -8469,8 +8469,30 @@ def run(ui):
             from connection_spread import connect
             ui.label_58.show()
             if info == 'start':
-                ui.label_58.setText('*** Trading Started ***')
-                connect.logwriter('*** Trading Started ***')
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False
+                )
+                setup.read('setup.ini')
+
+                date_time_setup = setup['date_time']
+
+                true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
+
+                date_time_end_str = date_time_setup['end']
+                date_time_end_datetime = datetime.strptime(date_time_end_str, "%d/%m/%Y %H:%M")
+
+                if true_or_false_end_ischecked is True:
+                    ui.label_58.setText(
+                        '*** Trading Started - Time End is checked - ' + str(date_time_end_datetime) + ' ***'
+                    )
+                    connect.logwriter(
+                        '*** Trading Started - Time End is checked - ' + str(date_time_end_datetime) + ' ***'
+                    )
+                else:
+                    ui.label_58.setText('*** Trading Started - Time End is NOT checked ***')
+                    connect.logwriter('*** Trading Started - Time End is NOT checked ***')
 
                 green_icon = "./green_led_icon.png"
                 ui.label_62.setPixmap(QtGui.QPixmap(green_icon))
