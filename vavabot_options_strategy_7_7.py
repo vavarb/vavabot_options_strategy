@@ -8642,7 +8642,7 @@ def run(ui):
                         finally:
                             pass
                     else:
-                        connect.logwriter('*** Time Start ***')
+                        connect.logwriter('*** Start Trading by Time ***')
                         waiting_date_time_start = False
                 except Exception as error2:
                     from connection_spread import connect
