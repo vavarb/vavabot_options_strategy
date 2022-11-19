@@ -1444,9 +1444,9 @@ class Config:
 
         config['date_time'] = {}
         date_time = config['date_time']
-        date_time['start_ischeck'] = 'False'
+        date_time['start_ischecked'] = 'False'
         date_time['start'] = now_text
-        date_time['end_ischeck'] = 'False'
+        date_time['end_ischecked'] = 'False'
         date_time['end'] = now_10_text
 
         with open('setup.ini', 'w') as configfile:
@@ -1462,12 +1462,19 @@ class Config:
             strict=False
         )
         setup.read('setup.ini')
+
         date_time_setup = setup['date_time']
+
         text_date_time_start = date_time_setup['start']
         text_date_time_end = date_time_setup['end']
+        true_or_false_start_ischecked = date_time_setup.getboolean('start_ischecked')
+        true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
+
         date_time_dict = dict()
         date_time_dict['text_date_time_start'] = text_date_time_start
         date_time_dict['text_date_time_end'] = text_date_time_end
+        date_time_dict['true_or_false_start_ischecked'] = true_or_false_start_ischecked
+        date_time_dict['true_or_false_end_ischecked'] = true_or_false_end_ischecked
 
         sinal.date_time_signal.emit(date_time_dict)
 
@@ -7608,10 +7615,16 @@ def config(ui):
     def date_time_signal(info):
         text_date_time_start = info['text_date_time_start']
         text_date_time_end = info['text_date_time_end']
+        true_or_false_start_ischecked = info['true_or_false_start_ischecked']
+        true_or_false_end_ischecked = info['true_or_false_end_ischecked']
+
         text_date_time_start1 = ui.date_time_start.dateTimeFromText(text_date_time_start)
         text_date_time_end1 = ui.date_time_end.dateTimeFromText(text_date_time_end)
         ui.date_time_start.setDateTime(text_date_time_start1)
         ui.date_time_end.setDateTime(text_date_time_end1)
+
+        ui.checkbox_date_time_start.setChecked(true_or_false_start_ischecked)
+        ui.checkbox_date_time_end.setChecked(true_or_false_end_ischecked)
 
     def date_time_save():
         text_date_time_start = str(ui.date_time_start.text())
@@ -7626,6 +7639,16 @@ def config(ui):
         date_time_setup = setup['date_time']
         date_time_setup['start'] = text_date_time_start
         date_time_setup['end'] = text_date_time_end
+
+        if ui.checkbox_date_time_start.isChecked() is True:
+            date_time_setup['start_ischecked'] = 'True'
+        else:
+            date_time_setup['start_ischecked'] = 'False'
+
+        if ui.checkbox_date_time_end.isChecked() is True:
+            date_time_setup['end_ischecked'] = 'True'
+        else:
+            date_time_setup['end_ischecked'] = 'False'
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
@@ -7998,6 +8021,11 @@ def run(ui):
 
         ui.lineEdit_orders_rate.setEnabled(True)
         ui.pushButton_orders_rate.setEnabled(True)
+
+        ui.checkbox_date_time_start.setEnabled(True)
+        ui.checkbox_date_time_end.setEnabled(True)
+        ui.date_time_start.setEnabled(True)
+        ui.date_time_end.setEnabled(True)
 
     def btc_index_print():
         import time
@@ -8425,6 +8453,11 @@ def run(ui):
 
         ui.lineEdit_orders_rate.setEnabled(False)
         ui.pushButton_orders_rate.setEnabled(False)
+
+        ui.checkbox_date_time_start.setEnabled(False)
+        ui.checkbox_date_time_end.setEnabled(False)
+        ui.date_time_start.setEnabled(False)
+        ui.date_time_end.setEnabled(False)
 
     def start_thread_trade():
         import threading
