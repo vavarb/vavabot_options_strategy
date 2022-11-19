@@ -5,7 +5,7 @@ from configparser import ConfigParser
 from gui_spread import *
 from connection_spread import *
 from websocket import create_connection
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import hmac
 import hashlib
@@ -60,6 +60,7 @@ class Sinais(QtCore.QObject):
     set_version_and_icon_and_texts_and_dates_signal = QtCore.pyqtSignal()
     target_saved_check_signal = QtCore.pyqtSignal()
     strategy_name_update_signal = QtCore.pyqtSignal()
+    date_time_signal = QtCore.pyqtSignal(dict)
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -1419,6 +1420,11 @@ class Config:
     def setup_ini_creator():
         from lists import list_monitor_log
 
+        now = datetime.now()
+        now10 = now + timedelta(days=10)
+        now_10_text = now10.strftime('%d/%m/%Y %H:%M')
+        now_text = now.strftime('%d/%m/%Y %H:%M')
+
         config = ConfigParser()
 
         dict_setup_default = {
@@ -1439,13 +1445,31 @@ class Config:
         config['date_time'] = {}
         date_time = config['date_time']
         date_time['start_ischeck'] = 'False'
-        date_time['start'] = 'None'
+        date_time['start'] = now_text
         date_time['end_ischeck'] = 'False'
-        date_time['end'] = 'None'
+        date_time['end'] = now_10_text
 
         with open('setup.ini', 'w') as configfile:
             config.write(configfile)
         list_monitor_log.append('***** Setup.ini file created *****')
+        Config().date_time_saved()
+
+    @staticmethod
+    def date_time_saved():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        date_time_setup = setup['date_time']
+        text_date_time_start = date_time_setup['start']
+        text_date_time_end = date_time_setup['end']
+        date_time_dict = dict()
+        date_time_dict['text_date_time_start'] = text_date_time_start
+        date_time_dict['text_date_time_end'] = text_date_time_end
+
+        sinal.date_time_signal.emit(date_time_dict)
 
 
 class Quote:
@@ -6491,6 +6515,7 @@ def instruments(ui):
                 ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
                 quote_new_when_open_app()
                 ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
+                Config().date_time_saved()
 
         except Exception as er:
             from connection_spread import connect
@@ -7363,6 +7388,14 @@ def config(ui):
             ui.lineEdit_currency_exchange_rate_lower1_2.setEnabled(True)
 
     def targets_save():
+        date_time_start_str = ui.date_time_start.text()
+        date_time_start_datetime = datetime.strptime(date_time_start_str, "%d/%m/%Y %H:%M")
+        date_time_start_stamp = date_time_start_datetime.timestamp()
+
+        date_time_end_str = ui.date_time_end.text()
+        date_time_end_datetime = datetime.strptime(date_time_end_str, "%d/%m/%Y %H:%M")
+        date_time_end_stamp = date_time_end_datetime.timestamp()
+
         if ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text() == '' or \
                 ui.lineEdit_currency_exchange_rate_lower1.text() == '' or \
                 ui.lineEdit_buy_or_sell_structure1.currentText() == 'Set buy or sell' or \
@@ -7372,6 +7405,13 @@ def config(ui):
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setText('All fields are required')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+            pass
+        elif date_time_start_stamp > date_time_end_stamp:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Date and time star > end\nis NOT accepted')
             msg.setWindowTitle('***** ERROR *****')
             msg.exec_()
             pass
@@ -7416,6 +7456,7 @@ def config(ui):
                                         buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
                                         spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
                                     )
+                                    date_time_save()
                             except ValueError:
                                 msg = QtWidgets.QMessageBox()
                                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -7434,6 +7475,7 @@ def config(ui):
                             buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
                             spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
                         )
+                        date_time_save()
             except ValueError:
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -7563,6 +7605,32 @@ def config(ui):
                                                                       'Strategy cost should be')
                 ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
 
+    def date_time_signal(info):
+        text_date_time_start = info['text_date_time_start']
+        text_date_time_end = info['text_date_time_end']
+        text_date_time_start1 = ui.date_time_start.dateTimeFromText(text_date_time_start)
+        text_date_time_end1 = ui.date_time_end.dateTimeFromText(text_date_time_end)
+        ui.date_time_start.setDateTime(text_date_time_start1)
+        ui.date_time_end.setDateTime(text_date_time_end1)
+
+    def date_time_save():
+        text_date_time_start = str(ui.date_time_start.text())
+        text_date_time_end = str(ui.date_time_end.text())
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        date_time_setup = setup['date_time']
+        date_time_setup['start'] = text_date_time_start
+        date_time_setup['end'] = text_date_time_end
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        Config().date_time_saved()
+
     sinal.set_version_and_icon_and_texts_and_dates_signal.connect(
         set_version_and_icon_and_texts_and_dates_signal_receive)
     set_version_and_icon_and_texts_and_dates()
@@ -7573,6 +7641,7 @@ def config(ui):
     ui.pushButton_update_balance_2.clicked.connect(position_now)
     ConfigSaved().orders_rate_saved2()
     ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
+    sinal.date_time_signal.connect(date_time_signal)
 
 
 # noinspection PyShadowingNames
