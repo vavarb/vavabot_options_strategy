@@ -61,6 +61,7 @@ class Sinais(QtCore.QObject):
     target_saved_check_signal = QtCore.pyqtSignal()
     strategy_name_update_signal = QtCore.pyqtSignal()
     date_time_signal = QtCore.pyqtSignal(dict)
+    reduce_only_signal = QtCore.pyqtSignal(dict)
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -1477,6 +1478,33 @@ class Config:
         date_time_dict['true_or_false_end_ischecked'] = true_or_false_end_ischecked
 
         sinal.date_time_signal.emit(date_time_dict)
+        
+    @staticmethod
+    def reduce_only_saved():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        reduce_only_setup = setup['reduce_only']
+        
+        reduce_only_dict = dict()
+        
+        true_or_false_reduce_only1 = reduce_only_setup.getboolean('instrument1')        
+        reduce_only_dict['true_or_false_reduce_only1'] = true_or_false_reduce_only1
+
+        true_or_false_reduce_only2 = reduce_only_setup.getboolean('instrument2')
+        reduce_only_dict['true_or_false_reduce_only2'] = true_or_false_reduce_only2
+
+        true_or_false_reduce_only3 = reduce_only_setup.getboolean('instrument3')
+        reduce_only_dict['true_or_false_reduce_only3'] = true_or_false_reduce_only3
+
+        true_or_false_reduce_only4 = reduce_only_setup.getboolean('instrument4')
+        reduce_only_dict['true_or_false_reduce_only4'] = true_or_false_reduce_only4
+
+        sinal.reduce_only_signal.emit(reduce_only_dict)
 
 
 class Quote:
@@ -7248,6 +7276,7 @@ def instruments(ui):
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
         Config().date_time_saved()
+        Config().reduce_only_saved()
 
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
@@ -7659,6 +7688,17 @@ def config(ui):
         ui.checkbox_date_time_start.setChecked(true_or_false_start_ischecked)
         ui.checkbox_date_time_end.setChecked(true_or_false_end_ischecked)
 
+    def reduce_only_signal(info):
+        true_or_false_reduce_only1 = info['true_or_false_reduce_only1']
+        true_or_false_reduce_only2 = info['true_or_false_reduce_only2']
+        true_or_false_reduce_only3 = info['true_or_false_reduce_only3']
+        true_or_false_reduce_only4 = info['true_or_false_reduce_only4']
+
+        ui.check_box_reduce_only_1.setChecked(true_or_false_reduce_only1)
+        ui.check_box_reduce_only_2.setChecked(true_or_false_reduce_only2)
+        ui.check_box_reduce_only_3.setChecked(true_or_false_reduce_only3)
+        ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
+
     def date_time_save():
         text_date_time_start = str(ui.date_time_start.text())
         text_date_time_end = str(ui.date_time_end.text())
@@ -7698,6 +7738,7 @@ def config(ui):
     ConfigSaved().orders_rate_saved2()
     ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
     sinal.date_time_signal.connect(date_time_signal)
+    sinal.reduce_only_signal.connect(reduce_only_signal)
 
 
 # noinspection PyShadowingNames
@@ -8059,6 +8100,11 @@ def run(ui):
         ui.checkbox_date_time_end.setEnabled(True)
         ui.date_time_start.setEnabled(True)
         ui.date_time_end.setEnabled(True)
+
+        ui.check_box_reduce_only_1.setEnabled(True)
+        ui.check_box_reduce_only_2.setEnabled(True)
+        ui.check_box_reduce_only_3.setEnabled(True)
+        ui.check_box_reduce_only_4.setEnabled(True)
 
     def btc_index_print():
         import time
@@ -8491,6 +8537,11 @@ def run(ui):
         ui.checkbox_date_time_end.setEnabled(False)
         ui.date_time_start.setEnabled(False)
         ui.date_time_end.setEnabled(False)
+
+        ui.check_box_reduce_only_1.setEnabled(False)
+        ui.check_box_reduce_only_2.setEnabled(False)
+        ui.check_box_reduce_only_3.setEnabled(False)
+        ui.check_box_reduce_only_4.setEnabled(False)
 
     def start_thread_trade():
         import threading
