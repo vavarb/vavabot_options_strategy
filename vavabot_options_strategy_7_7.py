@@ -1454,6 +1454,7 @@ class Config:
             config.write(configfile)
         list_monitor_log.append('***** Setup.ini file created *****')
         Config().date_time_saved()
+        Config().reduce_only_saved()
 
     @staticmethod
     def date_time_saved():
@@ -6551,6 +6552,7 @@ def instruments(ui):
                 quote_new_when_open_app()
                 ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
                 Config().date_time_saved()
+                Config().reduce_only_saved()
 
         except Exception as er:
             from connection_spread import connect
@@ -6992,7 +6994,7 @@ def instruments(ui):
                                 ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
                                 ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
                                 strategy_name_save()
-
+                                reduce_only_save()
                             else:
                                 msg = QtWidgets.QMessageBox()
                                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -7275,7 +7277,6 @@ def instruments(ui):
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
-        Config().date_time_saved()
         Config().reduce_only_saved()
 
     ui.textEdit_targets_saved_2.setHidden(True)
