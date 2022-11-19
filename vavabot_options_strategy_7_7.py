@@ -8537,12 +8537,21 @@ def run(ui):
     def start_signal_3():
         from connection_spread import connect
         ui.label_58.show()
-        ui.label_58.setText('*** Trading Stopped ***')
-        connect.logwriter('*** Trading Stopped ***')
+        ui.label_58.setText(
+            '*** Trading Stopped at ' + str(datetime.now().timestamp()) + ' ***'
+        )
+        connect.logwriter(
+            '*** Trading Stopped at ' + str(datetime.now().timestamp()) + ' ***'
+        )
 
     def start_signal_4():
         red_icon = "./red_led_icon.png"
         ui.label_62.setPixmap(QtGui.QPixmap(red_icon))
+
+        ui.label_58.show()
+        ui.label_58.setText(
+            '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+        )
 
     def structure_cost_link():
         ConditionsCheck().structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
@@ -8586,7 +8595,6 @@ def run(ui):
         true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
 
         if true_or_false_start_ischecked is True:
-            date_time_now_stamp = datetime.now().timestamp()
             waiting_date_time_start = True
             counter_run_trade_option = 11
 
@@ -8605,7 +8613,7 @@ def run(ui):
                     else:
                         connect.logwriter('*** Time End is NOT checked ***')
 
-                    if date_time_start_stamp >= date_time_now_stamp:
+                    if date_time_start_stamp >= datetime.now().timestamp():
                         connect.logwriter('*** Waiting for Time Start ***')
                         time.sleep(1)
                         try:
@@ -8633,7 +8641,6 @@ def run(ui):
                             pass
                         finally:
                             pass
-                        date_time_now_stamp = datetime.now().timestamp()
                     else:
                         connect.logwriter('*** Time Start ***')
                         waiting_date_time_start = False
@@ -8747,6 +8754,17 @@ def run(ui):
                                 list_monitor_log.append('*** Option Position Smaller Max Position ***')
                                 run_target_on_off = 'on'  # para poder executar o targets_achieved() se ainda há options
 
+                                if true_or_false_end_ischecked is True and \
+                                    date_time_end_stamp < datetime.now().timestamp():
+                                    trading_on_off = 'off'
+                                    run_trade_future_on_off = 'off'
+                                    run_trade_option_on_off = 'off'
+                                    run_target_on_off = 'off'
+                                    trading_on_off_for_msg = 'off'
+                                    send_future_orders_while = False
+
+                                    connect.logwriter('*** Ending Time Trading ***')
+
                                 # Verifica se a diferança entre "mark price" e "market price" está maior que x%
                                 bb = ConditionsCheck().min_max_price_option_buy_or_sell_order_by_mark_price()
                                 if bb == 'ok':
@@ -8826,16 +8844,24 @@ def run(ui):
                 pass
         if trading_on_off_for_msg == 'off':
             from connection_spread import connect
-            list_monitor_log.append('********** TRADING STOPPED **********')
-            connect.logwriter('********** TRADING STOPPED **********')
+            list_monitor_log.append(
+                '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
+            )
+            connect.logwriter(
+                '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
+            )
             sinal.start_signal_3.emit()
 
             btc_index_print_start_thread()
             pass
         else:
             from connection_spread import connect
-            list_monitor_log.append('**************** TRADING FINISHED **************** ')
-            connect.logwriter('********** TRADING FINISHED **********')
+            list_monitor_log.append(
+                '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+            )
+            connect.logwriter(
+                '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+            )
             sinal.start_signal_4.emit()
 
             btc_index_print_start_thread()
