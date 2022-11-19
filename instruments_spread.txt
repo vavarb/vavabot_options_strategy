@@ -1,4 +1,4 @@
-Instrument 1: Unassigned
-Instrument 2: Unassigned
+Instrument 1: option sell 0.1 BTC-25NOV22-16000-C
+Instrument 2: future sell 10 BTC-PERPETUAL
 Instrument 3: Unassigned
 Instrument 4: Unassigned

@@ -36,7 +36,7 @@ class Sinais(QtCore.QObject):
     chronometer_signal = QtCore.pyqtSignal(str)
     btc_index_print_gui_adjusts_signal = QtCore.pyqtSignal()
     start_thread_trade_signal = QtCore.pyqtSignal()
-    start_signal_1 = QtCore.pyqtSignal()
+    start_signal_1 = QtCore.pyqtSignal(str)
     start_signal_2 = QtCore.pyqtSignal()
     start_signal_3 = QtCore.pyqtSignal()
     start_signal_4 = QtCore.pyqtSignal()
@@ -8464,16 +8464,49 @@ def run(ui):
                 pass
         c.clear()
 
-    def start_signal_1():
-        from connection_spread import connect
-        ui.label_58.show()
-        ui.label_58.setText('*** Trading Started ***')
-        connect.logwriter('*** Trading Started ***')
+    def start_signal_1(info):
+        try:
+            from connection_spread import connect
+            ui.label_58.show()
+            if info == 'start':
+                ui.label_58.setText('*** Trading Started ***')
+                connect.logwriter('*** Trading Started ***')
 
-        green_icon = "./green_led_icon.png"
-        ui.label_62.setPixmap(QtGui.QPixmap(green_icon))
+                green_icon = "./green_led_icon.png"
+                ui.label_62.setPixmap(QtGui.QPixmap(green_icon))
 
-        ui.pushButton.setText('Trading\nStarted')
+                ui.pushButton.setText('Trading\nStarted')
+            elif info == 'date_time_start':
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False
+                )
+                setup.read('setup.ini')
+
+                date_time_setup = setup['date_time']
+
+                date_time_start_str = date_time_setup['start']
+                date_time_start_datetime = datetime.strptime(date_time_start_str, "%d/%m/%Y %H:%M")
+
+                ui.label_58.setText('*** Waiting for Time Start - ' + str(date_time_start_datetime) + ' - ***')
+                connect.logwriter('*** Waiting for Time Start - ' + str(date_time_start_datetime) + ' - ***')
+
+                green_icon = "./red_led_icon.png"
+                ui.label_62.setPixmap(QtGui.QPixmap(green_icon))
+
+                ui.pushButton.setText('Waiting for\nTime')
+            else:
+                ui.label_58.setText('********** ERROR 8500 **********')
+                connect.logwriter('********** ERROR 8500 **********')
+        except Exception as error2:
+            from connection_spread import connect
+            connect.logwriter(str(error2) + ' Error Code:: 8504')
+            list_monitor_log.append(str(error2) + ' Error Code:: 8504')
+            time.sleep(3)
+            pass
+        finally:
+            pass
 
     def start_signal_2():
         ui.label_58.show()
@@ -8489,6 +8522,9 @@ def run(ui):
         red_icon = "./red_led_icon.png"
         ui.label_62.setPixmap(QtGui.QPixmap(red_icon))
 
+    def structure_cost_link():
+        ConditionsCheck().structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
+
     def start():
         import time
         from lists import list_monitor_log
@@ -8500,14 +8536,151 @@ def run(ui):
         global run_target_on_off
         global send_future_orders_while
 
-        sinal.start_signal_1.emit()
-
         trading_on_off = 'on'
         run_trade_option_on_off = 'on'
         run_trade_future_on_off = 'on'
         trading_on_off_for_msg = 'on'
         run_target_on_off = 'on'
         send_future_orders_while = True
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        date_time_setup = setup['date_time']
+
+        date_time_start_str = date_time_setup['start']
+        date_time_start_datetime = datetime.strptime(date_time_start_str, "%d/%m/%Y %H:%M")
+        date_time_start_stamp = date_time_start_datetime.timestamp()
+
+        date_time_end_str = date_time_setup['end']
+        date_time_end_datetime = datetime.strptime(date_time_end_str, "%d/%m/%Y %H:%M")
+        date_time_end_stamp = date_time_end_datetime.timestamp()
+
+        true_or_false_start_ischecked = date_time_setup.getboolean('start_ischecked')
+        true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
+
+        if true_or_false_start_ischecked is True:
+            date_time_now_stamp = datetime.now().timestamp()
+            waiting_date_time_start = True
+            counter_run_trade_option = 11
+
+            sinal.start_signal_1.emit('date_time_start')
+
+            while waiting_date_time_start is True and trading_on_off == 'on':
+                try:
+                    from connection_spread import connect
+
+                    connect.logwriter(
+                        '*** Time Start is checked - ' + str(date_time_start_datetime) + ' - ***'
+                    )
+
+                    if true_or_false_end_ischecked is True:
+                        connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
+                    else:
+                        connect.logwriter('*** Time End is NOT checked ***')
+
+                    if date_time_start_stamp >= date_time_now_stamp:
+                        connect.logwriter('*** Waiting for Time Start ***')
+                        time.sleep(1)
+                        try:
+                            from connection_spread import connect
+                            if led_color() == 'red':
+                                list_monitor_log.append('********** Connection Offline **********')
+                                time.sleep(3)
+                                pass
+                            else:
+                                counter_run_trade_option = counter_run_trade_option - 1
+                                sinal.chronometer_signal.emit(str(counter_run_trade_option))
+                                if counter_run_trade_option == 0:
+                                    structure_cost_link()
+                                    list_monitor_log.append('***** Update Strategy cost,'
+                                                            ' greeks and BTC index for tab Run *****')
+                                    sinal.chronometer_signal.emit(str(counter_run_trade_option))
+                                    counter_run_trade_option = 11
+                                else:
+                                    pass
+                        except Exception as error2:
+                            from connection_spread import connect
+                            connect.logwriter(str(error2) + ' Error Code:: 8574')
+                            list_monitor_log.append(str(error2) + ' Error Code:: 8574')
+                            time.sleep(3)
+                            pass
+                        finally:
+                            pass
+                        date_time_now_stamp = datetime.now().timestamp()
+                    else:
+                        connect.logwriter('*** Time Start ***')
+                        waiting_date_time_start = False
+                except Exception as error2:
+                    from connection_spread import connect
+                    connect.logwriter(str(error2) + ' Error Code:: 8587')
+                    list_monitor_log.append(str(error2) + ' Error Code:: 8587')
+                    time.sleep(3)
+                    pass
+                finally:
+                    pass
+        else:
+            try:
+                from connection_spread import connect
+                connect.logwriter('*** Time Start is NOT checked ***')
+            except Exception as error2:
+                from connection_spread import connect
+                connect.logwriter(str(error2) + ' Error Code:: 8590')
+                list_monitor_log.append(str(error2) + ' Error Code:: 8590')
+                time.sleep(3)
+                pass
+            finally:
+                pass
+
+        if true_or_false_end_ischecked is True:
+            if date_time_end_stamp < datetime.now().timestamp():
+                try:
+                    from connection_spread import connect
+                    connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
+                    connect.logwriter('*** Time is finished - ' + str(date_time_end_datetime) + ' ***')
+                except Exception as error2:
+                    from connection_spread import connect
+                    connect.logwriter(str(error2) + ' Error Code:: 8610')
+                    list_monitor_log.append(str(error2) + ' Error Code:: 8610')
+                    time.sleep(3)
+                    pass
+                finally:
+                    trading_on_off = 'off'
+                    run_trade_future_on_off = 'off'
+                    run_trade_option_on_off = 'off'
+                    run_target_on_off = 'off'
+                    trading_on_off_for_msg = 'off'
+                    send_future_orders_while = False
+            else:
+                try:
+                    from connection_spread import connect
+                    connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
+                except Exception as error2:
+                    from connection_spread import connect
+                    connect.logwriter(str(error2) + ' Error Code:: 8621')
+                    list_monitor_log.append(str(error2) + ' Error Code:: 8621')
+                    time.sleep(3)
+                    pass
+                finally:
+                    pass
+        else:
+            try:
+                from connection_spread import connect
+                connect.logwriter('*** Time End is NOT checked ***')
+            except Exception as error2:
+                from connection_spread import connect
+                connect.logwriter(str(error2) + ' Error Code:: 8633')
+                list_monitor_log.append(str(error2) + ' Error Code:: 8633')
+                time.sleep(3)
+                pass
+            finally:
+                pass
+
+        sinal.start_signal_1.emit('start')
 
         while trading_on_off == 'on':
             try:
