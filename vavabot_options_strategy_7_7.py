@@ -7411,7 +7411,7 @@ def config(ui):
         elif date_time_start_stamp > date_time_end_stamp:
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Date and time star > end\nis NOT accepted')
+            msg.setText('Date and time start > end\nis NOT accepted')
             msg.setWindowTitle('***** ERROR *****')
             msg.exec_()
             pass
