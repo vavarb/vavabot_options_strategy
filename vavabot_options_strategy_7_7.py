@@ -8538,10 +8538,10 @@ def run(ui):
         from connection_spread import connect
         ui.label_58.show()
         ui.label_58.setText(
-            '*** Trading Stopped at ' + str(datetime.now().timestamp()) + ' ***'
+            '*** Trading Stopped at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' ***'
         )
         connect.logwriter(
-            '*** Trading Stopped at ' + str(datetime.now().timestamp()) + ' ***'
+            '*** Trading Stopped at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' ***'
         )
 
     def start_signal_4():
@@ -8550,7 +8550,7 @@ def run(ui):
 
         ui.label_58.show()
         ui.label_58.setText(
-            '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+            '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
         )
 
     def structure_cost_link():
@@ -8851,10 +8851,10 @@ def run(ui):
             try:
                 from connection_spread import connect
                 list_monitor_log.append(
-                    '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
+                    '********** TRADING STOPPED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
                 )
                 connect.logwriter(
-                    '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
+                    '********** TRADING STOPPED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
                 )
             except Exception as er:
                 from connection_spread import connect
@@ -8871,10 +8871,10 @@ def run(ui):
             try:
                 from connection_spread import connect
                 list_monitor_log.append(
-                    '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+                    '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
                 )
                 connect.logwriter(
-                    '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+                    '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
                 )
             except Exception as er:
                 from connection_spread import connect
