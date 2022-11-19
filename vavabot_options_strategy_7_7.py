@@ -8754,16 +8754,21 @@ def run(ui):
                                 list_monitor_log.append('*** Option Position Smaller Max Position ***')
                                 run_target_on_off = 'on'  # para poder executar o targets_achieved() se ainda há options
 
-                                if true_or_false_end_ischecked is True and \
-                                    date_time_end_stamp < datetime.now().timestamp():
-                                    trading_on_off = 'off'
-                                    run_trade_future_on_off = 'off'
-                                    run_trade_option_on_off = 'off'
-                                    run_target_on_off = 'off'
-                                    trading_on_off_for_msg = 'off'
-                                    send_future_orders_while = False
+                                if true_or_false_end_ischecked is True:
+                                    if date_time_end_stamp < datetime.now().timestamp():
+                                        trading_on_off = 'off'
+                                        run_trade_future_on_off = 'off'
+                                        run_trade_option_on_off = 'off'
+                                        run_target_on_off = 'off'
+                                        trading_on_off_for_msg = 'off'
+                                        send_future_orders_while = False
 
-                                    connect.logwriter('*** Ending Time Trading ***')
+                                        list_monitor_log.append('*** Ending Time Trading ***')
+                                        connect.logwriter('*** Ending Time Trading ***')
+                                    else:
+                                        list_monitor_log.append('*** Trading time is NOT over ***')
+                                else:
+                                    pass
 
                                 # Verifica se a diferança entre "mark price" e "market price" está maior que x%
                                 bb = ConditionsCheck().min_max_price_option_buy_or_sell_order_by_mark_price()
@@ -8843,25 +8848,41 @@ def run(ui):
             finally:
                 pass
         if trading_on_off_for_msg == 'off':
-            from connection_spread import connect
-            list_monitor_log.append(
-                '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
-            )
-            connect.logwriter(
-                '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
-            )
+            try:
+                from connection_spread import connect
+                list_monitor_log.append(
+                    '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
+                )
+                connect.logwriter(
+                    '********** TRADING STOPPED at ' + str(datetime.now().timestamp()) + ' **********'
+                )
+            except Exception as er:
+                from connection_spread import connect
+                connect.logwriter(str(er) + ' Error Code:: 8856')
+                list_monitor_log.append(str(er) + ' Error Code:: 8856')
+                pass
+            finally:
+                pass
             sinal.start_signal_3.emit()
 
             btc_index_print_start_thread()
             pass
         else:
-            from connection_spread import connect
-            list_monitor_log.append(
-                '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
-            )
-            connect.logwriter(
-                '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
-            )
+            try:
+                from connection_spread import connect
+                list_monitor_log.append(
+                    '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+                )
+                connect.logwriter(
+                    '********** TRADING FINISHED at ' + str(datetime.now().timestamp()) + ' **********'
+                )
+            except Exception as er:
+                from connection_spread import connect
+                connect.logwriter(str(er) + ' Error Code:: 8876')
+                list_monitor_log.append(str(er) + ' Error Code:: 8876')
+                pass
+            finally:
+                pass
             sinal.start_signal_4.emit()
 
             btc_index_print_start_thread()
