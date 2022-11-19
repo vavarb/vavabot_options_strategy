@@ -1458,6 +1458,7 @@ class Config:
 
     @staticmethod
     def date_time_saved():
+        from connection_spread import connect
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -1467,18 +1468,61 @@ class Config:
 
         date_time_setup = setup['date_time']
 
-        text_date_time_start = date_time_setup['start']
-        text_date_time_end = date_time_setup['end']
-        true_or_false_start_ischecked = date_time_setup.getboolean('start_ischecked')
-        true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
+        date_time_start_str = date_time_setup['start']
+        date_time_start_datetime = datetime.strptime(date_time_start_str, "%d/%m/%Y %H:%M")
+        date_time_start_stamp = date_time_start_datetime.timestamp()
 
-        date_time_dict = dict()
-        date_time_dict['text_date_time_start'] = text_date_time_start
-        date_time_dict['text_date_time_end'] = text_date_time_end
-        date_time_dict['true_or_false_start_ischecked'] = true_or_false_start_ischecked
-        date_time_dict['true_or_false_end_ischecked'] = true_or_false_end_ischecked
+        date_time_end_str = date_time_setup['end']
+        date_time_end_datetime = datetime.strptime(date_time_end_str, "%d/%m/%Y %H:%M")
+        date_time_end_stamp = date_time_end_datetime.timestamp()
 
-        sinal.date_time_signal.emit(date_time_dict)
+        if date_time_start_stamp >= date_time_end_stamp:
+            if ui.checkbox_date_time_start.isChecked() is True:
+                date_time_setup['start_ischecked'] = 'True'
+                true_or_false_start_ischecked = True
+            else:
+                date_time_setup['start_ischecked'] = 'False'
+                true_or_false_start_ischecked = False
+
+            if ui.checkbox_date_time_end.isChecked() is True:
+                date_time_setup['end_ischecked'] = 'True'
+                true_or_false_end_ischecked = True
+            else:
+                date_time_setup['end_ischecked'] = 'False'
+                true_or_false_end_ischecked = False
+
+            now = datetime.now()
+            now10 = now + timedelta(days=10)
+            now_10_text = now10.strftime('%d/%m/%Y %H:%M')
+            now_text = now.strftime('%d/%m/%Y %H:%M')
+
+            date_time_setup['start'] = now_text
+            date_time_setup['end'] = now_10_text
+
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('*** Date and time saved ***')
+
+            date_time_dict = dict()
+            date_time_dict['text_date_time_start'] = now_text
+            date_time_dict['text_date_time_end'] = now_10_text
+            date_time_dict['true_or_false_start_ischecked'] = true_or_false_start_ischecked
+            date_time_dict['true_or_false_end_ischecked'] = true_or_false_end_ischecked
+
+            sinal.date_time_signal.emit(date_time_dict)
+        else:
+            text_date_time_start = date_time_setup['start']
+            text_date_time_end = date_time_setup['end']
+            true_or_false_start_ischecked = date_time_setup.getboolean('start_ischecked')
+            true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
+
+            date_time_dict = dict()
+            date_time_dict['text_date_time_start'] = text_date_time_start
+            date_time_dict['text_date_time_end'] = text_date_time_end
+            date_time_dict['true_or_false_start_ischecked'] = true_or_false_start_ischecked
+            date_time_dict['true_or_false_end_ischecked'] = true_or_false_end_ischecked
+
+            sinal.date_time_signal.emit(date_time_dict)
         
     @staticmethod
     def reduce_only_saved():
@@ -7239,6 +7283,7 @@ def instruments(ui):
         MainWindow.setWindowTitle(_translate("MainWindow", main_windows_title))
 
     def strategy_name_save():
+        from connection_spread import connect
         strategy_name = str(ui.line_edit_strategy_name.text())
         setup = ConfigParser(
             allow_no_value=True,
@@ -7251,7 +7296,7 @@ def instruments(ui):
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
-
+        connect.logwriter('***  Strategy name saved ***')
         sinal.strategy_name_update_signal.emit()
 
     def reduce_only_signal(info):
@@ -7266,6 +7311,7 @@ def instruments(ui):
         ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
         
     def reduce_only_save():
+        from connection_spread import connect
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -7296,6 +7342,7 @@ def instruments(ui):
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
+        connect.logwriter('***  Reduce only saved ***')
         Config().reduce_only_saved()
 
     ui.textEdit_targets_saved_2.setHidden(True)
@@ -7328,44 +7375,6 @@ def instruments(ui):
 # noinspection PyShadowingNames
 def config(ui):
     def save_orders_rate():
-        from connection_spread import connect
-        import os
-
-        try:
-            orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
-        except ValueError:
-            orders_per_second_from_line_edit = float(5)
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Order/Second must be > 0')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-
-        if orders_per_second_from_line_edit > 0:
-            orders_per_second = round(float(orders_per_second_from_line_edit), 2)
-
-        else:
-            orders_per_second = round(float(5), 2)
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Order/Second must be > 0')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-
-        if os.path.isfile('send_orders_rate.txt') is False:
-            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
-                send_orders_rate_file.write(str(orders_per_second))
-        else:
-            with open('send_orders_rate.txt', 'w') as send_orders_rate_file:
-                send_orders_rate_file.write(str(orders_per_second))
-
-        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
-            send_orders_rate_file_read = str(send_orders_rate_file.read())
-
-        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
-        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
-
-    def save_orders_rate_changed():
         from connection_spread import connect
         import os
 
@@ -7540,13 +7549,45 @@ def config(ui):
             msg.setWindowTitle('***** ERROR *****')
             msg.exec_()
             pass
-        elif date_time_start_stamp > date_time_end_stamp:
+        elif date_time_start_stamp >= date_time_end_stamp:
+            from connection_spread import connect
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False
+            )
+            setup.read('setup.ini')
+            date_time_setup = setup['date_time']
+
+            if ui.checkbox_date_time_start.isChecked() is True:
+                date_time_setup['start_ischecked'] = 'True'
+            else:
+                date_time_setup['start_ischecked'] = 'False'
+
+            if ui.checkbox_date_time_end.isChecked() is True:
+                date_time_setup['end_ischecked'] = 'True'
+            else:
+                date_time_setup['end_ischecked'] = 'False'
+
+            now = datetime.now()
+            now10 = now + timedelta(days=10)
+            now_10_text = now10.strftime('%d/%m/%Y %H:%M')
+            now_text = now.strftime('%d/%m/%Y %H:%M')
+
+            date_time_setup['start'] = now_text
+            date_time_setup['end'] = now_10_text
+
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('*** Date and time saved ***')
+
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Date and time start > end\nis NOT accepted')
+            msg.setText('Date and time start < end\nis NOT accepted')
             msg.setWindowTitle('***** ERROR *****')
             msg.exec_()
             pass
+            Config().date_time_saved()
         else:
             try:
                 if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) == 0 or \
@@ -7752,8 +7793,15 @@ def config(ui):
         ui.checkbox_date_time_end.setChecked(true_or_false_end_ischecked)
 
     def date_time_save():
-        text_date_time_start = str(ui.date_time_start.text())
-        text_date_time_end = str(ui.date_time_end.text())
+        from connection_spread import connect
+
+        date_time_start_str = ui.date_time_start.text()
+        date_time_start_datetime = datetime.strptime(date_time_start_str, "%d/%m/%Y %H:%M")
+        date_time_start_stamp = date_time_start_datetime.timestamp()
+
+        date_time_end_str = ui.date_time_end.text()
+        date_time_end_datetime = datetime.strptime(date_time_end_str, "%d/%m/%Y %H:%M")
+        date_time_end_stamp = date_time_end_datetime.timestamp()
 
         setup = ConfigParser(
             allow_no_value=True,
@@ -7762,8 +7810,6 @@ def config(ui):
         )
         setup.read('setup.ini')
         date_time_setup = setup['date_time']
-        date_time_setup['start'] = text_date_time_start
-        date_time_setup['end'] = text_date_time_end
 
         if ui.checkbox_date_time_start.isChecked() is True:
             date_time_setup['start_ischecked'] = 'True'
@@ -7775,9 +7821,34 @@ def config(ui):
         else:
             date_time_setup['end_ischecked'] = 'False'
 
-        with open('setup.ini', 'w') as configfile:
-            setup.write(configfile)
-        Config().date_time_saved()
+        if date_time_start_stamp >= date_time_end_stamp:
+            now = datetime.now()
+            now10 = now + timedelta(days=10)
+            now_10_text = now10.strftime('%d/%m/%Y %H:%M')
+            now_text = now.strftime('%d/%m/%Y %H:%M')
+
+            date_time_setup['start'] = now_text
+            date_time_setup['end'] = now_10_text
+
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('*** Date and time saved ***')
+
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Date and time start < end\nis NOT accepted')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+            pass
+            Config().date_time_saved()
+        else:
+            date_time_setup['start'] = str(date_time_start_str)
+            date_time_setup['end'] = str(date_time_end_str)
+
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('*** Date and time saved ***')
+            Config().date_time_saved()
 
     sinal.set_version_and_icon_and_texts_and_dates_signal.connect(
         set_version_and_icon_and_texts_and_dates_signal_receive)
@@ -7789,12 +7860,12 @@ def config(ui):
     ui.pushButton_update_balance_2.clicked.connect(position_now)
     ConfigSaved().orders_rate_saved2()
     ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
-    ui.lineEdit_orders_rate.editingFinished.connect(save_orders_rate_changed)
+    ui.lineEdit_orders_rate.editingFinished.connect(save_orders_rate)
     sinal.date_time_signal.connect(date_time_signal)
     ui.checkbox_date_time_start.stateChanged.connect(date_time_save)
     ui.checkbox_date_time_end.stateChanged.connect(date_time_save)
-    ui.date_time_start.dateTimeChanged.connect(date_time_save)
-    ui.date_time_end.dateTimeChanged.connect(date_time_save)
+    ui.date_time_start.editingFinished.connect(date_time_save)
+    ui.date_time_end.editingFinished.connect(date_time_save)
 
 
 # noinspection PyShadowingNames

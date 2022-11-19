@@ -1,4 +1,4 @@
 Instrument 1: 0.0
 Instrument 2: 0.0
 Instrument 3: 0.0
-Instrument 4: 1920.0
+Instrument 4: 0.0
