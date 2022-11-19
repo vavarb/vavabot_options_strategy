@@ -5913,11 +5913,13 @@ def instruments(ui):
             ui.lineEdit_maturity_instrumet1.setEnabled(False)
             ui.checkBox_perpetual_1.setEnabled(False)
             ui.lineEdit_c_or_p_instrumet1.setEnabled(False)
+            ui.check_box_reduce_only_1.setEnabled(False)
         elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' or \
                 ui.lineEdit_o_or_f_instrumet1.currentText() == 'f':
             ui.lineEdit_buy_or_sell_instrumet1.setEnabled(True)
             ui.lineEdit_amount_instrumet1.setEnabled(True)
             ui.lineEdit_currency_instrumet1.setEnabled(True)
+            ui.check_box_reduce_only_1.setEnabled(True)
             if ui.lineEdit_o_or_f_instrumet1.currentText() == 'o':
                 ui.lineEdit_strike_instrumet1.setEnabled(True)
                 ui.lineEdit_maturity_instrumet1.setEnabled(True)
@@ -5946,11 +5948,13 @@ def instruments(ui):
             ui.lineEdit_maturity_instrumet2.setEnabled(False)
             ui.checkBox_perpetual_2.setEnabled(False)
             ui.lineEdit_c_or_p_instrumet2.setEnabled(False)
+            ui.check_box_reduce_only_2.setEnabled(False)
         elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'o' or \
                 ui.lineEdit_o_or_f_instrumet2.currentText() == 'f':
             ui.lineEdit_buy_or_sell_instrumet2.setEnabled(True)
             ui.lineEdit_amount_instrumet2.setEnabled(True)
             ui.lineEdit_currency_instrumet2.setEnabled(True)
+            ui.check_box_reduce_only_2.setEnabled(True)
             if ui.lineEdit_o_or_f_instrumet2.currentText() == 'o':
                 ui.lineEdit_strike_instrumet2.setEnabled(True)
                 ui.lineEdit_maturity_instrumet2.setEnabled(True)
@@ -5979,11 +5983,13 @@ def instruments(ui):
             ui.lineEdit_maturity_instrumet3.setEnabled(False)
             ui.checkBox_perpetual_3.setEnabled(False)
             ui.lineEdit_c_or_p_instrumet3.setEnabled(False)
+            ui.check_box_reduce_only_3.setEnabled(False)
         elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'o' or \
                 ui.lineEdit_o_or_f_instrumet3.currentText() == 'f':
             ui.lineEdit_buy_or_sell_instrumet3.setEnabled(True)
             ui.lineEdit_amount_instrumet3.setEnabled(True)
             ui.lineEdit_currency_instrumet3.setEnabled(True)
+            ui.check_box_reduce_only_3.setEnabled(True)
             if ui.lineEdit_o_or_f_instrumet3.currentText() == 'o':
                 ui.lineEdit_strike_instrumet3.setEnabled(True)
                 ui.lineEdit_maturity_instrumet3.setEnabled(True)
@@ -6012,11 +6018,13 @@ def instruments(ui):
             ui.lineEdit_maturity_instrumet4.setEnabled(False)
             ui.checkBox_perpetual_4.setEnabled(False)
             ui.lineEdit_c_or_p_instrumet4.setEnabled(False)
+            ui.check_box_reduce_only_4.setEnabled(False)
         elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' or \
                 ui.lineEdit_o_or_f_instrumet4.currentText() == 'f':
             ui.lineEdit_buy_or_sell_instrumet4.setEnabled(True)
             ui.lineEdit_amount_instrumet4.setEnabled(True)
             ui.lineEdit_currency_instrumet4.setEnabled(True)
+            ui.check_box_reduce_only_4.setEnabled(True)
             if ui.lineEdit_o_or_f_instrumet4.currentText() == 'o':
                 ui.lineEdit_strike_instrumet4.setEnabled(True)
                 ui.lineEdit_maturity_instrumet4.setEnabled(True)
@@ -7245,6 +7253,17 @@ def instruments(ui):
             setup.write(configfile)
 
         sinal.strategy_name_update_signal.emit()
+
+    def reduce_only_signal(info):
+        true_or_false_reduce_only1 = info['true_or_false_reduce_only1']
+        true_or_false_reduce_only2 = info['true_or_false_reduce_only2']
+        true_or_false_reduce_only3 = info['true_or_false_reduce_only3']
+        true_or_false_reduce_only4 = info['true_or_false_reduce_only4']
+
+        ui.check_box_reduce_only_1.setChecked(true_or_false_reduce_only1)
+        ui.check_box_reduce_only_2.setChecked(true_or_false_reduce_only2)
+        ui.check_box_reduce_only_3.setChecked(true_or_false_reduce_only3)
+        ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
         
     def reduce_only_save():
         setup = ConfigParser(
@@ -7282,7 +7301,6 @@ def instruments(ui):
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
     ui.textEdit_targets_saved_4.setHidden(True)
-    enable_disable_strike_and_c_or_p_and_maturity()
     ui.lineEdit_o_or_f_instrumet1.currentTextChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.lineEdit_o_or_f_instrumet2.currentTextChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
@@ -7299,11 +7317,55 @@ def instruments(ui):
     ui.textEdit_targets_saved_4.textChanged.connect(msg_box_for_thread_when_open_app3)
     instruments_saved_print_and_check_available_when_open_app_thread_def()
     sinal.strategy_name_update_signal.connect(strategy_name_update_signal)
+    sinal.reduce_only_signal.connect(reduce_only_signal)
+    ui.check_box_reduce_only_1.stateChanged.connect(reduce_only_save)
+    ui.check_box_reduce_only_2.stateChanged.connect(reduce_only_save)
+    ui.check_box_reduce_only_3.stateChanged.connect(reduce_only_save)
+    ui.check_box_reduce_only_4.stateChanged.connect(reduce_only_save)
+    enable_disable_strike_and_c_or_p_and_maturity()
 
 
 # noinspection PyShadowingNames
 def config(ui):
     def save_orders_rate():
+        from connection_spread import connect
+        import os
+
+        try:
+            orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
+        except ValueError:
+            orders_per_second_from_line_edit = float(5)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+
+        if orders_per_second_from_line_edit > 0:
+            orders_per_second = round(float(orders_per_second_from_line_edit), 2)
+
+        else:
+            orders_per_second = round(float(5), 2)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write(str(orders_per_second))
+        else:
+            with open('send_orders_rate.txt', 'w') as send_orders_rate_file:
+                send_orders_rate_file.write(str(orders_per_second))
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+
+    def save_orders_rate_changed():
         from connection_spread import connect
         import os
 
@@ -7689,17 +7751,6 @@ def config(ui):
         ui.checkbox_date_time_start.setChecked(true_or_false_start_ischecked)
         ui.checkbox_date_time_end.setChecked(true_or_false_end_ischecked)
 
-    def reduce_only_signal(info):
-        true_or_false_reduce_only1 = info['true_or_false_reduce_only1']
-        true_or_false_reduce_only2 = info['true_or_false_reduce_only2']
-        true_or_false_reduce_only3 = info['true_or_false_reduce_only3']
-        true_or_false_reduce_only4 = info['true_or_false_reduce_only4']
-
-        ui.check_box_reduce_only_1.setChecked(true_or_false_reduce_only1)
-        ui.check_box_reduce_only_2.setChecked(true_or_false_reduce_only2)
-        ui.check_box_reduce_only_3.setChecked(true_or_false_reduce_only3)
-        ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
-
     def date_time_save():
         text_date_time_start = str(ui.date_time_start.text())
         text_date_time_end = str(ui.date_time_end.text())
@@ -7738,8 +7789,12 @@ def config(ui):
     ui.pushButton_update_balance_2.clicked.connect(position_now)
     ConfigSaved().orders_rate_saved2()
     ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
+    ui.lineEdit_orders_rate.editingFinished.connect(save_orders_rate_changed)
     sinal.date_time_signal.connect(date_time_signal)
-    sinal.reduce_only_signal.connect(reduce_only_signal)
+    ui.checkbox_date_time_start.stateChanged.connect(date_time_save)
+    ui.checkbox_date_time_end.stateChanged.connect(date_time_save)
+    ui.date_time_start.dateTimeChanged.connect(date_time_save)
+    ui.date_time_end.dateTimeChanged.connect(date_time_save)
 
 
 # noinspection PyShadowingNames
