@@ -7215,6 +7215,39 @@ def instruments(ui):
             setup.write(configfile)
 
         sinal.strategy_name_update_signal.emit()
+        
+    def reduce_only_save():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        reduce_only_setup = setup['reduce_only']
+
+        if ui.check_box_reduce_only_1.isChecked() is True:
+            reduce_only_setup['instrument1'] = 'True'
+        else:
+            reduce_only_setup['instrument1'] = 'False'
+            
+        if ui.check_box_reduce_only_2.isChecked() is True:
+            reduce_only_setup['instrument2'] = 'True'
+        else:
+            reduce_only_setup['instrument2'] = 'False'
+            
+        if ui.check_box_reduce_only_3.isChecked() is True:
+            reduce_only_setup['instrument3'] = 'True'
+        else:
+            reduce_only_setup['instrument3'] = 'False'
+            
+        if ui.check_box_reduce_only_4.isChecked() is True:
+            reduce_only_setup['instrument4'] = 'True'
+        else:
+            reduce_only_setup['instrument4'] = 'False'
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        Config().date_time_saved()
 
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
