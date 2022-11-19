@@ -8670,7 +8670,7 @@ def run(ui):
                 try:
                     from connection_spread import connect
                     connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
-                    connect.logwriter('*** Time is finished - ' + str(date_time_end_datetime) + ' ***')
+                    connect.logwriter('*** Trading Stopped by Time - ' + str(date_time_end_datetime) + ' ***')
                 except Exception as error2:
                     from connection_spread import connect
                     connect.logwriter(str(error2) + ' Error Code:: 8610')
