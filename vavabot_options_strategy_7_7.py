@@ -8763,8 +8763,8 @@ def run(ui):
                                         trading_on_off_for_msg = 'off'
                                         send_future_orders_while = False
 
-                                        list_monitor_log.append('*** Ending Time Trading ***')
-                                        connect.logwriter('*** Ending Time Trading ***')
+                                        list_monitor_log.append('*** Trading Stopped by Time ***')
+                                        connect.logwriter('*** Trading Stopped by Time ***')
                                     else:
                                         list_monitor_log.append('*** Trading time is NOT over ***')
                                 else:
