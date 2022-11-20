@@ -1383,6 +1383,17 @@ class Config:
 
         instrument_number_adjusted = int(instrument_number) - 1
 
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        reduce_only_setup = setup['reduce_only']
+        instrument_number_str = 'instrument' + str(instrument_number)
+        instrument_reduce_only_boolean = reduce_only_setup.getboolean(instrument_number_str)
+        print(instrument_reduce_only_boolean)
+
         with open('position_preview.txt', 'r') as file_position_preview:
             lines_file_position_preview = file_position_preview.readlines()  # file instruments_spread.txt ==> lines
 
