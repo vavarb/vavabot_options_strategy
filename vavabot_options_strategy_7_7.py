@@ -8558,6 +8558,59 @@ def run(ui):
     def structure_cost_link():
         ConditionsCheck().structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
 
+    def position_preview_to_gui2():
+        max_position_instrument1_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
+            instrument_number=1)
+        max_position_instrument2_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
+            instrument_number=2)
+        max_position_instrument3_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
+            instrument_number=3)
+        max_position_instrument4_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
+            instrument_number=4)
+
+        textedit_balance_after_signal_dict = dict()
+        textedit_balance_after_signal_dict.clear()
+
+        textedit_balance_after_signal_dict['Instrument 1'] = str(max_position_instrument1_for_gui)
+        textedit_balance_after_signal_dict['Instrument 2'] = str(max_position_instrument2_for_gui)
+        textedit_balance_after_signal_dict['Instrument 3'] = str(max_position_instrument3_for_gui)
+        textedit_balance_after_signal_dict['Instrument 4'] = str(max_position_instrument4_for_gui)
+
+        sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
+
+        if 'ERROR' in str(max_position_instrument1_for_gui):
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Instrument 1 Syntax ERROR')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+        else:
+            pass
+        if 'ERROR' in str(max_position_instrument2_for_gui):
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Instrument 2 Syntax ERROR')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+        else:
+            pass
+        if 'ERROR' in str(max_position_instrument3_for_gui):
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Instrument 3 Syntax ERROR')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+        else:
+            pass
+        if 'ERROR' in str(max_position_instrument4_for_gui):
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Instrument 4 Syntax ERROR')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+        else:
+            pass
+
     def start():
         import time
         from lists import list_monitor_log
@@ -8644,7 +8697,11 @@ def run(ui):
                         finally:
                             pass
                     else:
-                        Config().position_before_trade_save()
+                        Config().position_before_trade_save()  # não tem 'ui' na função.
+                        sinal.textedit_balance_settext_signal.emit(
+                            str(ConfigSaved().position_saved()))
+                        position_preview_to_gui2()  # Já tem signal na função.
+                        ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
                         connect.logwriter('*** Start Trading by Time ***')
                         waiting_date_time_start = False
                 except Exception as error2:
