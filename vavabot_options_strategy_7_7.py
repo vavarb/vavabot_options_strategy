@@ -1461,7 +1461,13 @@ class Config:
 
     @staticmethod
     def date_time_saved():
-        from connection_spread import connect
+        from lists import list_monitor_log
+        try:
+            from connection_spread import connect
+            connect.logwriter('*** Date and time saved - connect ***')
+        except ImportError:
+            pass
+
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -1504,7 +1510,8 @@ class Config:
 
             with open('setup.ini', 'w') as configfile:
                 setup.write(configfile)
-            connect.logwriter('*** Date and time saved ***')
+
+            list_monitor_log.append('*** Date and time saved - list ***')
 
             date_time_dict = dict()
             date_time_dict['text_date_time_start'] = now_text
@@ -6653,6 +6660,34 @@ def instruments(ui):
             pass
 
     def date_time_enabled_signal():
+        from connection_spread import connect
+
+        ConfigSaved().setup_ini_check()
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        date_time_setup = setup['date_time']
+
+        date_time_setup['date_time_enabled'] = 'True'
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+
+        try:
+            connect.logwriter('*** Date and time set Enable saved ***')
+        except Exception as error2:
+            from connection_spread import connect
+            connect.logwriter(str(error2) + ' Error Code:: 6673')
+            list_monitor_log.append(str(error2) + ' Error Code:: 6673')
+            time.sleep(3)
+            pass
+        finally:
+            pass
+
         ui.checkbox_date_time_start.setEnabled(True)
         ui.checkbox_date_time_end.setEnabled(True)
         ui.date_time_start.setEnabled(True)
@@ -7076,20 +7111,6 @@ def instruments(ui):
                                 ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
                                 strategy_name_save()
                                 reduce_only_save()
-
-                                setup = ConfigParser(
-                                    allow_no_value=True,
-                                    inline_comment_prefixes='#',
-                                    strict=False
-                                )
-                                setup.read('setup.ini')
-                                date_time_setup = setup['date_time']
-
-                                date_time_setup['date_time_enabled'] = 'True'
-
-                                with open('setup.ini', 'w') as configfile:
-                                    setup.write(configfile)
-                                connect.logwriter('*** Date and time set Enable saved ***')
                                 sinal.date_time_enabled_signal.emit()
 
                             else:
