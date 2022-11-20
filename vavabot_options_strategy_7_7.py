@@ -8644,6 +8644,7 @@ def run(ui):
                         finally:
                             pass
                     else:
+                        Config().position_before_trade_save()
                         connect.logwriter('*** Start Trading by Time ***')
                         waiting_date_time_start = False
                 except Exception as error2:
