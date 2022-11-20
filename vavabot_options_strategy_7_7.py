@@ -8873,10 +8873,12 @@ def run(ui):
             try:
                 from connection_spread import connect
                 list_monitor_log.append(
-                    '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
+                    '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) +
+                    ' **********'
                 )
                 connect.logwriter(
-                    '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
+                    '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) +
+                    ' **********'
                 )
             except Exception as er:
                 from connection_spread import connect
