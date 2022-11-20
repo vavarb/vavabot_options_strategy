@@ -62,6 +62,8 @@ class Sinais(QtCore.QObject):
     strategy_name_update_signal = QtCore.pyqtSignal()
     date_time_signal = QtCore.pyqtSignal(dict)
     reduce_only_signal = QtCore.pyqtSignal(dict)
+    date_time_enabled_signal = QtCore.pyqtSignal()
+    date_time_disabled_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -1449,6 +1451,7 @@ class Config:
         date_time['start'] = now_text
         date_time['end_ischecked'] = 'False'
         date_time['end'] = now_10_text
+        date_time['date_time_enabled'] = 'True'
 
         with open('setup.ini', 'w') as configfile:
             config.write(configfile)
@@ -6521,6 +6524,20 @@ def instruments(ui):
         from connection_spread import led_color
         global list_thread_when_open_app
 
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        date_time_setup = setup['date_time']
+        date_time_setup_enable = date_time_setup.getboolean('date_time_enabled')
+
+        if date_time_setup_enable is True:
+            sinal.date_time_enabled_signal.emit()
+        else:
+            sinal.date_time_disabled_signal.emit()
+
         if led_color() == 'red':  # Erro depois ver o que fazer com esta mensagem box
             list_thread_when_open_app.append(' Connection Offline ')
             list_thread_when_open_app.append('***** ERROR *****')
@@ -6634,6 +6651,18 @@ def instruments(ui):
             Config().setup_ini_creator()
             sinal.strategy_name_update_signal.emit()
             pass
+
+    def date_time_enabled_signal():
+        ui.checkbox_date_time_start.setEnabled(True)
+        ui.checkbox_date_time_end.setEnabled(True)
+        ui.date_time_start.setEnabled(True)
+        ui.date_time_end.setEnabled(True)
+
+    def date_time_disabled_signal():
+        ui.checkbox_date_time_start.setEnabled(False)
+        ui.checkbox_date_time_end.setEnabled(False)
+        ui.date_time_start.setEnabled(False)
+        ui.date_time_end.setEnabled(False)
 
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
         from connection_spread import led_color
@@ -7047,6 +7076,22 @@ def instruments(ui):
                                 ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
                                 strategy_name_save()
                                 reduce_only_save()
+
+                                setup = ConfigParser(
+                                    allow_no_value=True,
+                                    inline_comment_prefixes='#',
+                                    strict=False
+                                )
+                                setup.read('setup.ini')
+                                date_time_setup = setup['date_time']
+
+                                date_time_setup['date_time_enabled'] = 'True'
+
+                                with open('setup.ini', 'w') as configfile:
+                                    setup.write(configfile)
+                                connect.logwriter('*** Date and time set Enable saved ***')
+                                sinal.date_time_enabled_signal.emit()
+
                             else:
                                 msg = QtWidgets.QMessageBox()
                                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -7369,6 +7414,8 @@ def instruments(ui):
     ui.check_box_reduce_only_2.stateChanged.connect(reduce_only_save)
     ui.check_box_reduce_only_3.stateChanged.connect(reduce_only_save)
     ui.check_box_reduce_only_4.stateChanged.connect(reduce_only_save)
+    sinal.date_time_enabled_signal.connect(date_time_enabled_signal)
+    sinal.date_time_disabled_signal.connect(date_time_disabled_signal)
     enable_disable_strike_and_c_or_p_and_maturity()
 
 
@@ -8223,10 +8270,24 @@ def run(ui):
         ui.lineEdit_orders_rate.setEnabled(True)
         ui.pushButton_orders_rate.setEnabled(True)
 
-        ui.checkbox_date_time_start.setEnabled(True)
-        ui.checkbox_date_time_end.setEnabled(True)
-        ui.date_time_start.setEnabled(True)
-        ui.date_time_end.setEnabled(True)
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        date_time_setup = setup['date_time']
+        date_time_setup_enable = date_time_setup.getboolean('date_time_enabled')
+        if date_time_setup_enable is True:
+            ui.checkbox_date_time_start.setEnabled(True)
+            ui.checkbox_date_time_end.setEnabled(True)
+            ui.date_time_start.setEnabled(True)
+            ui.date_time_end.setEnabled(True)
+        else:
+            ui.checkbox_date_time_start.setEnabled(False)
+            ui.checkbox_date_time_end.setEnabled(False)
+            ui.date_time_start.setEnabled(False)
+            ui.date_time_end.setEnabled(False)
 
         ui.check_box_reduce_only_1.setEnabled(True)
         ui.check_box_reduce_only_2.setEnabled(True)
@@ -8697,13 +8758,43 @@ def run(ui):
                         finally:
                             pass
                     else:
-                        Config().position_before_trade_save()  # não tem 'ui' na função.
-                        sinal.textedit_balance_settext_signal.emit(
-                            str(ConfigSaved().position_saved()))
-                        position_preview_to_gui2()  # Já tem signal na função.
-                        ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
+                        setup = ConfigParser(
+                            allow_no_value=True,
+                            inline_comment_prefixes='#',
+                            strict=False
+                        )
+                        setup.read('setup.ini')
+                        date_time_setup = setup['date_time']
+                        date_time_setup_enable = date_time_setup.getboolean('date_time_enabled')
+
+                        if date_time_setup_enable is True:
+                            Config().position_before_trade_save()  # não tem 'ui' na função.
+                            sinal.textedit_balance_settext_signal.emit(
+                                str(ConfigSaved().position_saved()))
+                            position_preview_to_gui2()  # Já tem signal na função.
+                            Quote().quote_new()  # Já tem signal na função que chama.
+
+                            setup = ConfigParser(
+                                allow_no_value=True,
+                                inline_comment_prefixes='#',
+                                strict=False
+                            )
+                            setup.read('setup.ini')
+                            date_time_setup = setup['date_time']
+
+                            date_time_setup['date_time_enabled'] = 'False'
+
+                            with open('setup.ini', 'w') as configfile:
+                                setup.write(configfile)
+
+                            connect.logwriter('*** Date and time set Disable saved ***\n'
+                                              '*** Positions before trades and positions preview uptaded ***')
+                        else:
+                            pass
+
                         connect.logwriter('*** Start Trading by Time ***')
                         waiting_date_time_start = False
+
                 except Exception as error2:
                     from connection_spread import connect
                     connect.logwriter(str(error2) + ' Error Code:: 8587')
