@@ -8693,6 +8693,69 @@ def run(ui):
         else:
             pass
 
+    def position_now2():
+        from connection_spread import connect, led_color
+        from lists import list_monitor_log
+
+        instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
+        instrument2_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
+        instrument3_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=3)
+        instrument4_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=4)
+
+        a = instrument1_name
+        b = instrument2_name
+        c = instrument3_name
+        d = instrument4_name
+
+        if led_color() == 'red':
+            sinal.msg_box_for_position_now_signal.emit()
+            pass
+        else:
+            try:
+                if a != 'Unassigned':
+                    a1 = connect.get_position_size(instrument_name=a)
+                else:
+                    a1 = 'Unassigned'
+
+                if b != 'Unassigned':
+                    b1 = connect.get_position_size(instrument_name=b)
+                else:
+                    b1 = 'Unassigned'
+
+                if c != 'Unassigned':
+                    c1 = connect.get_position_size(instrument_name=c)
+                else:
+                    c1 = 'Unassigned'
+
+                if d != 'Unassigned':
+                    d1 = connect.get_position_size(instrument_name=d)
+                else:
+                    d1 = 'Unassigned'
+
+                info1 = dict()
+                info1['Instrument 1'] = str(a1)
+                info1['Instrument 2'] = str(b1)
+                info1['Instrument 3'] = str(c1)
+                info1['Instrument 4'] = str(d1)
+
+                info = info1
+
+                sinal.position_now_signal.emit(info)
+
+            except Exception as er:
+                connect.logwriter(str(er) + ' Error Code:: 6778')
+                list_monitor_log.append(str(er) + ' Error Code:: 6779')
+                ui.textEdit_balance_2.clear()
+                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 6781')
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Current Positions don´t checked')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+            finally:
+                pass
+
     def start():
         import time
         from lists import list_monitor_log
@@ -8789,11 +8852,13 @@ def run(ui):
                         date_time_setup_enable = date_time_setup.getboolean('date_time_enabled')
 
                         if date_time_setup_enable is True:
-                            Config().position_before_trade_save()  # não tem 'ui' na função.
+                            Config().position_before_trade_save()
                             sinal.textedit_balance_settext_signal.emit(
-                                str(ConfigSaved().position_saved()))
-                            position_preview_to_gui2()  # Já tem signal na função.
-                            Quote().quote_new()  # Já tem signal na função que chama.
+                                str(ConfigSaved().position_saved())
+                            )
+                            position_now2()
+                            position_preview_to_gui2()
+                            Quote().quote_new()
 
                             setup = ConfigParser(
                                 allow_no_value=True,
