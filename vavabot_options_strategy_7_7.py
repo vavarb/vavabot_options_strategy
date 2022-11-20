@@ -8532,7 +8532,9 @@ def run(ui):
 
     def start_signal_2():
         ui.label_58.show()
-        ui.label_58.setText('*** Trading Completed ***')
+        ui.label_58.setText(
+            '*** Trading Completed at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' ***'
+        )
 
     def start_signal_3():
         from connection_spread import connect
@@ -8670,7 +8672,7 @@ def run(ui):
                 try:
                     from connection_spread import connect
                     connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
-                    connect.logwriter('*** Trading Stopped by Time - ' + str(date_time_end_datetime) + ' ***')
+                    connect.logwriter('*** Trading Stopped by Timeout - ' + str(date_time_end_datetime) + ' ***')
                 except Exception as error2:
                     from connection_spread import connect
                     connect.logwriter(str(error2) + ' Error Code:: 8610')
@@ -8763,8 +8765,8 @@ def run(ui):
                                         trading_on_off_for_msg = 'off'
                                         send_future_orders_while = False
 
-                                        list_monitor_log.append('*** Trading Stopped by Time ***')
-                                        connect.logwriter('*** Trading Stopped by Time ***')
+                                        list_monitor_log.append('*** Trading Stopped by Timeout ***')
+                                        connect.logwriter('*** Trading Stopped by Timeout ***')
                                     else:
                                         list_monitor_log.append('*** Trading time is NOT over ***')
                                 else:
