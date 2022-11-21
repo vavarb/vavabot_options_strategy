@@ -812,6 +812,27 @@ class InstrumentsSaved:
                 instrument_buy_or_sell = str(list_line_instrument[3])
                 return str(instrument_buy_or_sell)
 
+    def instrument_position_saved(self, instrument_number=None):
+        self.instrument_number = instrument_number
+        from lists import list_monitor_log
+
+        instrument_number_adjusted = int(instrument_number) - 1
+
+        with open('position_preview.txt', 'r') as file_position_preview:
+            lines_file_position_preview = file_position_preview.readlines()  # file instruments_spread.txt ==> lines
+
+            # Instrument Preview Position
+            list_line_position_preview_instrument = lines_file_position_preview[instrument_number_adjusted].split()
+            if 'Unassigned' in list_line_position_preview_instrument:
+                return 0
+            elif 'None' in list_line_position_preview_instrument:
+                list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
+                                        'Instrument ' + instrument_number)
+                pass
+                return '***** Syntax ERROR or there is not Instrument *****'
+            else:
+                return float(list_line_position_preview_instrument[2])
+
     def instrument_amount_saved(self, instrument_number=None):
         file_open = 'instruments_spread.txt'
         self.instrument_number = instrument_number
@@ -850,26 +871,26 @@ class InstrumentsSaved:
             else:
                 pass
 
-            instrument_position_saved = float(
-                Config().max_position_from_position_saved_and_instrument_amount(
-                    instrument_number=instrument_number)) - float(instrument_amount_saved)
+            instrument_position_saved_for_reduce_only = float(
+                InstrumentsSaved().instrument_position_saved(instrument_number=instrument_number)
+            )
 
             if instrument_direction == 'buy':
-                if instrument_position_saved + instrument_amount_saved <= 0:
+                if instrument_position_saved_for_reduce_only + instrument_amount_saved <= 0:
                     return str(instrument_amount_saved)
                 else:
-                    if instrument_position_saved > 0:
+                    if instrument_position_saved_for_reduce_only > 0:
                         return str(0.0)
                     else:
-                        return str(abs(instrument_position_saved))
+                        return str(abs(instrument_position_saved_for_reduce_only))
             elif instrument_direction == 'sell':
-                if instrument_position_saved + instrument_amount_saved >= 0:
+                if instrument_position_saved_for_reduce_only + instrument_amount_saved >= 0:
                     return str(instrument_amount_saved)
                 else:
-                    if instrument_position_saved < 0:
+                    if instrument_position_saved_for_reduce_only < 0:
                         return str(0.0)
                     else:
-                        return str(abs(instrument_position_saved))
+                        return str(abs(instrument_position_saved_for_reduce_only))
             else:
                 list_monitor_log.append('********** ERROR code 874 - reduce only error')
 
