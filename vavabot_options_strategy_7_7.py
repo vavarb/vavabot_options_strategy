@@ -818,9 +818,61 @@ class InstrumentsSaved:
 
         instrument_number_adjusted_to_list = (int(instrument_number) - 1)
 
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        reduce_only_setup = setup['reduce_only']
+        instrument_reduce_only_setup = reduce_only_setup.getboolean('instrument' + str(instrument_number))
+
         if InstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=instrument_number) == 'Unassigned':
             return 'Unassigned'
+        elif instrument_reduce_only_setup is True:
+            from lists import list_monitor_log
+
+            instrument_direction = str(
+                InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number))
+
+            with open(file_open, 'r') as file_instruments:
+                lines_file_instruments = file_instruments.readlines()  # file instruments.txt ==> lines
+                # Instrument
+                list_line_instrument = lines_file_instruments[
+                    instrument_number_adjusted_to_list].split()  # line ==> list
+                instrument_amount_saved = float(str(list_line_instrument[4]))
+
+            if instrument_direction == 'sell':
+                instrument_amount_saved = instrument_amount_saved * -1
+            else:
+                pass
+
+            instrument_position_saved = float(
+                Config().max_position_from_position_saved_and_instrument_amount(
+                    instrument_number=instrument_number)) - float(instrument_amount_saved)
+
+            if instrument_direction == 'buy':
+                if instrument_position_saved + instrument_amount_saved <= 0:
+                    return str(instrument_amount_saved)
+                else:
+                    if instrument_position_saved > 0:
+                        return str(0.0)
+                    else:
+                        return str(abs(instrument_position_saved))
+            elif instrument_direction == 'sell':
+                if instrument_position_saved + instrument_amount_saved >= 0:
+                    return str(instrument_amount_saved)
+                else:
+                    if instrument_position_saved < 0:
+                        return str(0.0)
+                    else:
+                        return str(abs(instrument_position_saved))
+            else:
+                list_monitor_log.append('********** ERROR code 874 - reduce only error')
+
         else:
             with open(file_open, 'r') as file_instruments:
                 lines_file_instruments = file_instruments.readlines()  # file instruments.txt ==> lines
