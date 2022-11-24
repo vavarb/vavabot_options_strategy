@@ -1518,6 +1518,28 @@ class Config:
         reduce_only['instrument3'] = 'False'
         reduce_only['instrument4'] = 'False'
 
+        config['amount'] = {}
+        amount = config['amount']
+        amount['instrument1_amount'] = 'Unassigned'
+        amount['instrument2_amount'] = 'Unassigned'
+        amount['instrument3_amount'] = 'Unassigned'
+        amount['instrument4_amount'] = 'Unassigned'
+
+        config['amount_adjusted'] = {}
+        amount_adjusted = config['amount_adjusted']
+        amount_adjusted['rate_amount'] = '1'
+        amount_adjusted['instrument1_amount_adjusted'] = 'Unassigned'
+        amount_adjusted['instrument2_amount_adjusted'] = 'Unassigned'
+        amount_adjusted['instrument3_amount_adjusted'] = 'Unassigned'
+        amount_adjusted['instrument4_amount_adjusted'] = 'Unassigned'
+
+        config['position_saved'] = {}
+        amount_adjusted = config['position_saved']
+        amount_adjusted['instrument1_position_saved'] = 'Unassigned'
+        amount_adjusted['instrument2_position_saved'] = 'Unassigned'
+        amount_adjusted['instrument3_position_saved'] = 'Unassigned'
+        amount_adjusted['instrument4_position_saved'] = 'Unassigned'
+
         config['date_time'] = {}
         date_time = config['date_time']
         date_time['start_ischecked'] = 'False'
