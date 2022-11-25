@@ -823,19 +823,19 @@ class InstrumentsSaved:
         )
         setup.read('setup.ini')
         position_saved_setup = setup['position_saved']
-        list_line_position_preview_instrument = str(
+        position_saved = str(
             position_saved_setup['Instrument' + str(instrument_number) + '_position_saved']
         )
 
-        if 'Unassigned' in list_line_position_preview_instrument:
+        if 'Unassigned' in position_saved:
             return 0
-        elif 'None' in list_line_position_preview_instrument:
+        elif 'None' in position_saved:
             list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
                                     'Instrument ' + instrument_number)
             pass
             return '***** Syntax ERROR or there is not Instrument *****'
         else:
-            return float(list_line_position_preview_instrument)
+            return float(position_saved)
 
     def instrument_amount_saved(self, instrument_number=None):
         file_open = 'instruments_spread.txt'
@@ -1110,8 +1110,212 @@ class Instruments:
         elif 'Unassigned' in instrument_kind_greeks:
             return {'vega': 0, 'theta': 0, 'rho': 0, 'gamma': 0, 'delta': 0}
 
+    @staticmethod
+    def adjust_rate_trade_by_reduce_only_save():
+        from connection_spread import connect
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        amount_setup = setup['amount']
+
+        instrument1_amount_saved_to_adjust_rate = amount_setup['instrument1_amount']
+        if instrument1_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument1_amount_saved_to_adjust_rate = 0
+        else:
+            instrument1_amount_saved_to_adjust_rate = float(instrument1_amount_saved_to_adjust_rate)
+        instrument2_amount_saved_to_adjust_rate = amount_setup['instrument2_amount']
+        if instrument2_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument2_amount_saved_to_adjust_rate = 0
+        else:
+            instrument2_amount_saved_to_adjust_rate = float(instrument2_amount_saved_to_adjust_rate)
+        instrument3_amount_saved_to_adjust_rate = amount_setup['instrument3_amount']
+        if instrument3_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument3_amount_saved_to_adjust_rate = 0
+        else:
+            instrument3_amount_saved_to_adjust_rate = float(instrument3_amount_saved_to_adjust_rate)
+        instrument4_amount_saved_to_adjust_rate = amount_setup['instrument4_amount']
+        if instrument4_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument4_amount_saved_to_adjust_rate = 0
+        else:
+            instrument4_amount_saved_to_adjust_rate = float(instrument4_amount_saved_to_adjust_rate)
+
+        amount_adjusted_setup = setup['amount_adjusted']
+
+        instrument1_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        if instrument1_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument1_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument1_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument1_amount_saved_and_reduce_only_to_adjust_rate)
+        instrument2_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        if instrument2_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument2_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument2_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument2_amount_saved_and_reduce_only_to_adjust_rate)
+        instrument3_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        if instrument3_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument3_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument3_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument3_amount_saved_and_reduce_only_to_adjust_rate)
+        instrument4_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        if instrument4_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument4_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument4_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument4_amount_saved_and_reduce_only_to_adjust_rate)
+
+        if instrument1_amount_saved_and_reduce_only_to_adjust_rate == 0 and\
+                instrument1_amount_saved_to_adjust_rate == 0:
+            instrument1_rate = 1
+        elif instrument1_amount_saved_and_reduce_only_to_adjust_rate != 0 and\
+                instrument1_amount_saved_to_adjust_rate == 0:
+            instrument1_rate = 0
+        else:
+            instrument1_rate = float(
+                instrument1_amount_saved_and_reduce_only_to_adjust_rate / instrument1_amount_saved_to_adjust_rate
+            )
+        if instrument2_amount_saved_and_reduce_only_to_adjust_rate == 0 and\
+                instrument2_amount_saved_to_adjust_rate == 0:
+            instrument2_rate = 1
+        elif instrument2_amount_saved_and_reduce_only_to_adjust_rate != 0 and\
+                instrument2_amount_saved_to_adjust_rate == 0:
+            instrument2_rate = 0
+        else:
+            instrument2_rate = float(
+                instrument2_amount_saved_and_reduce_only_to_adjust_rate / instrument2_amount_saved_to_adjust_rate
+            )
+        if instrument3_amount_saved_and_reduce_only_to_adjust_rate == 0 and\
+                instrument3_amount_saved_to_adjust_rate == 0:
+            instrument3_rate = 1
+        elif instrument3_amount_saved_and_reduce_only_to_adjust_rate != 0 and\
+                instrument3_amount_saved_to_adjust_rate == 0:
+            instrument3_rate = 0
+        else:
+            instrument3_rate = float(
+                instrument3_amount_saved_and_reduce_only_to_adjust_rate / instrument3_amount_saved_to_adjust_rate
+            )
+        if instrument4_amount_saved_and_reduce_only_to_adjust_rate == 0 and\
+                instrument4_amount_saved_to_adjust_rate == 0:
+            instrument4_rate = 1
+        elif instrument4_amount_saved_and_reduce_only_to_adjust_rate != 0 and\
+                instrument4_amount_saved_to_adjust_rate == 0:
+            instrument4_rate = 0
+        else:
+            instrument4_rate = float(
+                instrument4_amount_saved_and_reduce_only_to_adjust_rate / instrument4_amount_saved_to_adjust_rate
+            )
+
+        adjust_rate_trade_by_reduce_only = dict()
+        adjust_rate_trade_by_reduce_only.clear()
+        adjust_rate_trade_by_reduce_only_dict = {
+            'instrument1_rate': abs(instrument1_rate),
+            'instrument2_rate': abs(instrument2_rate),
+            'instrument3_rate': abs(instrument3_rate),
+            'instrument4_rate': abs(instrument4_rate)
+        }
+        smaller_adjust_rate_trade_by_reduce_only = min(
+            adjust_rate_trade_by_reduce_only_dict, key=adjust_rate_trade_by_reduce_only_dict.get)  # instrument number
+        smaller_adjust_rate_trade_by_reduce_only_value = abs(adjust_rate_trade_by_reduce_only_dict.get(
+            smaller_adjust_rate_trade_by_reduce_only, 0))  # Valor
+
+        amount_adjusted_setup['rate_amount'] = str(smaller_adjust_rate_trade_by_reduce_only_value)
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        connect.logwriter('*** Rate Trades Saved ***')
+
+    @staticmethod
     def amount_adjusted_save():
-        pass
+        Instruments().amount_adjusted_save2(instrument_number=1)
+        Instruments().amount_adjusted_save2(instrument_number=2)
+        Instruments().amount_adjusted_save2(instrument_number=3)
+        Instruments().amount_adjusted_save2(instrument_number=4)
+
+    def amount_adjusted_save2(self, instrument_number=None):
+        self.instrument_number = instrument_number
+        from connection_spread import connect
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        reduce_only_setup = setup['reduce_only']
+        instrument_reduce_only_setup = reduce_only_setup.getboolean('instrument' + str(instrument_number))
+
+        amount_adjusted_setup = setup['amount_adjusted']
+
+        instrument_name_construction_from_file = InstrumentsSaved().instrument_name_construction_from_file(
+                instrument_number=instrument_number)
+
+        if instrument_name_construction_from_file == 'Unassigned':
+            amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = 'Unassigned'
+        elif instrument_reduce_only_setup is True and instrument_name_construction_from_file != 'Unassigned':
+
+            instrument_direction = str(
+                InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number))
+
+            amount_setup = setup['amount']
+            instrument_amount_saved = amount_setup[str('instrument' + str(instrument_number) + '_amount')]
+
+            if 'Unassigned' in instrument_amount_saved:
+                instrument_amount_saved = 0
+            else:
+                instrument_amount_saved = float(instrument_amount_saved)
+
+            if instrument_direction == 'sell':
+                instrument_amount_saved = instrument_amount_saved * -1
+            else:
+                pass
+
+            instrument_position_saved_for_reduce_only = float(
+                InstrumentsSaved().instrument_position_saved(instrument_number=instrument_number)
+            )
+
+            if instrument_direction == 'buy':
+                if instrument_position_saved_for_reduce_only + instrument_amount_saved <= 0:
+                    amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                        instrument_amount_saved)
+                else:
+                    if instrument_position_saved_for_reduce_only > 0:
+                        amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                            0.0)
+                    else:
+                        amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                            abs(instrument_position_saved_for_reduce_only))
+            elif instrument_direction == 'sell':
+                if instrument_position_saved_for_reduce_only + instrument_amount_saved >= 0:
+                    amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                        instrument_amount_saved)
+                else:
+                    if instrument_position_saved_for_reduce_only < 0:
+                        amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                            0.0)
+                    else:
+                        amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                            abs(instrument_position_saved_for_reduce_only))
+            else:
+                connect.logwriter('********** ERROR code 1181 - Amount Adjusted Save error')
+
+        else:
+            amount_setup = setup['amount']
+            instrument_amount_saved = amount_setup[str('instrument' + str(instrument_number) + '_amount')]
+
+            amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                instrument_amount_saved)
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        connect.logwriter('*** Amount Adjusted Saved - ' + 'Instrument ' + str(instrument_number) + ' ***')
 
 
 class ConfigSaved:
@@ -1490,10 +1694,10 @@ class Config:
         )
         setup.read('setup.ini')
         position_saved_setup = setup['position_saved']
-        list_line_position_preview_instrument = str(
+        position_saved = str(
             position_saved_setup['Instrument' + str(instrument_number) + '_position_saved']
         )
-        if 'Unassigned' in list_line_position_preview_instrument:
+        if 'Unassigned' in position_saved:
             if InstrumentsSaved().instrument_direction_construction_from_instrument_file(
                     instrument_number=instrument_number) == 'buy':
                 return float(InstrumentsSaved().instrument_amount_saved(
@@ -1504,13 +1708,13 @@ class Config:
                     instrument_number=instrument_number)) * -1
             else:
                 return 'Unassigned'
-        elif 'None' in list_line_position_preview_instrument:
+        elif 'None' in position_saved:
             list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
                                     'Instrument ' + str(instrument_number))
             pass
             return '***** Syntax ERROR or there is not Instrument *****'
         else:
-            instrument_position_preview = float(list_line_position_preview_instrument)
+            instrument_position_preview = float(position_saved)
             if InstrumentsSaved().instrument_direction_construction_from_instrument_file(
                     instrument_number=instrument_number) == 'buy':
                 return float(instrument_position_preview) + \
@@ -6706,7 +6910,7 @@ def instruments(ui):
                 # ui.textEdit_instruments_saved.setText(str(InstrumentsSaved().instruments_check()))
                 Config().position_before_trade_save()  # não tem 'ui' na função.
                 print_greeks_by_instrument()  # já se repete em:  ui.textEdit_targets_saved_3.append('Change1')
-                # a função 'print_greeks_by_instrument' já tem sinal nela.
+                # A função 'print_greeks_by_instrument' já tem sinal nela.
                 # Config().position_before_trade_save()  # não tem 'ui' na função.
                 sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
                 # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
@@ -7230,6 +7434,8 @@ def instruments(ui):
                                     InstrumentsSaved().instruments_check())
                                 sinal.textedit_instruments_saved_settext_signal.emit(
                                     textedit_instruments_saved_settext_signal_str)
+                                Instruments().amount_adjusted_save()
+                                Instruments().adjust_rate_trade_by_reduce_only_save()
                                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
                                 # Config().position_before_trade_save()  # não tem 'ui' na função.
                                 sinal.textedit_balance_settext_signal.emit(
