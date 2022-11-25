@@ -816,22 +816,26 @@ class InstrumentsSaved:
         self.instrument_number = instrument_number
         from lists import list_monitor_log
 
-        instrument_number_adjusted = int(instrument_number) - 1
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        position_saved_setup = setup['position_saved']
+        list_line_position_preview_instrument = str(
+            position_saved_setup['Instrument' + str(instrument_number) + '_position_saved']
+        )
 
-        with open('position_preview.txt', 'r') as file_position_preview:
-            lines_file_position_preview = file_position_preview.readlines()  # file instruments_spread.txt ==> lines
-
-            # Instrument Preview Position
-            list_line_position_preview_instrument = lines_file_position_preview[instrument_number_adjusted].split()
-            if 'Unassigned' in list_line_position_preview_instrument:
-                return 0
-            elif 'None' in list_line_position_preview_instrument:
-                list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
-                                        'Instrument ' + instrument_number)
-                pass
-                return '***** Syntax ERROR or there is not Instrument *****'
-            else:
-                return float(list_line_position_preview_instrument[2])
+        if 'Unassigned' in list_line_position_preview_instrument:
+            return 0
+        elif 'None' in list_line_position_preview_instrument:
+            list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
+                                    'Instrument ' + instrument_number)
+            pass
+            return '***** Syntax ERROR or there is not Instrument *****'
+        else:
+            return float(list_line_position_preview_instrument)
 
     def instrument_amount_saved(self, instrument_number=None):
         file_open = 'instruments_spread.txt'
@@ -1106,6 +1110,9 @@ class Instruments:
         elif 'Unassigned' in instrument_kind_greeks:
             return {'vega': 0, 'theta': 0, 'rho': 0, 'gamma': 0, 'delta': 0}
 
+    def amount_adjusted_save():
+        pass
+
 
 class ConfigSaved:
     def __init__(self):
@@ -1204,10 +1211,20 @@ class ConfigSaved:
 
     @staticmethod
     def position_saved():
-        file_open = 'position_preview.txt'
-        with open(file_open, 'r') as f1:
-            f2 = f1
-            return f2.read()
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        position_saved_setup = setup['position_saved']
+        position_saved = str(
+            'Instrument 1: ' + str(position_saved_setup['instrument1_position_saved']) + '\n' +
+            'Instrument 2: ' + str(position_saved_setup['instrument2_position_saved']) + '\n' +
+            'Instrument 3: ' + str(position_saved_setup['instrument3_position_saved']) + '\n' +
+            'Instrument 4: ' + str(position_saved_setup['instrument4_position_saved'])
+        )
+        return position_saved
 
     @staticmethod
     def currency_exchange_rate_for_upper_and_lower():
@@ -1374,75 +1391,87 @@ class Config:
         b = instrument2_name
         c = instrument3_name
         d = instrument4_name
+
         try:
-            with open('position_preview.txt', 'w') as file_position_preview:
-                if a != 'Unassigned':
-                    a1 = connect.get_position_size(instrument_name=a)
-                    if str(a1) == 'None':
-                        aa = '0'
-                        file_position_preview.write('Instrument 1: ' + str(aa) + '\n')
-                    else:
-                        file_position_preview.write('Instrument 1: ' + str(a1) + '\n')
-                else:
-                    pass
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False
+            )
+            setup.read('setup.ini')
+            position_saved_setup = setup['position_saved']
 
-                if b != 'Unassigned':
-                    b1 = connect.get_position_size(instrument_name=b)
-                    if str(b1) == 'None':
-                        aa = '0'
-                        file_position_preview.write('Instrument 2: ' + str(aa) + '\n')
-                    else:
-                        file_position_preview.write('Instrument 2: ' + str(b1) + '\n')
+            if a != 'Unassigned':
+                a1 = connect.get_position_size(instrument_name=a)
+                if str(a1) == 'None':
+                    aa = '0'
+                    position_saved_setup['instrument1_position_saved'] = str(aa)
                 else:
-                    pass
+                    position_saved_setup['instrument1_position_saved'] = str(a1)
+            else:
+                pass
 
-                if c != 'Unassigned':
-                    c1 = connect.get_position_size(instrument_name=c)
-                    if str(c1) == 'None':
-                        aa = '0'
-                        file_position_preview.write('Instrument 3: ' + str(aa) + '\n')
-                    else:
-                        file_position_preview.write('Instrument 3: ' + str(c1) + '\n')
+            if b != 'Unassigned':
+                b1 = connect.get_position_size(instrument_name=b)
+                if str(b1) == 'None':
+                    aa = '0'
+                    position_saved_setup['instrument2_position_saved'] = str(aa)
                 else:
-                    pass
+                    position_saved_setup['instrument2_position_saved'] = str(b1)
+            else:
+                pass
 
-                if d != 'Unassigned':
-                    d1 = connect.get_position_size(instrument_name=d)
-                    if str(d1) == 'None':
-                        aa = '0'
-                        file_position_preview.write('Instrument 4: ' + str(aa) + '\n')
-                    else:
-                        file_position_preview.write('Instrument 4: ' + str(d1))
+            if c != 'Unassigned':
+                c1 = connect.get_position_size(instrument_name=c)
+                if str(c1) == 'None':
+                    aa = '0'
+                    position_saved_setup['instrument3_position_saved'] = str(aa)
                 else:
-                    pass
+                    position_saved_setup['instrument3_position_saved'] = str(c1)
+            else:
+                pass
 
-                if a == 'Unassigned':
-                    a1 = 'Unassigned'
-                    file_position_preview.write('Instrument 1: ' + str(a1) + '\n')
+            if d != 'Unassigned':
+                d1 = connect.get_position_size(instrument_name=d)
+                if str(d1) == 'None':
+                    aa = '0'
+                    position_saved_setup['instrument4_position_saved'] = str(aa)
                 else:
-                    pass
+                    position_saved_setup['instrument4_position_saved'] = str(d1)
+            else:
+                pass
 
-                if b == 'Unassigned':
-                    b1 = 'Unassigned'
-                    file_position_preview.write('Instrument 2: ' + str(b1) + '\n')
-                else:
-                    pass
+            if a == 'Unassigned':
+                a1 = 'Unassigned'
+                position_saved_setup['instrument1_position_saved'] = str(a1)
+            else:
+                pass
 
-                if c == 'Unassigned':
-                    c1 = 'Unassigned'
-                    file_position_preview.write('Instrument 3: ' + str(c1) + '\n')
-                else:
-                    pass
+            if b == 'Unassigned':
+                b1 = 'Unassigned'
+                position_saved_setup['instrument2_position_saved'] = str(b1)
+            else:
+                pass
 
-                if d == 'Unassigned':
-                    d1 = 'Unassigned'
-                    file_position_preview.write('Instrument 4: ' + str(d1))
-                else:
-                    pass
+            if c == 'Unassigned':
+                c1 = 'Unassigned'
+                position_saved_setup['instrument3_position_saved'] = str(c1)
+            else:
+                pass
+
+            if d == 'Unassigned':
+                d1 = 'Unassigned'
+                position_saved_setup['instrument4_position_saved'] = str(d1)
+            else:
+                pass
+
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('***  Position Saved ***')
 
         except Exception as er:
-            connect.logwriter(str(er) + ' Error Code:: 1200')
-            list_monitor_log.append(str(er) + ' Error Code:: 1201')
+            connect.logwriter(str(er) + ' Error Code:: 1458')
+            list_monitor_log.append(str(er) + ' Error Code:: 1451')
             list_thread_when_open_app.append('Positions preview don´t saved')
             list_thread_when_open_app.append('***** ERROR *****')
             ui.textEdit_targets_saved_2.append('Change25')
@@ -1454,43 +1483,46 @@ class Config:
         self.instrument_number = instrument_number
         from lists import list_monitor_log
 
-        instrument_number_adjusted = int(instrument_number) - 1
-
-        with open('position_preview.txt', 'r') as file_position_preview:
-            lines_file_position_preview = file_position_preview.readlines()  # file instruments_spread.txt ==> lines
-
-            # Instrument Preview Position
-            list_line_position_preview_instrument = lines_file_position_preview[instrument_number_adjusted].split()
-            if 'Unassigned' in list_line_position_preview_instrument:
-                if InstrumentsSaved().instrument_direction_construction_from_instrument_file(
-                        instrument_number=instrument_number) == 'buy':
-                    return float(InstrumentsSaved().instrument_amount_saved(
-                        instrument_number=instrument_number))
-                elif InstrumentsSaved().instrument_direction_construction_from_instrument_file(
-                        instrument_number=instrument_number) == 'sell':
-                    return float(InstrumentsSaved().instrument_amount_saved(
-                        instrument_number=instrument_number)) * -1
-                else:
-                    return 'Unassigned'
-            elif 'None' in list_line_position_preview_instrument:
-                list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
-                                        'Instrument ' + instrument_number)
-                pass
-                return '***** Syntax ERROR or there is not Instrument *****'
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        position_saved_setup = setup['position_saved']
+        list_line_position_preview_instrument = str(
+            position_saved_setup['Instrument' + str(instrument_number) + '_position_saved']
+        )
+        if 'Unassigned' in list_line_position_preview_instrument:
+            if InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number) == 'buy':
+                return float(InstrumentsSaved().instrument_amount_saved(
+                    instrument_number=instrument_number))
+            elif InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number) == 'sell':
+                return float(InstrumentsSaved().instrument_amount_saved(
+                    instrument_number=instrument_number)) * -1
             else:
-                instrument_position_preview = float(list_line_position_preview_instrument[2])
-                if InstrumentsSaved().instrument_direction_construction_from_instrument_file(
-                        instrument_number=instrument_number) == 'buy':
-                    return float(instrument_position_preview) + \
-                           float(InstrumentsSaved().instrument_amount_saved(
-                               instrument_number=instrument_number))
-                elif InstrumentsSaved().instrument_direction_construction_from_instrument_file(
-                        instrument_number=instrument_number) == 'sell':
-                    return float(instrument_position_preview) + \
-                           (float(InstrumentsSaved().instrument_amount_saved(
-                               instrument_number=instrument_number)) * -1)
-                else:
-                    pass
+                return 'Unassigned'
+        elif 'None' in list_line_position_preview_instrument:
+            list_monitor_log.append('********** ERROR **********\nSyntax ERROR or there is not \n'
+                                    'Instrument ' + str(instrument_number))
+            pass
+            return '***** Syntax ERROR or there is not Instrument *****'
+        else:
+            instrument_position_preview = float(list_line_position_preview_instrument)
+            if InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number) == 'buy':
+                return float(instrument_position_preview) + \
+                        float(InstrumentsSaved().instrument_amount_saved(
+                            instrument_number=instrument_number))
+            elif InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number) == 'sell':
+                return float(instrument_position_preview) + \
+                        (float(InstrumentsSaved().instrument_amount_saved(
+                            instrument_number=instrument_number)) * -1)
+            else:
+                pass
 
     @staticmethod
     def setup_ini_creator():
@@ -6672,10 +6704,10 @@ def instruments(ui):
                 textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
                 sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
                 # ui.textEdit_instruments_saved.setText(str(InstrumentsSaved().instruments_check()))
-
+                Config().position_before_trade_save()  # não tem 'ui' na função.
                 print_greeks_by_instrument()  # já se repete em:  ui.textEdit_targets_saved_3.append('Change1')
                 # a função 'print_greeks_by_instrument' já tem sinal nela.
-                Config().position_before_trade_save()  # não tem 'ui' na função.
+                # Config().position_before_trade_save()  # não tem 'ui' na função.
                 sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
                 # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
                 ui.pushButton_update_balance_2.click()  # A função 'position_now' já tem sinal nela.
@@ -7193,12 +7225,13 @@ def instruments(ui):
                                                                 str(instrument4_to_save)
                                                                 )
                                 instruments_saved_print_and_check_available()  # Não tem UI
+                                Config().position_before_trade_save()  # não tem 'ui' na função.
                                 textedit_instruments_saved_settext_signal_str = str(
                                     InstrumentsSaved().instruments_check())
                                 sinal.textedit_instruments_saved_settext_signal.emit(
                                     textedit_instruments_saved_settext_signal_str)
                                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
-                                Config().position_before_trade_save()  # não tem 'ui' na função.
+                                # Config().position_before_trade_save()  # não tem 'ui' na função.
                                 sinal.textedit_balance_settext_signal.emit(
                                     str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
                                 position_preview_to_gui()  # Já tem signal na função.

@@ -1,4 +1,0 @@
-Instrument 1: 0.0
-Instrument 2: 1920.0
-Instrument 3: Unassigned
-Instrument 4: Unassigned
