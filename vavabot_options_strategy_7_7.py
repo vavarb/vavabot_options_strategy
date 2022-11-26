@@ -1702,7 +1702,7 @@ class Config:
             'version': '7.7',
             'date': '2022',
             'strategy_name': 'None',
-            'orders_rate': '20'
+            'orders_rate': '20.0'
         }
         config['DEFAULT'] = dict_setup_default
 
