@@ -838,10 +838,8 @@ class InstrumentsSaved:
             return float(position_saved)
 
     def instrument_amount_saved(self, instrument_number=None):
-        file_open = 'instruments_spread.txt'
         self.instrument_number = instrument_number
-
-        instrument_number_adjusted_to_list = (int(instrument_number) - 1)
+        from lists import list_monitor_log
 
         setup = ConfigParser(
             allow_no_value=True,
@@ -850,62 +848,33 @@ class InstrumentsSaved:
         )
         setup.read('setup.ini')
 
-        reduce_only_setup = setup['reduce_only']
-        instrument_reduce_only_setup = reduce_only_setup.getboolean('instrument' + str(instrument_number))
+        instrument_amount_setup = setup['amount']
+        instrument_amount_saved = instrument_amount_setup['instrument' + str(instrument_number) + '_amount_adjusted']
 
-        if InstrumentsSaved().instrument_name_construction_from_file(
-                instrument_number=instrument_number) == 'Unassigned':
+        amount_adjusted_setup = setup['amount_adjusted']
+        rate_amount = float(amount_adjusted_setup['rate_amount'])
+
+        instrument_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=instrument_number)
+
+        if instrument_amount_saved == 'Unassigned':
             return 'Unassigned'
-        elif instrument_reduce_only_setup is True:
-            from lists import list_monitor_log
-
-            instrument_direction = str(
-                InstrumentsSaved().instrument_direction_construction_from_instrument_file(
-                    instrument_number=instrument_number))
-
-            with open(file_open, 'r') as file_instruments:
-                lines_file_instruments = file_instruments.readlines()  # file instruments.txt ==> lines
-                # Instrument
-                list_line_instrument = lines_file_instruments[
-                    instrument_number_adjusted_to_list].split()  # line ==> list
-                instrument_amount_saved = float(str(list_line_instrument[4]))
-
-            if instrument_direction == 'sell':
-                instrument_amount_saved = instrument_amount_saved * -1
+        elif rate_amount < 1 and instrument_amount_saved != 'Unassigned' and (
+                instrument_kind == 'option' or instrument_kind == 'future'):
+            if instrument_kind == 'option':
+                return str(round(float(instrument_amount_saved) * rate_amount, 1))
             else:
-                pass
-
-            instrument_position_saved_for_reduce_only = float(
-                InstrumentsSaved().instrument_position_saved(instrument_number=instrument_number)
-            )
-
-            if instrument_direction == 'buy':
-                if instrument_position_saved_for_reduce_only + instrument_amount_saved <= 0:
-                    return str(instrument_amount_saved)
-                else:
-                    if instrument_position_saved_for_reduce_only > 0:
-                        return str(0.0)
-                    else:
-                        return str(abs(instrument_position_saved_for_reduce_only))
-            elif instrument_direction == 'sell':
-                if instrument_position_saved_for_reduce_only + instrument_amount_saved >= 0:
-                    return str(instrument_amount_saved)
-                else:
-                    if instrument_position_saved_for_reduce_only < 0:
-                        return str(0.0)
-                    else:
-                        return str(abs(instrument_position_saved_for_reduce_only))
-            else:
-                list_monitor_log.append('********** ERROR code 874 - reduce only error')
-
+                return str(
+                    ConditionsCheck().number_multiple_0_1_and_round_1_digits(
+                        number=float(instrument_amount_saved) * rate_amount
+                    )
+                )
+        elif rate_amount == 1 and instrument_amount_saved != 'Unassigned':
+            return str(instrument_amount_saved)
         else:
-            with open(file_open, 'r') as file_instruments:
-                lines_file_instruments = file_instruments.readlines()  # file instruments.txt ==> lines
-                # Instrument
-                list_line_instrument = lines_file_instruments[
-                    instrument_number_adjusted_to_list].split()  # line ==> list
-                instrument_amount_saved = str(list_line_instrument[4])
-                return str(instrument_amount_saved)
+            list_monitor_log.append(
+                '********** ERROR code 869 - instrument amount saved error' + ' - Instrument ' + str(instrument_number)
+            )
+            return str(0.0)
 
     def instrument_kind_saved(self, instrument_number=None):
         self.instrument_number = instrument_number
@@ -1151,19 +1120,19 @@ class Instruments:
         else:
             instrument1_amount_saved_and_reduce_only_to_adjust_rate = float(
                 instrument1_amount_saved_and_reduce_only_to_adjust_rate)
-        instrument2_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        instrument2_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument2_amount_adjusted']
         if instrument2_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
             instrument2_amount_saved_and_reduce_only_to_adjust_rate = 0
         else:
             instrument2_amount_saved_and_reduce_only_to_adjust_rate = float(
                 instrument2_amount_saved_and_reduce_only_to_adjust_rate)
-        instrument3_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        instrument3_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument3_amount_adjusted']
         if instrument3_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
             instrument3_amount_saved_and_reduce_only_to_adjust_rate = 0
         else:
             instrument3_amount_saved_and_reduce_only_to_adjust_rate = float(
                 instrument3_amount_saved_and_reduce_only_to_adjust_rate)
-        instrument4_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        instrument4_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument4_amount_adjusted']
         if instrument4_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
             instrument4_amount_saved_and_reduce_only_to_adjust_rate = 0
         else:
@@ -1232,12 +1201,12 @@ class Instruments:
 
     @staticmethod
     def amount_adjusted_save():
-        Instruments().amount_adjusted_save2(instrument_number=1)
-        Instruments().amount_adjusted_save2(instrument_number=2)
-        Instruments().amount_adjusted_save2(instrument_number=3)
-        Instruments().amount_adjusted_save2(instrument_number=4)
+        Instruments().amount_adjusted_save_before_rate(instrument_number=1)
+        Instruments().amount_adjusted_save_before_rate(instrument_number=2)
+        Instruments().amount_adjusted_save_before_rate(instrument_number=3)
+        Instruments().amount_adjusted_save_before_rate(instrument_number=4)
 
-    def amount_adjusted_save2(self, instrument_number=None):
+    def amount_adjusted_save_before_rate(self, instrument_number=None):
         self.instrument_number = instrument_number
         from connection_spread import connect
 
