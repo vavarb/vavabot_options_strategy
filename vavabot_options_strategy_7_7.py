@@ -849,7 +849,7 @@ class InstrumentsSaved:
         setup.read('setup.ini')
 
         instrument_amount_setup = setup['amount']
-        instrument_amount_saved = instrument_amount_setup['instrument' + str(instrument_number) + '_amount_adjusted']
+        instrument_amount_saved = instrument_amount_setup['instrument' + str(instrument_number) + '_amount']
 
         amount_adjusted_setup = setup['amount_adjusted']
         rate_amount = float(amount_adjusted_setup['rate_amount'])
