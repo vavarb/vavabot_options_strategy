@@ -713,17 +713,26 @@ class CredentialsSaved:
     @staticmethod
     def testnet_saved_true_or_false():
         from lists import list_monitor_log
-        with open('testnet_true_or_false_spread.txt', 'r') as testnet_saved_true_or_false_file:
-            testnet_saved_true_or_false_file_read = str(testnet_saved_true_or_false_file.read())
-        if testnet_saved_true_or_false_file_read == 'True':
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+
+        testnet_saved_true_or_false = credentials_setup.getboolean('test_net')
+
+        if testnet_saved_true_or_false is True:
             list_monitor_log.append('*** TEST Account Selected ***')
             return True
-        elif testnet_saved_true_or_false_file_read == 'False':
+        elif testnet_saved_true_or_false is False:
             list_monitor_log.append('*** REAL Account Selected ***')
             return False
         else:
-            list_monitor_log.append('***** ERROR in testnet_saved_true_or_false - Error Code: 633 *****')
-            connect.logwriter('***** ERROR in testnet_saved_true_or_false - Error Code: 634 *****')
+            list_monitor_log.append('***** ERROR in testnet_saved_true_or_false - Error Code: 732 *****')
+            connect.logwriter('***** ERROR in testnet_saved_true_or_false - Error Code: 733 *****')
 
     @staticmethod
     def url():
@@ -1705,6 +1714,10 @@ class Config:
             'orders_rate': '20.0'
         }
         config['DEFAULT'] = dict_setup_default
+
+        config['credentials'] = {}
+        credentials = config['credentials']
+        credentials['test_net'] = 'True'
 
         config['reduce_only'] = {}
         reduce_only = config['reduce_only']
@@ -5539,13 +5552,33 @@ def credentials(ui):
         secret_key_saved_print()
 
     def testnet_true_save():
-        with open('testnet_true_or_false_spread.txt', 'w') as testnet_true_save_file:
-            testnet_true_save_file.write('True')
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+
+        credentials_setup['test_net'] = 'True'
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
         testnet_true_or_false_saved_print()
 
     def testnet_false_save():
-        with open('testnet_true_or_false_spread.txt', 'w') as testnet_false_save_file:
-            testnet_false_save_file.write('False')
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+
+        credentials_setup['test_net'] = 'False'
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
         testnet_true_or_false_saved_print()
 
     def need_password_counter_smaller_three():
