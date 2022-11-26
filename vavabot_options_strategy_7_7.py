@@ -1296,16 +1296,15 @@ class ConfigSaved:
     @staticmethod
     def orders_rate_saved():
         from lists import list_monitor_log
-        import os
 
-        if os.path.isfile('send_orders_rate.txt') is False:
-            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
-                send_orders_rate_file.write('5')
-        else:
-            pass
-
-        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
-            send_orders_rate_file_read = str(send_orders_rate_file.read())
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = dict(setup['DEFAULT'])
+        send_orders_rate_file_read = default_setup['orders_rate']
 
         list_monitor_log.append('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
 
@@ -1313,31 +1312,19 @@ class ConfigSaved:
 
     @staticmethod
     def orders_rate_saved2():
-        import os
-        try:
-            from connection_spread import connect
-            if os.path.isfile('send_orders_rate.txt') is False:
-                with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
-                    send_orders_rate_file.write('5')
-            else:
-                pass
+        from connection_spread import connect
 
-            with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
-                send_orders_rate_file_read = str(send_orders_rate_file.read())
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = dict(setup['DEFAULT'])
+        send_orders_rate_file_read = default_setup['orders_rate']
 
-            ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
-            connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
-        except ImportError:
-            if os.path.isfile('send_orders_rate.txt') is False:
-                with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
-                    send_orders_rate_file.write('5')
-            else:
-                pass
-
-            with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
-                send_orders_rate_file_read = str(send_orders_rate_file.read())
-
-            ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
 
     @staticmethod
     def remove_log_spread_log_if_bigger_500kb_when_open_app():
@@ -1714,7 +1701,8 @@ class Config:
             'name': 'VavaBot - Options Strategy',
             'version': '7.7',
             'date': '2022',
-            'strategy_name': 'None'
+            'strategy_name': 'None',
+            'orders_rate': '20'
         }
         config['DEFAULT'] = dict_setup_default
 
@@ -7071,12 +7059,12 @@ def instruments(ui):
             kind_setup['kind_instrument2'] = 'future'
         else:
             kind_setup['kind_instrument2'] = 'Unassigned'
-        if instrument1 != 'Unassigned' and kind1 == 'o':
-            kind_setup['kind_instrument1'] = 'option'
-        elif instrument1 != 'Unassigned' and kind1 == 'f':
-            kind_setup['kind_instrument1'] = 'future'
+        if instrument3 != 'Unassigned' and kind3 == 'o':
+            kind_setup['kind_instrument3'] = 'option'
+        elif instrument3 != 'Unassigned' and kind3 == 'f':
+            kind_setup['kind_instrument3'] = 'future'
         else:
-            kind_setup['kind_instrument1'] = 'Unassigned'
+            kind_setup['kind_instrument3'] = 'Unassigned'
         if instrument4 != 'Unassigned' and kind4 == 'o':
             kind_setup['kind_instrument4'] = 'option'
         elif instrument4 != 'Unassigned' and kind4 == 'f':
@@ -7850,7 +7838,6 @@ def instruments(ui):
 def config(ui):
     def save_orders_rate():
         from connection_spread import connect
-        import os
 
         try:
             orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
@@ -7873,31 +7860,37 @@ def config(ui):
             msg.setWindowTitle('***** ERROR *****')
             msg.exec_()
 
-        if os.path.isfile('send_orders_rate.txt') is False:
-            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
-                send_orders_rate_file.write(str(orders_per_second))
-        else:
-            with open('send_orders_rate.txt', 'w') as send_orders_rate_file:
-                send_orders_rate_file.write(str(orders_per_second))
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        default_setup = dict(setup['DEFAULT'])
+        default_setup['orders_rate'] = str(orders_per_second)
+        orders_per_second_saved = default_setup['orders_rate']
 
-        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
-            send_orders_rate_file_read = str(send_orders_rate_file.read())
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
 
-        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
-        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+        ui.lineEdit_orders_rate.setText(str(orders_per_second_saved))
+        connect.logwriter('*** Order/Second Setup: ' + str(orders_per_second_saved) + ' ***')
 
     def set_version_and_icon_and_texts_and_dates_signal_receive():
         _translate = QtCore.QCoreApplication.translate
 
         setup = ConfigParser(
             allow_no_value=True,
+            inline_comment_prefixes='#',
             strict=False
         )
         setup.read('setup.ini')
+        
         default_setup = dict(setup['DEFAULT'])
         name = default_setup['name']
         version = default_setup['version']
         strategy_name = default_setup['strategy_name']
+        
         main_windows_title = str(
             name + ' ' + version + '                    *** Strategy Name: ' + strategy_name + ' ***')
         MainWindow.setWindowTitle(_translate("MainWindow", main_windows_title))
