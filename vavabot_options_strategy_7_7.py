@@ -853,8 +853,9 @@ class InstrumentsSaved:
 
         amount_adjusted_setup = setup['amount_adjusted']
         rate_amount = float(amount_adjusted_setup['rate_amount'])
-
-        instrument_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=instrument_number)
+        
+        kind_setup = setup['kind']
+        instrument_kind = str(kind_setup['kind_instrument' + str(instrument_number)])
 
         if instrument_amount_saved == 'Unassigned':
             return 'Unassigned'
@@ -879,29 +880,30 @@ class InstrumentsSaved:
     def instrument_kind_saved(self, instrument_number=None):
         self.instrument_number = instrument_number
         from connection_spread import connect
+        
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        kind_setup = setup['kind']
 
-        file_open = 'instruments_spread.txt'
-        instrument_number_adjusted_to_list = (int(instrument_number) - 1)
-
-        with open(file_open, 'r') as file_instruments:
-            lines_file_instruments = file_instruments.readlines()  # file instruments_spread.txt ==> lines
-            # Instrument
-            # open file instruments
-            list_line_instrument = lines_file_instruments[instrument_number_adjusted_to_list].split()  # line ==> list
-            if 'Unassigned' in list_line_instrument:
-                return 'Unassigned'
-            elif 'future' in list_line_instrument:
-                return 'future'
-            elif 'option' in list_line_instrument:
-                return 'option'
-            else:
-                connect.logwriter('*** Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 746 ***')
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 749')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
+        kind_instrument = str(kind_setup['kind_instrument' + str(instrument_number)])
+        if 'Unassigned' in kind_instrument:
+            return 'Unassigned'
+        elif 'future' in kind_instrument:
+            return 'future'
+        elif 'option' in kind_instrument:
+            return 'option'
+        else:
+            connect.logwriter('*** Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 746 ***')
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 749')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+            pass
 
     def instrument_direction_construction_from_instrument_file(self, instrument_number=None):
         self.instrument_number = instrument_number
@@ -1739,11 +1741,18 @@ class Config:
         amount_adjusted['instrument4_amount_adjusted'] = 'Unassigned'
 
         config['position_saved'] = {}
-        amount_adjusted = config['position_saved']
-        amount_adjusted['instrument1_position_saved'] = 'Unassigned'
-        amount_adjusted['instrument2_position_saved'] = 'Unassigned'
-        amount_adjusted['instrument3_position_saved'] = 'Unassigned'
-        amount_adjusted['instrument4_position_saved'] = 'Unassigned'
+        position_saved = config['position_saved']
+        position_saved['instrument1_position_saved'] = 'Unassigned'
+        position_saved['instrument2_position_saved'] = 'Unassigned'
+        position_saved['instrument3_position_saved'] = 'Unassigned'
+        position_saved['instrument4_position_saved'] = 'Unassigned'
+
+        config['kind'] = {}
+        kind = config['kind']
+        kind['kind_instrument1'] = 'Unassigned'
+        kind['kind_instrument2'] = 'Unassigned'
+        kind['kind_instrument3'] = 'Unassigned'
+        kind['kind_instrument4'] = 'Unassigned'
 
         config['date_time'] = {}
         date_time = config['date_time']
@@ -6999,13 +7008,14 @@ def instruments(ui):
         ui.date_time_start.setEnabled(False)
         ui.date_time_end.setEnabled(False)
 
-    def amount_save_to_setup(
-        amount1=None, instrument1=None,
-        amount2=None, instrument2=None,
-        amount3=None, instrument3=None,
-        amount4=None, instrument4=None
+    def amount_and_kind_save_to_setup(
+        amount1=None, instrument1=None, kind1=None,
+        amount2=None, instrument2=None, kind2=None,
+        amount3=None, instrument3=None, kind3=None,
+        amount4=None, instrument4=None, kind4=None
     ):
         from connection_spread import connect
+
         instrument1 = instrument1
         instrument2 = instrument2
         instrument3 = instrument3
@@ -7015,6 +7025,11 @@ def instruments(ui):
         amount2 = amount2
         amount3 = amount3
         amount4 = amount4
+
+        kind1 = kind1
+        kind2 = kind2
+        kind3 = kind3
+        kind4 = kind4
         
         setup = ConfigParser(
             allow_no_value=True,
@@ -7041,6 +7056,33 @@ def instruments(ui):
             amount_setup['instrument4_amount'] = str(amount4)
         else:
             amount_setup['instrument4_amount'] = 'Unassigned'
+
+        kind_setup = setup['kind']
+
+        if instrument1 != 'Unassigned' and kind1 == 'o':
+            kind_setup['kind_instrument1'] = 'option'
+        elif instrument1 != 'Unassigned' and kind1 == 'f':
+            kind_setup['kind_instrument1'] = 'future'
+        else:
+            kind_setup['kind_instrument1'] = 'Unassigned'
+        if instrument2 != 'Unassigned' and kind2 == 'o':
+            kind_setup['kind_instrument2'] = 'option'
+        elif instrument2 != 'Unassigned' and kind2 == 'f':
+            kind_setup['kind_instrument2'] = 'future'
+        else:
+            kind_setup['kind_instrument2'] = 'Unassigned'
+        if instrument1 != 'Unassigned' and kind1 == 'o':
+            kind_setup['kind_instrument1'] = 'option'
+        elif instrument1 != 'Unassigned' and kind1 == 'f':
+            kind_setup['kind_instrument1'] = 'future'
+        else:
+            kind_setup['kind_instrument1'] = 'Unassigned'
+        if instrument4 != 'Unassigned' and kind4 == 'o':
+            kind_setup['kind_instrument4'] = 'option'
+        elif instrument4 != 'Unassigned' and kind4 == 'f':
+            kind_setup['kind_instrument4'] = 'future'
+        else:
+            kind_setup['kind_instrument4'] = 'Unassigned'
         
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
@@ -7450,19 +7492,19 @@ def instruments(ui):
                                     InstrumentsSaved().instruments_check())
                                 sinal.textedit_instruments_saved_settext_signal.emit(
                                     textedit_instruments_saved_settext_signal_str)
-                                amount_save_to_setup(
+                                amount_and_kind_save_to_setup(
                                     amount1=str.replace(str(
                                         ui.lineEdit_amount_instrumet1.text()), ',', '.'), instrument1=str(
-                                        instrument1_to_save),
+                                        instrument1_to_save), kind1=ui.lineEdit_o_or_f_instrumet1.currentText(),
                                     amount2=str.replace(str(
                                         ui.lineEdit_amount_instrumet2.text()), ',', '.'), instrument2=str(
-                                        instrument2_to_save),
+                                        instrument2_to_save), kind2=ui.lineEdit_o_or_f_instrumet2.currentText(),
                                     amount3=str.replace(str(
                                         ui.lineEdit_amount_instrumet3.text()), ',', '.'), instrument3=str(
-                                        instrument3_to_save),
+                                        instrument3_to_save), kind3=ui.lineEdit_o_or_f_instrumet3.currentText(),
                                     amount4=str.replace(str(
                                         ui.lineEdit_amount_instrumet4.text()), ',', '.'), instrument4=str(
-                                        instrument4_to_save)
+                                        instrument4_to_save), kind4=ui.lineEdit_o_or_f_instrumet4.currentText()
                                 )
                                 Instruments().amount_adjusted_save()
                                 Instruments().adjust_rate_trade_by_reduce_only_save()
