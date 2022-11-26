@@ -7866,7 +7866,7 @@ def config(ui):
             strict=False
         )
         setup.read('setup.ini')
-        default_setup = dict(setup['DEFAULT'])
+        default_setup = setup['DEFAULT']
         default_setup['orders_rate'] = str(orders_per_second)
         orders_per_second_saved = default_setup['orders_rate']
 
