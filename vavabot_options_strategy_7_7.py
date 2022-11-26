@@ -1312,7 +1312,7 @@ class Instruments:
 
             amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
                 instrument_amount_saved)
-
+        
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
         connect.logwriter('*** Amount Adjusted Saved - ' + 'Instrument ' + str(instrument_number) + ' ***')
@@ -7030,6 +7030,53 @@ def instruments(ui):
         ui.date_time_start.setEnabled(False)
         ui.date_time_end.setEnabled(False)
 
+    def amount_save_to_setup(
+        amount1=None, instrument1=None,
+        amount2=None, instrument2=None,
+        amount3=None, instrument3=None,
+        amount4=None, instrument4=None
+    ):
+        from connection_spread import connect
+        instrument1 = instrument1
+        instrument2 = instrument2
+        instrument3 = instrument3
+        instrument4 = instrument4
+        
+        amount1 = amount1
+        amount2 = amount2
+        amount3 = amount3
+        amount4 = amount4
+        
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        amount_setup = setup['amount']
+        
+        if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
+            amount_setup['instrument1_amount'] = str(amount1)
+        else:
+            amount_setup['instrument1_amount'] = 'Unassigned'
+        if instrument2 != 'Unassigned' and amount2 != '' and amount2 != 0 and amount2 != '0':
+            amount_setup['instrument2_amount'] = str(amount2)
+        else:
+            amount_setup['instrument2_amount'] = 'Unassigned'
+        if instrument3 != 'Unassigned' and amount3 != '' and amount3 != 0 and amount3 != '0':
+            amount_setup['instrument3_amount'] = str(amount3)
+        else:
+            amount_setup['instrument3_amount'] = 'Unassigned'
+        if instrument4 != 'Unassigned' and amount4 != '' and amount4 != 0 and amount4 != '0':
+            amount_setup['instrument4_amount'] = str(amount4)
+        else:
+            amount_setup['instrument4_amount'] = 'Unassigned'
+        
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        connect.logwriter('*** Amount Adjusted Saved - ' + 'Instrument ' + str(instrument4) + ' ***')
+
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
         from connection_spread import led_color
         date_now_instrument = QtCore.QDate.currentDate()
@@ -7434,6 +7481,20 @@ def instruments(ui):
                                     InstrumentsSaved().instruments_check())
                                 sinal.textedit_instruments_saved_settext_signal.emit(
                                     textedit_instruments_saved_settext_signal_str)
+                                amount_save_to_setup(
+                                    amount1=str.replace(str(
+                                        ui.lineEdit_amount_instrumet1.text()), ',', '.'), instrument1=str(
+                                        instrument1_to_save),
+                                    amount2=str.replace(str(
+                                        ui.lineEdit_amount_instrumet2.text()), ',', '.'), instrument2=str(
+                                        instrument2_to_save),
+                                    amount3=str.replace(str(
+                                        ui.lineEdit_amount_instrumet3.text()), ',', '.'), instrument3=str(
+                                        instrument3_to_save),
+                                    amount4=str.replace(str(
+                                        ui.lineEdit_amount_instrumet4.text()), ',', '.'), instrument4=str(
+                                        instrument4_to_save)
+                                )
                                 Instruments().amount_adjusted_save()
                                 Instruments().adjust_rate_trade_by_reduce_only_save()
                                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
