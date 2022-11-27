@@ -6591,9 +6591,11 @@ def instruments(ui):
         sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
         # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
         position_now_when_open_app()
+        '''
         ui.pushButton.setEnabled(True)
         ui.pushButton.click()
         ui.pushButton.setEnabled(False)
+        '''
 
     def quote_new_when_open_app():
         from connection_spread import connect, led_color
