@@ -6457,9 +6457,6 @@ def instruments(ui):
                      InstrumentsSaved().instrument_available(instrument_number=3) == 'Unassigned') and \
                     (InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument available' or
                      InstrumentsSaved().instrument_available(instrument_number=4) == 'Unassigned'):
-                print('6460')
-                # print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
-                print('6461')
 
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
