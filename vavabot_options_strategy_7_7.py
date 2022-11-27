@@ -66,6 +66,7 @@ class Sinais(QtCore.QObject):
     date_time_disabled_signal = QtCore.pyqtSignal()
     instruments_saved_print_and_check_available_signal = QtCore.pyqtSignal()
     msg_box_for_thread_when_open_app3_signal = QtCore.pyqtSignal()
+    position_now_signal_2 = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -6447,16 +6448,21 @@ def instruments(ui):
         from lists import list_monitor_log
         textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
         sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
-        # ui.textEdit_instruments_saved.setText(str(InstrumentsSaved().instruments_check()))
+
+        instrument1_available = InstrumentsSaved().instrument_available(instrument_number=1)
+        instrument2_available = InstrumentsSaved().instrument_available(instrument_number=2)
+        instrument3_available = InstrumentsSaved().instrument_available(instrument_number=3)
+        instrument4_available = InstrumentsSaved().instrument_available(instrument_number=4)
+        
         try:
-            if (InstrumentsSaved().instrument_available(instrument_number=1) == 'instrument available' or
-                InstrumentsSaved().instrument_available(instrument_number=1) == 'Unassigned') and \
-                    (InstrumentsSaved().instrument_available(instrument_number=2) == 'instrument available' or
-                     InstrumentsSaved().instrument_available(instrument_number=2) == 'Unassigned') and \
-                    (InstrumentsSaved().instrument_available(instrument_number=3) == 'instrument available' or
-                     InstrumentsSaved().instrument_available(instrument_number=3) == 'Unassigned') and \
-                    (InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument available' or
-                     InstrumentsSaved().instrument_available(instrument_number=4) == 'Unassigned'):
+            if (instrument1_available == 'instrument available' or
+                instrument1_available == 'Unassigned') and \
+                    (instrument2_available == 'instrument available' or
+                     instrument2_available == 'Unassigned') and \
+                    (instrument3_available == 'instrument available' or
+                     instrument3_available == 'Unassigned') and \
+                    (instrument4_available == 'instrument available' or
+                     instrument4_available == 'Unassigned'):
 
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -6467,7 +6473,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=1) == 'instrument NO available':
+            if instrument1_available == 'instrument NO available':
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instrument 1 Syntax ERROR')
@@ -6477,7 +6483,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=2) == 'instrument NO available':
+            if instrument2_available == 'instrument NO available':
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instrument 2 Syntax ERROR')
@@ -6487,7 +6493,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=3) == 'instrument NO available':
+            if instrument3_available == 'instrument NO available':
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instrument 3 Syntax ERROR')
@@ -6497,7 +6503,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument NO available':
+            if instrument4_available == 'instrument NO available':
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instrument 4 Syntax ERROR')
@@ -6719,16 +6725,21 @@ def instruments(ui):
         global list_thread_when_open_app
         textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
         sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
-        # ui.textEdit_instruments_saved.setText(str(InstrumentsSaved().instruments_check()))
+
+        instrument1_available = InstrumentsSaved().instrument_available(instrument_number=1)
+        instrument2_available = InstrumentsSaved().instrument_available(instrument_number=2)
+        instrument3_available = InstrumentsSaved().instrument_available(instrument_number=3)
+        instrument4_available = InstrumentsSaved().instrument_available(instrument_number=4)
+        
         try:
-            if (InstrumentsSaved().instrument_available(instrument_number=1) == 'instrument available' or
-                InstrumentsSaved().instrument_available(instrument_number=1) == 'Unassigned') and \
-                    (InstrumentsSaved().instrument_available(instrument_number=2) == 'instrument available' or
-                     InstrumentsSaved().instrument_available(instrument_number=2) == 'Unassigned') and \
-                    (InstrumentsSaved().instrument_available(instrument_number=3) == 'instrument available' or
-                     InstrumentsSaved().instrument_available(instrument_number=3) == 'Unassigned') and \
-                    (InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument available' or
-                     InstrumentsSaved().instrument_available(instrument_number=4) == 'Unassigned'):
+            if (instrument1_available == 'instrument available' or
+                instrument1_available == 'Unassigned') and \
+                    (instrument2_available == 'instrument available' or
+                     instrument2_available == 'Unassigned') and \
+                    (instrument3_available == 'instrument available' or
+                     instrument3_available == 'Unassigned') and \
+                    (instrument4_available == 'instrument available' or
+                     instrument4_available == 'Unassigned'):
 
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -6739,7 +6750,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=1) == 'instrument NO available':
+            if instrument1_available == 'instrument NO available':
                 list_for_signal = list()
                 list_for_signal.clear()
                 list_for_signal.append('Instrument 1 Syntax ERROR')
@@ -6749,7 +6760,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=2) == 'instrument NO available':
+            if instrument2_available == 'instrument NO available':
                 list_for_signal = list()
                 list_for_signal.clear()
                 list_for_signal.append('Instrument 2 Syntax ERROR')
@@ -6759,7 +6770,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=3) == 'instrument NO available':
+            if instrument3_available == 'instrument NO available':
                 list_for_signal = list()
                 list_for_signal.clear()
                 list_for_signal.append('Instrument 3 Syntax ERROR')
@@ -6769,7 +6780,7 @@ def instruments(ui):
             else:
                 pass
 
-            if InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument NO available':
+            if instrument4_available == 'instrument NO available':
                 list_for_signal = list()
                 list_for_signal.clear()
                 list_for_signal.append('Instrument 4 Syntax ERROR')
@@ -6920,15 +6931,12 @@ def instruments(ui):
 
                 textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
                 sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
-                # ui.textEdit_instruments_saved.setText(str(InstrumentsSaved().instruments_check()))
-                Config().position_before_trade_save()  # não tem 'ui' na função.
-                print_greeks_by_instrument()  # já se repete em:  ui.textEdit_targets_saved_3.append('Change1')
-                # A função 'print_greeks_by_instrument' já tem sinal nela.
-                # Config().position_before_trade_save()  # não tem 'ui' na função.
-                sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
-                # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
-                ui.pushButton_update_balance_2.click()  # A função 'position_now' já tem sinal nela.
-                ui.pushButton_request_options_structure_cost.click()  # já direciona para signal
+                Config().position_before_trade_save()
+                print_greeks_by_instrument()
+                textedit_balance_settext_signal_str = ConfigSaved().position_saved()
+                sinal.textedit_balance_settext_signal.emit(textedit_balance_settext_signal_str)
+                sinal.position_now_signal_2.emit()
+                ui.pushButton_request_options_structure_cost.click()
 
                 instrument_s_for_list = list()
                 instrument_s_for_list.clear()
@@ -6966,6 +6974,7 @@ def instruments(ui):
                 # a função 'print_greeks_by_instrument' já tem sinal nela.
                 position_preview_to_gui_when_open_app()
                 sinal.instruments_saved_print_and_check_available_signal.emit()
+                # signal up call instruments_saved_print_and_check_available_when_open_app2()
                 quote_new_when_open_app()
                 sinal.msg_box_for_thread_when_open_app3_signal.emit()
                 Config().date_time_saved()
@@ -6983,11 +6992,11 @@ def instruments(ui):
                                             )
             textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
             sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
-            print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
+            print_greeks_by_instrument()
             sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))
             position_preview_to_gui()
-            ui.pushButton_update_balance_2.click()
-            ui.pushButton_request_options_structure_cost.click()  # já direciona pra signal
+            sinal.position_now_signal_2.emit()
+            ui.pushButton_request_options_structure_cost.click()
 
             list_for_signal = list()
             list_for_signal.clear()
@@ -7578,7 +7587,7 @@ def instruments(ui):
                                 sinal.textedit_balance_settext_signal.emit(
                                     str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
                                 position_preview_to_gui()  # Já tem signal na função.
-                                ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
+                                sinal.position_now_signal_2.emit()
                                 ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
                                 strategy_name_save()
                                 sinal.date_time_enabled_signal.emit()
@@ -7846,6 +7855,87 @@ def instruments(ui):
         ui.check_box_reduce_only_3.setChecked(true_or_false_reduce_only3)
         ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
 
+    def position_now():
+        from connection_spread import connect, led_color
+        from lists import list_monitor_log
+
+        instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
+        instrument2_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
+        instrument3_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=3)
+        instrument4_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=4)
+
+        a = instrument1_name
+        b = instrument2_name
+        c = instrument3_name
+        d = instrument4_name
+
+        if led_color() == 'red':
+            # sinal.msg_box_for_position_now_signal.emit()
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Connection Offline\nCurrent Positions don´t updated')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+            pass
+        else:
+            try:
+                if a != 'Unassigned':
+                    a1 = connect.get_position_size(instrument_name=a)
+                else:
+                    a1 = 'Unassigned'
+
+                if b != 'Unassigned':
+                    b1 = connect.get_position_size(instrument_name=b)
+                else:
+                    b1 = 'Unassigned'
+
+                if c != 'Unassigned':
+                    c1 = connect.get_position_size(instrument_name=c)
+                else:
+                    c1 = 'Unassigned'
+
+                if d != 'Unassigned':
+                    d1 = connect.get_position_size(instrument_name=d)
+                else:
+                    d1 = 'Unassigned'
+
+                info1 = dict()
+                info1['Instrument 1'] = str(a1)
+                info1['Instrument 2'] = str(b1)
+                info1['Instrument 3'] = str(c1)
+                info1['Instrument 4'] = str(d1)
+
+                info = info1
+
+                # sinal.position_now_signal.emit(info)
+
+                a1 = str(info['Instrument 1'])
+                b1 = str(info['Instrument 2'])
+                c1 = str(info['Instrument 3'])
+                d1 = str(info['Instrument 4'])
+                ui.textEdit_balance_2.clear()
+                ui.textEdit_balance_2.setText('Instrument 1: ' + str(a1) + '\n' +
+                                              'Instrument 2: ' + str(b1) + '\n' +
+                                              'Instrument 3: ' + str(c1) + '\n' +
+                                              'Instrument 4: ' + str(d1))
+
+                info.clear()
+                info1.clear()
+
+            except Exception as er:
+                connect.logwriter(str(er) + ' Error Code:: 6778')
+                list_monitor_log.append(str(er) + ' Error Code:: 6779')
+                ui.textEdit_balance_2.clear()
+                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 6781')
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Current Positions don´t checked')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+            finally:
+                pass
+
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
     ui.textEdit_targets_saved_4.setHidden(True)
@@ -7866,6 +7956,7 @@ def instruments(ui):
     sinal.reduce_only_signal.connect(reduce_only_signal)
     sinal.date_time_enabled_signal.connect(date_time_enabled_signal)
     sinal.date_time_disabled_signal.connect(date_time_disabled_signal)
+    sinal.position_now_signal_2.connect(position_now)
     enable_disable_strike_and_c_or_p_and_maturity()
 
 
@@ -8159,69 +8250,6 @@ def config(ui):
                 msg.exec_()
                 pass
 
-    def position_now():
-        from connection_spread import connect, led_color
-        from lists import list_monitor_log
-
-        instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
-        instrument2_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
-        instrument3_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=3)
-        instrument4_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=4)
-
-        a = instrument1_name
-        b = instrument2_name
-        c = instrument3_name
-        d = instrument4_name
-
-        if led_color() == 'red':
-            sinal.msg_box_for_position_now_signal.emit()
-            pass
-        else:
-            try:
-                if a != 'Unassigned':
-                    a1 = connect.get_position_size(instrument_name=a)
-                else:
-                    a1 = 'Unassigned'
-
-                if b != 'Unassigned':
-                    b1 = connect.get_position_size(instrument_name=b)
-                else:
-                    b1 = 'Unassigned'
-
-                if c != 'Unassigned':
-                    c1 = connect.get_position_size(instrument_name=c)
-                else:
-                    c1 = 'Unassigned'
-
-                if d != 'Unassigned':
-                    d1 = connect.get_position_size(instrument_name=d)
-                else:
-                    d1 = 'Unassigned'
-
-                info1 = dict()
-                info1['Instrument 1'] = str(a1)
-                info1['Instrument 2'] = str(b1)
-                info1['Instrument 3'] = str(c1)
-                info1['Instrument 4'] = str(d1)
-
-                info = info1
-
-                sinal.position_now_signal.emit(info)
-
-            except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 6778')
-                list_monitor_log.append(str(er) + ' Error Code:: 6779')
-                ui.textEdit_balance_2.clear()
-                ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 6781')
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Current Positions don´t checked')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
-            finally:
-                pass
-
     def target_saved_check_signal_receive():
         with open('value_given_in.txt', 'r') as f7:
             f6 = f7.read()
@@ -8359,7 +8387,6 @@ def config(ui):
     ConfigSaved().target_saved_check()
     ui.comboBox_value_given_2.currentTextChanged.connect(set_enabled_trigger)
     ui.pushButton_submit_new_targets.clicked.connect(targets_save)
-    ui.pushButton_update_balance_2.clicked.connect(position_now)
     ConfigSaved().orders_rate_saved2()
     ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
     ui.lineEdit_orders_rate.editingFinished.connect(save_orders_rate)
