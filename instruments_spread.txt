@@ -1,4 +1,4 @@
-Instrument 1: Unassigned
-Instrument 2: Unassigned
-Instrument 3: Unassigned
-Instrument 4: Unassigned
+Instrument 1: option buy 1 BTC-2DEC22-16000-C
+Instrument 2: option sell 1 BTC-2DEC22-15000-C
+Instrument 3: option buy 1 BTC-2DEC22-15000-P
+Instrument 4: future buy 5000 BTC-PERPETUAL

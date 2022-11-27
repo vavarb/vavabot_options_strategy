@@ -1093,6 +1093,127 @@ class Instruments:
             return {'vega': 0, 'theta': 0, 'rho': 0, 'gamma': 0, 'delta': delta_future}
         elif 'Unassigned' in instrument_kind_greeks:
             return {'vega': 0, 'theta': 0, 'rho': 0, 'gamma': 0, 'delta': 0}
+    
+    @staticmethod
+    def adjust_rate_trade_by_reduce_only_save_to_run():
+        from connection_spread import connect
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        amount_setup = setup['amount']
+
+        instrument1_amount_saved_to_adjust_rate = amount_setup['instrument1_amount']
+        if instrument1_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument1_amount_saved_to_adjust_rate = 0
+        else:
+            instrument1_amount_saved_to_adjust_rate = float(instrument1_amount_saved_to_adjust_rate)
+        instrument2_amount_saved_to_adjust_rate = amount_setup['instrument2_amount']
+        if instrument2_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument2_amount_saved_to_adjust_rate = 0
+        else:
+            instrument2_amount_saved_to_adjust_rate = float(instrument2_amount_saved_to_adjust_rate)
+        instrument3_amount_saved_to_adjust_rate = amount_setup['instrument3_amount']
+        if instrument3_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument3_amount_saved_to_adjust_rate = 0
+        else:
+            instrument3_amount_saved_to_adjust_rate = float(instrument3_amount_saved_to_adjust_rate)
+        instrument4_amount_saved_to_adjust_rate = amount_setup['instrument4_amount']
+        if instrument4_amount_saved_to_adjust_rate == 'Unassigned':
+            instrument4_amount_saved_to_adjust_rate = 0
+        else:
+            instrument4_amount_saved_to_adjust_rate = float(instrument4_amount_saved_to_adjust_rate)
+
+        amount_adjusted_setup = setup['amount_adjusted']
+
+        instrument1_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument1_amount_adjusted']
+        if instrument1_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument1_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument1_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument1_amount_saved_and_reduce_only_to_adjust_rate)
+        instrument2_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument2_amount_adjusted']
+        if instrument2_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument2_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument2_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument2_amount_saved_and_reduce_only_to_adjust_rate)
+        instrument3_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument3_amount_adjusted']
+        if instrument3_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument3_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument3_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument3_amount_saved_and_reduce_only_to_adjust_rate)
+        instrument4_amount_saved_and_reduce_only_to_adjust_rate = amount_adjusted_setup['instrument4_amount_adjusted']
+        if instrument4_amount_saved_and_reduce_only_to_adjust_rate == 'Unassigned':
+            instrument4_amount_saved_and_reduce_only_to_adjust_rate = 0
+        else:
+            instrument4_amount_saved_and_reduce_only_to_adjust_rate = float(
+                instrument4_amount_saved_and_reduce_only_to_adjust_rate)
+
+        if instrument1_amount_saved_and_reduce_only_to_adjust_rate == 0 and \
+                instrument1_amount_saved_to_adjust_rate == 0:
+            instrument1_rate = 1
+        elif instrument1_amount_saved_and_reduce_only_to_adjust_rate != 0 and \
+                instrument1_amount_saved_to_adjust_rate == 0:
+            instrument1_rate = 0
+        else:
+            instrument1_rate = float(
+                instrument1_amount_saved_and_reduce_only_to_adjust_rate / instrument1_amount_saved_to_adjust_rate
+            )
+        if instrument2_amount_saved_and_reduce_only_to_adjust_rate == 0 and \
+                instrument2_amount_saved_to_adjust_rate == 0:
+            instrument2_rate = 1
+        elif instrument2_amount_saved_and_reduce_only_to_adjust_rate != 0 and \
+                instrument2_amount_saved_to_adjust_rate == 0:
+            instrument2_rate = 0
+        else:
+            instrument2_rate = float(
+                instrument2_amount_saved_and_reduce_only_to_adjust_rate / instrument2_amount_saved_to_adjust_rate
+            )
+        if instrument3_amount_saved_and_reduce_only_to_adjust_rate == 0 and \
+                instrument3_amount_saved_to_adjust_rate == 0:
+            instrument3_rate = 1
+        elif instrument3_amount_saved_and_reduce_only_to_adjust_rate != 0 and \
+                instrument3_amount_saved_to_adjust_rate == 0:
+            instrument3_rate = 0
+        else:
+            instrument3_rate = float(
+                instrument3_amount_saved_and_reduce_only_to_adjust_rate / instrument3_amount_saved_to_adjust_rate
+            )
+        if instrument4_amount_saved_and_reduce_only_to_adjust_rate == 0 and \
+                instrument4_amount_saved_to_adjust_rate == 0:
+            instrument4_rate = 1
+        elif instrument4_amount_saved_and_reduce_only_to_adjust_rate != 0 and \
+                instrument4_amount_saved_to_adjust_rate == 0:
+            instrument4_rate = 0
+        else:
+            instrument4_rate = float(
+                instrument4_amount_saved_and_reduce_only_to_adjust_rate / instrument4_amount_saved_to_adjust_rate
+            )
+
+        adjust_rate_trade_by_reduce_only = dict()
+        adjust_rate_trade_by_reduce_only.clear()
+        adjust_rate_trade_by_reduce_only_dict = {
+            'instrument1_rate': abs(instrument1_rate),
+            'instrument2_rate': abs(instrument2_rate),
+            'instrument3_rate': abs(instrument3_rate),
+            'instrument4_rate': abs(instrument4_rate)
+        }
+        smaller_adjust_rate_trade_by_reduce_only = min(
+            adjust_rate_trade_by_reduce_only_dict, key=adjust_rate_trade_by_reduce_only_dict.get)  # instrument number
+        smaller_adjust_rate_trade_by_reduce_only_value = abs(adjust_rate_trade_by_reduce_only_dict.get(
+            smaller_adjust_rate_trade_by_reduce_only, 0))  # Valor
+
+        amount_adjusted_setup['rate_amount'] = str(smaller_adjust_rate_trade_by_reduce_only_value)
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        connect.logwriter('*** Rate Trades Saved ***')
+        return float(smaller_adjust_rate_trade_by_reduce_only_value)
 
     @staticmethod
     def adjust_rate_trade_by_reduce_only_save():
@@ -1711,7 +1832,7 @@ class Config:
         now_10_text = now10.strftime('%d/%m/%Y %H:%M')
         now_text = now.strftime('%d/%m/%Y %H:%M')
 
-        config = ConfigParser()
+        setup = ConfigParser()
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
@@ -1720,58 +1841,58 @@ class Config:
             'strategy_name': 'None',
             'orders_rate': '20.0'
         }
-        config['DEFAULT'] = dict_setup_default
+        setup['DEFAULT'] = dict_setup_default
 
-        config['credentials'] = {}
-        credentials = config['credentials']
-        credentials['test_net'] = 'True'
+        setup['credentials'] = {}
+        credentials_ = setup['credentials']
+        credentials_['test_net'] = 'True'
 
-        config['reduce_only'] = {}
-        reduce_only = config['reduce_only']
+        setup['reduce_only'] = {}
+        reduce_only = setup['reduce_only']
         reduce_only['instrument1'] = 'False'
         reduce_only['instrument2'] = 'False'
         reduce_only['instrument3'] = 'False'
         reduce_only['instrument4'] = 'False'
 
-        config['amount'] = {}
-        amount = config['amount']
+        setup['amount'] = {}
+        amount = setup['amount']
         amount['instrument1_amount'] = 'Unassigned'
         amount['instrument2_amount'] = 'Unassigned'
         amount['instrument3_amount'] = 'Unassigned'
         amount['instrument4_amount'] = 'Unassigned'
 
-        config['amount_adjusted'] = {}
-        amount_adjusted = config['amount_adjusted']
+        setup['amount_adjusted'] = {}
+        amount_adjusted = setup['amount_adjusted']
         amount_adjusted['rate_amount'] = '1'
         amount_adjusted['instrument1_amount_adjusted'] = 'Unassigned'
         amount_adjusted['instrument2_amount_adjusted'] = 'Unassigned'
         amount_adjusted['instrument3_amount_adjusted'] = 'Unassigned'
         amount_adjusted['instrument4_amount_adjusted'] = 'Unassigned'
 
-        config['position_saved'] = {}
-        position_saved = config['position_saved']
+        setup['position_saved'] = {}
+        position_saved = setup['position_saved']
         position_saved['instrument1_position_saved'] = 'Unassigned'
         position_saved['instrument2_position_saved'] = 'Unassigned'
         position_saved['instrument3_position_saved'] = 'Unassigned'
         position_saved['instrument4_position_saved'] = 'Unassigned'
 
-        config['kind'] = {}
-        kind = config['kind']
+        setup['kind'] = {}
+        kind = setup['kind']
         kind['kind_instrument1'] = 'Unassigned'
         kind['kind_instrument2'] = 'Unassigned'
         kind['kind_instrument3'] = 'Unassigned'
         kind['kind_instrument4'] = 'Unassigned'
 
-        config['date_time'] = {}
-        date_time = config['date_time']
+        setup['date_time'] = {}
+        date_time = setup['date_time']
         date_time['start_ischecked'] = 'False'
         date_time['start'] = now_text
         date_time['end_ischecked'] = 'False'
         date_time['end'] = now_10_text
         date_time['date_time_enabled'] = 'True'
 
-        with open('setup.ini', 'w') as configfile:
-            config.write(configfile)
+        with open('setup.ini', 'w') as setupfile:
+            setup.write(setupfile)
         list_monitor_log.append('***** Setup.ini file created *****')
         Config().date_time_saved()
         Config().reduce_only_saved()
@@ -6979,6 +7100,7 @@ def instruments(ui):
                 sinal.msg_box_for_thread_when_open_app3_signal.emit()
                 Config().date_time_saved()
                 Config().reduce_only_saved()
+                enable_disable_strike_and_c_or_p_and_maturity()
 
         except Exception as er:
             from connection_spread import connect
@@ -9721,7 +9843,7 @@ def run(ui):
     btc_index_print_start_thread()
 
 
-# noinspection PyShadowingNam
+# noinspection PyShadowingNames
 def about(ui):
     def disagree_license_when_open_app():
         ui.tab_credentials.setDisabled(True)
