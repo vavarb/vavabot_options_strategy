@@ -5712,10 +5712,19 @@ def credentials(ui):
                         else:
                             invalid_password_counter_bigger_three()
 
+    def message_box_wait_when_open_app():
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText('WAIT while Syntax Instruments will be checked')
+        msg.setWindowTitle('*** INFO ***')
+        msg.exec_()
+        pass
+
     message_box_password_input()
     ui.pushButton_submit_new_credintals.clicked.connect(message_box_reboot1)
     ui.radioButton_testnet_true.clicked.connect(message_box_reboot2)
     ui.radioButton_2_testnet_false.clicked.connect(message_box_reboot3)
+    message_box_wait_when_open_app()
 
 
 # noinspection PyShadowingNames
@@ -6566,14 +6575,6 @@ def instruments(ui):
             finally:
                 pass
 
-    def message_box_wait_when_open_app():
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setText('WAIT while Syntax Instruments will be checked')
-        msg.setWindowTitle('*** INFO ***')
-        msg.exec_()
-        pass
-
     def msg_box_for_thread_when_open_app1():
         from lists import list_thread_when_open_app
         global list_thread_when_open_app
@@ -6737,10 +6738,19 @@ def instruments(ui):
 
                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
 
+                list_for_signal = list()
+                list_for_signal.clear()
+
+                list_for_signal.append('Instruments Syntax OK')
+                list_for_signal.append('INFO')
+
+                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
+                print('6748')
+                '''
                 list_thread_when_open_app.append('Instruments Syntax OK')
                 list_thread_when_open_app.append('INFO')
                 ui.textEdit_targets_saved_2.append('Change8')
-
+                '''
                 pass
             else:
                 pass
@@ -7029,7 +7039,7 @@ def instruments(ui):
         ui.date_time_start.setEnabled(False)
         ui.date_time_end.setEnabled(False)
 
-    def amount_and_kind_save_to_setup(
+    def amount_and_kind_and_reduce_save_to_setup(
         amount1=None, instrument1=None, kind1=None,
         amount2=None, instrument2=None, kind2=None,
         amount3=None, instrument3=None, kind3=None,
@@ -7104,6 +7114,37 @@ def instruments(ui):
             kind_setup['kind_instrument4'] = 'future'
         else:
             kind_setup['kind_instrument4'] = 'Unassigned'
+
+        reduce_only_setup = setup['reduce_only']
+        
+        if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
+            if ui.check_box_reduce_only_1.isChecked() is True:
+                reduce_only_setup['instrument1'] = 'True'
+            else:
+                reduce_only_setup['instrument1'] = 'False'
+        else:
+            reduce_only_setup['instrument1'] = 'False'
+        if instrument2 != 'Unassigned' and amount2 != '' and amount2 != 0 and amount2 != '0':
+            if ui.check_box_reduce_only_2.isChecked() is True:
+                reduce_only_setup['instrument2'] = 'True'
+            else:
+                reduce_only_setup['instrument2'] = 'False'
+        else:
+            reduce_only_setup['instrument2'] = 'False'
+        if instrument3 != 'Unassigned' and amount3 != '' and amount3 != 0 and amount3 != '0':
+            if ui.check_box_reduce_only_3.isChecked() is True:
+                reduce_only_setup['instrument3'] = 'True'
+            else:
+                reduce_only_setup['instrument3'] = 'False'
+        else:
+            reduce_only_setup['instrument3'] = 'False'
+        if instrument4 != 'Unassigned' and amount4 != '' and amount4 != 0 and amount4 != '0':
+            if ui.check_box_reduce_only_4.isChecked() is True:
+                reduce_only_setup['instrument4'] = 'True'
+            else:
+                reduce_only_setup['instrument4'] = 'False'
+        else:
+            reduce_only_setup['instrument4'] = 'False'
         
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
@@ -7513,7 +7554,7 @@ def instruments(ui):
                                     InstrumentsSaved().instruments_check())
                                 sinal.textedit_instruments_saved_settext_signal.emit(
                                     textedit_instruments_saved_settext_signal_str)
-                                amount_and_kind_save_to_setup(
+                                amount_and_kind_and_reduce_save_to_setup(
                                     amount1=str.replace(str(
                                         ui.lineEdit_amount_instrumet1.text()), ',', '.'), instrument1=str(
                                         instrument1_to_save), kind1=ui.lineEdit_o_or_f_instrumet1.currentText(),
@@ -7527,6 +7568,7 @@ def instruments(ui):
                                         ui.lineEdit_amount_instrumet4.text()), ',', '.'), instrument4=str(
                                         instrument4_to_save), kind4=ui.lineEdit_o_or_f_instrumet4.currentText()
                                 )
+                                Config().reduce_only_saved()
                                 Instruments().amount_adjusted_save()
                                 Instruments().adjust_rate_trade_by_reduce_only_save()
                                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
@@ -7537,7 +7579,6 @@ def instruments(ui):
                                 ui.pushButton_update_balance_2.click()  # Já tem signal na função que chama.
                                 ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
                                 strategy_name_save()
-                                reduce_only_save()
                                 sinal.date_time_enabled_signal.emit()
 
                             else:
@@ -7802,41 +7843,6 @@ def instruments(ui):
         ui.check_box_reduce_only_2.setChecked(true_or_false_reduce_only2)
         ui.check_box_reduce_only_3.setChecked(true_or_false_reduce_only3)
         ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
-        
-    def reduce_only_save():
-        from connection_spread import connect
-        setup = ConfigParser(
-            allow_no_value=True,
-            inline_comment_prefixes='#',
-            strict=False
-        )
-        setup.read('setup.ini')
-        reduce_only_setup = setup['reduce_only']
-
-        if ui.check_box_reduce_only_1.isChecked() is True:
-            reduce_only_setup['instrument1'] = 'True'
-        else:
-            reduce_only_setup['instrument1'] = 'False'
-            
-        if ui.check_box_reduce_only_2.isChecked() is True:
-            reduce_only_setup['instrument2'] = 'True'
-        else:
-            reduce_only_setup['instrument2'] = 'False'
-            
-        if ui.check_box_reduce_only_3.isChecked() is True:
-            reduce_only_setup['instrument3'] = 'True'
-        else:
-            reduce_only_setup['instrument3'] = 'False'
-            
-        if ui.check_box_reduce_only_4.isChecked() is True:
-            reduce_only_setup['instrument4'] = 'True'
-        else:
-            reduce_only_setup['instrument4'] = 'False'
-
-        with open('setup.ini', 'w') as configfile:
-            setup.write(configfile)
-        connect.logwriter('***  Reduce only saved ***')
-        Config().reduce_only_saved()
 
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
@@ -7851,17 +7857,12 @@ def instruments(ui):
     ui.checkBox_perpetual_4.stateChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
     ui.pushButton_submit_new_plot_payoff.clicked.connect(plot_payoff_for_4_instruments)
-    message_box_wait_when_open_app()
     ui.textEdit_targets_saved_2.textChanged.connect(msg_box_for_thread_when_open_app1)
     ui.textEdit_targets_saved_3.textChanged.connect(msg_box_for_thread_when_open_app2)
     ui.textEdit_targets_saved_4.textChanged.connect(msg_box_for_thread_when_open_app3)
     instruments_saved_print_and_check_available_when_open_app_thread_def()
     sinal.strategy_name_update_signal.connect(strategy_name_update_signal)
     sinal.reduce_only_signal.connect(reduce_only_signal)
-    ui.check_box_reduce_only_1.stateChanged.connect(reduce_only_save)
-    ui.check_box_reduce_only_2.stateChanged.connect(reduce_only_save)
-    ui.check_box_reduce_only_3.stateChanged.connect(reduce_only_save)
-    ui.check_box_reduce_only_4.stateChanged.connect(reduce_only_save)
     sinal.date_time_enabled_signal.connect(date_time_enabled_signal)
     sinal.date_time_disabled_signal.connect(date_time_disabled_signal)
     enable_disable_strike_and_c_or_p_and_maturity()
@@ -9578,6 +9579,11 @@ def run(ui):
         ui.date_time_start.setEnabled(False)
         ui.date_time_end.setEnabled(False)
 
+        ui.check_box_reduce_only_1.setEnabled(True)
+        ui.check_box_reduce_only_2.setEnabled(True)
+        ui.check_box_reduce_only_3.setEnabled(True)
+        ui.check_box_reduce_only_4.setEnabled(True)
+        Config().reduce_only_saved()
         ui.check_box_reduce_only_1.setEnabled(False)
         ui.check_box_reduce_only_2.setEnabled(False)
         ui.check_box_reduce_only_3.setEnabled(False)
