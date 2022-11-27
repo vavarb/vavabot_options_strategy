@@ -6457,7 +6457,10 @@ def instruments(ui):
                      InstrumentsSaved().instrument_available(instrument_number=3) == 'Unassigned') and \
                     (InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument available' or
                      InstrumentsSaved().instrument_available(instrument_number=4) == 'Unassigned'):
-                print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
+                print('6460')
+                # print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
+                print('6461')
+
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instruments Syntax OK')
@@ -6511,11 +6514,12 @@ def instruments(ui):
             from connection_spread import connect
             connect.logwriter(str(er) + ' Error Code:: 5563')
             list_monitor_log.append(str(er) + ' Error Code:: 5564')
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instruments Checking Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Instruments Checking Syntax ERROR')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
         finally:
             pass
@@ -6729,13 +6733,11 @@ def instruments(ui):
                     (InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument available' or
                      InstrumentsSaved().instrument_available(instrument_number=4) == 'Unassigned'):
 
-                print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
-
-                list_for_signal = list()
-                list_for_signal.clear()
-                list_for_signal.append('Instruments Syntax OK')
-                list_for_signal.append('INFO')
-                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Instruments Syntax OK')
+                msg.setWindowTitle('INFO')
+                msg.exec_()
                 pass
             else:
                 pass
