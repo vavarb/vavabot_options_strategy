@@ -1551,7 +1551,7 @@ class Config:
     def position_before_trade_save():
         # import time
         from connection_spread import connect
-        from lists import list_monitor_log, list_thread_when_open_app
+        from lists import list_monitor_log
 
         instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
         instrument2_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
@@ -1643,9 +1643,12 @@ class Config:
         except Exception as er:
             connect.logwriter(str(er) + ' Error Code:: 1458')
             list_monitor_log.append(str(er) + ' Error Code:: 1451')
-            list_thread_when_open_app.append('Positions preview don´t saved')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change25')
+
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Positions preview don´t saved')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
         finally:
             pass
@@ -6518,7 +6521,7 @@ def instruments(ui):
     def position_now_when_open_app():
         global list_thread_when_open_app
         from connection_spread import connect, led_color
-        from lists import list_monitor_log, list_thread_when_open_app
+        from lists import list_monitor_log
 
         instrument1_name = instrument_name_construction_from_file_when_open_app(instrument_number=1)
         instrument2_name = instrument_name_construction_from_file_when_open_app(instrument_number=2)
@@ -6531,9 +6534,11 @@ def instruments(ui):
         d = instrument4_name
 
         if led_color() == 'red':
-            list_thread_when_open_app.append('Connection Offline - Current Positions don´t updated')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change15')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Connection Offline - Current Positions don´t updated')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             time.sleep(3)
             pass
         else:
@@ -6568,27 +6573,15 @@ def instruments(ui):
                 list_monitor_log.append(str(er) + ' Error Code:: 5629')
                 ui.textEdit_balance_2.clear()
                 ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 5631')
-                list_thread_when_open_app.append('Current Positions don´t checked')
-                list_thread_when_open_app.append('***** ERROR *****')
-                ui.textEdit_targets_saved_2.append('Change16')
+
+                list_for_signal = list()
+                list_for_signal.clear()
+                list_for_signal.append('Current Positions don´t checked')
+                list_for_signal.append('***** ERROR *****')
+                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
                 pass
             finally:
                 pass
-
-    def msg_box_for_thread_when_open_app1():
-        from lists import list_thread_when_open_app
-        global list_thread_when_open_app
-
-        msg_for_msg_box = str(list_thread_when_open_app[0])
-        title_for_msg_box = str(list_thread_when_open_app[1])
-        list_thread_when_open_app.clear()
-
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setText(msg_for_msg_box)
-        msg.setWindowTitle(title_for_msg_box)
-        msg.exec_()
-        pass
 
     def msg_box_for_thread_when_open_app2():
         instruments_saved_print_and_check_available_when_open_app2()
@@ -6603,13 +6596,14 @@ def instruments(ui):
 
     def quote_new_when_open_app():
         from connection_spread import connect, led_color
-        from lists import list_thread_when_open_app
         global list_thread_when_open_app
 
         if led_color() == 'red':
-            list_thread_when_open_app.append(' Connection Offline ')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change14')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Connectioin Off line')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             time.sleep(3)
             pass
         else:
@@ -6721,7 +6715,7 @@ def instruments(ui):
             Quote().last_trade_instrument_conditions_quote()  # Já emite sinal para um signal
 
     def instruments_saved_print_and_check_available_when_open_app2():
-        from lists import list_monitor_log, list_thread_when_open_app
+        from lists import list_monitor_log
         global list_thread_when_open_app
         textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
         sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
@@ -6740,49 +6734,49 @@ def instruments(ui):
 
                 list_for_signal = list()
                 list_for_signal.clear()
-
                 list_for_signal.append('Instruments Syntax OK')
                 list_for_signal.append('INFO')
-
                 sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
-                print('6748')
-                '''
-                list_thread_when_open_app.append('Instruments Syntax OK')
-                list_thread_when_open_app.append('INFO')
-                ui.textEdit_targets_saved_2.append('Change8')
-                '''
                 pass
             else:
                 pass
 
             if InstrumentsSaved().instrument_available(instrument_number=1) == 'instrument NO available':
-                list_thread_when_open_app.append('Instrument 1 Syntax ERROR')
-                list_thread_when_open_app.append('***** ERROR *****')
-                ui.textEdit_targets_saved_2.append('Change9')
+                list_for_signal = list()
+                list_for_signal.clear()
+                list_for_signal.append('Instrument 1 Syntax ERROR')
+                list_for_signal.append('***** ERROR *****')
+                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
                 pass
             else:
                 pass
 
             if InstrumentsSaved().instrument_available(instrument_number=2) == 'instrument NO available':
-                list_thread_when_open_app.append('Instrument 2 Syntax ERROR')
-                list_thread_when_open_app.append('***** ERROR *****')
-                ui.textEdit_targets_saved_2.append('Change10')
+                list_for_signal = list()
+                list_for_signal.clear()
+                list_for_signal.append('Instrument 2 Syntax ERROR')
+                list_for_signal.append('***** ERROR *****')
+                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
                 pass
             else:
                 pass
 
             if InstrumentsSaved().instrument_available(instrument_number=3) == 'instrument NO available':
-                list_thread_when_open_app.append('Instrument 3 Syntax ERROR')
-                list_thread_when_open_app.append('***** ERROR *****')
-                ui.textEdit_targets_saved_2.append('Change11')
+                list_for_signal = list()
+                list_for_signal.clear()
+                list_for_signal.append('Instrument 3 Syntax ERROR')
+                list_for_signal.append('***** ERROR *****')
+                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
                 pass
             else:
                 pass
 
             if InstrumentsSaved().instrument_available(instrument_number=4) == 'instrument NO available':
-                list_thread_when_open_app.append('Instrument 4 Syntax ERROR')
-                list_thread_when_open_app.append('***** ERROR *****')
-                ui.textEdit_targets_saved_2.append('Change12')
+                list_for_signal = list()
+                list_for_signal.clear()
+                list_for_signal.append('Instrument 4 Syntax ERROR')
+                list_for_signal.append('***** ERROR *****')
+                sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
                 pass
             else:
                 pass
@@ -6791,15 +6785,17 @@ def instruments(ui):
             from connection_spread import connect
             connect.logwriter(str(er) + ' Error Code:: 5857')
             list_monitor_log.append(str(er) + ' Error Code:: 5858')
-            list_thread_when_open_app.append('Instruments Checking Syntax ERROR')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change13')
+
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Instruments Checking Syntax ERROR')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
         finally:
             pass
 
     def position_preview_to_gui_when_open_app():
-        from lists import list_thread_when_open_app
         global list_thread_when_open_app
 
         max_position_instrument1_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
@@ -6822,30 +6818,38 @@ def instruments(ui):
         sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
 
         if 'ERROR' in str(max_position_instrument1_for_gui):
-            list_thread_when_open_app.append('Instrument 1 Syntax ERROR')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change19')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Instrument 1 Syntax ERROR')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
         else:
             pass
         if 'ERROR' in str(max_position_instrument2_for_gui):
-            list_thread_when_open_app.append('Instrument 2 Syntax ERROR')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change20')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Instrument 2 Syntax ERROR')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
         else:
             pass
         if 'ERROR' in str(max_position_instrument3_for_gui):
-            list_thread_when_open_app.append('Instrument 3 Syntax ERROR')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change21')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Instrument 3 Syntax ERROR')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
         else:
             pass
         if 'ERROR' in str(max_position_instrument4_for_gui):
-            list_thread_when_open_app.append('Instrument 4 Syntax ERROR')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change22')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Instrument 4 Syntax ERROR')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
         else:
             pass
 
@@ -6867,7 +6871,7 @@ def instruments(ui):
                 return str(instrument_name)
 
     def instruments_saved_print_and_check_available_when_open_app():
-        from lists import list_monitor_log, list_thread_when_open_app
+        from lists import list_monitor_log
         from connection_spread import led_color
         global list_thread_when_open_app
 
@@ -6886,9 +6890,11 @@ def instruments(ui):
             sinal.date_time_disabled_signal.emit()
 
         if led_color() == 'red':  # Erro depois ver o que fazer com esta mensagem box
-            list_thread_when_open_app.append(' Connection Offline ')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change1')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append(' Connection Offline ')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             while led_color() == 'red':
                 time.sleep(3)
                 pass
@@ -6945,11 +6951,9 @@ def instruments(ui):
 
                 list_for_signal = list()
                 list_for_signal.clear()
-
                 list_for_signal.append('Instrument(s) Syntax ERROR: ' + str(
                     instrument_s_for_list_str2) + ' - Update ALL instruments to Unassigned')
                 list_for_signal.append('***** ERROR *****')
-
                 sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
 
                 position_preview_to_gui_when_open_app()
@@ -6988,10 +6992,11 @@ def instruments(ui):
             ui.pushButton_update_balance_2.click()
             ui.pushButton_request_options_structure_cost.click()  # já direciona pra signal
 
-            list_thread_when_open_app.append(
-                'Syntax and Instruments Checking ERROR - Update all instruments to Unassigned')
-            list_thread_when_open_app.append('***** ERROR *****')
-            ui.textEdit_targets_saved_2.append('Change6')
+            list_for_signal = list()
+            list_for_signal.clear()
+            list_for_signal.append('Syntax and Instruments Checking ERROR - Update all instruments to Unassigned')
+            list_for_signal.append('***** ERROR *****')
+            sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
 
             ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
@@ -7857,7 +7862,6 @@ def instruments(ui):
     ui.checkBox_perpetual_4.stateChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
     ui.pushButton_submit_new_plot_payoff.clicked.connect(plot_payoff_for_4_instruments)
-    ui.textEdit_targets_saved_2.textChanged.connect(msg_box_for_thread_when_open_app1)
     ui.textEdit_targets_saved_3.textChanged.connect(msg_box_for_thread_when_open_app2)
     ui.textEdit_targets_saved_4.textChanged.connect(msg_box_for_thread_when_open_app3)
     instruments_saved_print_and_check_available_when_open_app_thread_def()
