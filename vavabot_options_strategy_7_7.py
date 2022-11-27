@@ -64,6 +64,7 @@ class Sinais(QtCore.QObject):
     reduce_only_signal = QtCore.pyqtSignal(dict)
     date_time_enabled_signal = QtCore.pyqtSignal()
     date_time_disabled_signal = QtCore.pyqtSignal()
+    instruments_saved_print_and_check_available_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -6957,7 +6958,7 @@ def instruments(ui):
                 sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
 
                 position_preview_to_gui_when_open_app()
-                ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
+                sinal.instruments_saved_print_and_check_available_signal.emit()
                 quote_new_when_open_app()  # Tem varias ui
                 ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
 
@@ -6968,7 +6969,7 @@ def instruments(ui):
                 print_greeks_by_instrument()  # já se repete em:  ui.textEdit_targets_saved_3.append('Change1')
                 # a função 'print_greeks_by_instrument' já tem sinal nela.
                 position_preview_to_gui_when_open_app()
-                ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
+                sinal.instruments_saved_print_and_check_available_signal.emit()
                 quote_new_when_open_app()
                 ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
                 Config().date_time_saved()
@@ -6999,7 +7000,7 @@ def instruments(ui):
             sinal.msg_box_for_thread_when_open_app1_signal.emit(list_for_signal)
             pass
 
-            ui.textEdit_targets_saved_3.append('Change1')  # instruments_saved_print_and_check_available_
+            sinal.instruments_saved_print_and_check_available_signal.emit()
             Config().setup_ini_creator()
             sinal.strategy_name_update_signal.emit()
             pass
@@ -7862,7 +7863,7 @@ def instruments(ui):
     ui.checkBox_perpetual_4.stateChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
     ui.pushButton_submit_new_plot_payoff.clicked.connect(plot_payoff_for_4_instruments)
-    ui.textEdit_targets_saved_3.textChanged.connect(msg_box_for_thread_when_open_app2)
+    sinal.instruments_saved_print_and_check_available_signal.connect(msg_box_for_thread_when_open_app2)
     ui.textEdit_targets_saved_4.textChanged.connect(msg_box_for_thread_when_open_app3)
     instruments_saved_print_and_check_available_when_open_app_thread_def()
     sinal.strategy_name_update_signal.connect(strategy_name_update_signal)
