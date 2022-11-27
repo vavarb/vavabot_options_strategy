@@ -2303,7 +2303,7 @@ class Quote:
 
                 sinal.quote_new_when_open_app_signal1.emit(quote_new_when_open_app_signal1_dict)
 
-                Quote().structure_option_greeks_quote()  # já chama signal (creir ter erro aqui)
+                Quote().structure_option_greeks_quote()  # já chama signal (crei ter erro aqui)
                 Quote().last_trade_instrument_conditions_quote()  # já chama signal (creir ter erro aqui)
             except Exception as er:
                 connect.logwriter(str(er) + ' Error Code:: 1693')
@@ -7936,7 +7936,7 @@ def instruments(ui):
             finally:
                 pass
 
-    def pushButton_request_options_structure_cost_signal():
+    def pushbutton_request_options_structure_cost_signal():
         Quote().quote_new()
 
     ui.textEdit_targets_saved_2.setHidden(True)
@@ -7960,7 +7960,7 @@ def instruments(ui):
     sinal.date_time_enabled_signal.connect(date_time_enabled_signal)
     sinal.date_time_disabled_signal.connect(date_time_disabled_signal)
     sinal.position_now_signal_2.connect(position_now)
-    sinal.pushButton_request_options_structure_cost_signal.connect(pushButton_request_options_structure_cost_signal)
+    sinal.pushButton_request_options_structure_cost_signal.connect(pushbutton_request_options_structure_cost_signal)
     enable_disable_strike_and_c_or_p_and_maturity()
 
 
