@@ -65,6 +65,7 @@ class Sinais(QtCore.QObject):
     date_time_enabled_signal = QtCore.pyqtSignal()
     date_time_disabled_signal = QtCore.pyqtSignal()
     instruments_saved_print_and_check_available_signal = QtCore.pyqtSignal()
+    msg_box_for_thread_when_open_app3_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -6591,11 +6592,6 @@ def instruments(ui):
         sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
         # ui.textEdit_balance.setText(str(ConfigSaved().position_saved()))
         position_now_when_open_app()
-        '''
-        ui.pushButton.setEnabled(True)
-        ui.pushButton.click()
-        ui.pushButton.setEnabled(False)
-        '''
 
     def quote_new_when_open_app():
         from connection_spread import connect, led_color
@@ -6962,8 +6958,7 @@ def instruments(ui):
                 position_preview_to_gui_when_open_app()
                 sinal.instruments_saved_print_and_check_available_signal.emit()
                 quote_new_when_open_app()  # Tem varias ui
-                ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
-
+                sinal.msg_box_for_thread_when_open_app3_signal.emit()
                 Config().setup_ini_creator()
                 sinal.strategy_name_update_signal.emit()
                 pass
@@ -6973,7 +6968,7 @@ def instruments(ui):
                 position_preview_to_gui_when_open_app()
                 sinal.instruments_saved_print_and_check_available_signal.emit()
                 quote_new_when_open_app()
-                ui.textEdit_targets_saved_4.append('Change2')  # position_now_when_open_app()
+                sinal.msg_box_for_thread_when_open_app3_signal.emit()
                 Config().date_time_saved()
                 Config().reduce_only_saved()
 
@@ -7866,7 +7861,7 @@ def instruments(ui):
     ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
     ui.pushButton_submit_new_plot_payoff.clicked.connect(plot_payoff_for_4_instruments)
     sinal.instruments_saved_print_and_check_available_signal.connect(msg_box_for_thread_when_open_app2)
-    ui.textEdit_targets_saved_4.textChanged.connect(msg_box_for_thread_when_open_app3)
+    sinal.msg_box_for_thread_when_open_app3_signal.connect(msg_box_for_thread_when_open_app3)
     instruments_saved_print_and_check_available_when_open_app_thread_def()
     sinal.strategy_name_update_signal.connect(strategy_name_update_signal)
     sinal.reduce_only_signal.connect(reduce_only_signal)
