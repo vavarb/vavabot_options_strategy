@@ -67,6 +67,7 @@ class Sinais(QtCore.QObject):
     instruments_saved_print_and_check_available_signal = QtCore.pyqtSignal()
     msg_box_for_thread_when_open_app3_signal = QtCore.pyqtSignal()
     position_now_signal_2 = QtCore.pyqtSignal()
+    pushButton_request_options_structure_cost_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -6936,7 +6937,7 @@ def instruments(ui):
                 textedit_balance_settext_signal_str = ConfigSaved().position_saved()
                 sinal.textedit_balance_settext_signal.emit(textedit_balance_settext_signal_str)
                 sinal.position_now_signal_2.emit()
-                ui.pushButton_request_options_structure_cost.click()
+                sinal.pushButton_request_options_structure_cost_signal.emit()
 
                 instrument_s_for_list = list()
                 instrument_s_for_list.clear()
@@ -6996,7 +6997,7 @@ def instruments(ui):
             sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))
             position_preview_to_gui()
             sinal.position_now_signal_2.emit()
-            ui.pushButton_request_options_structure_cost.click()
+            sinal.pushButton_request_options_structure_cost_signal.emit()
 
             list_for_signal = list()
             list_for_signal.clear()
@@ -7587,7 +7588,7 @@ def instruments(ui):
                                     str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
                                 position_preview_to_gui()  # Já tem signal na função.
                                 sinal.position_now_signal_2.emit()
-                                ui.pushButton_request_options_structure_cost.click()  # Já direciona pra signal
+                                sinal.pushButton_request_options_structure_cost_signal.emit()
                                 strategy_name_save()
                                 sinal.date_time_enabled_signal.emit()
 
@@ -7935,6 +7936,9 @@ def instruments(ui):
             finally:
                 pass
 
+    def pushButton_request_options_structure_cost_signal():
+        Quote().quote_new()
+
     ui.textEdit_targets_saved_2.setHidden(True)
     ui.textEdit_targets_saved_3.setHidden(True)
     ui.textEdit_targets_saved_4.setHidden(True)
@@ -7956,6 +7960,7 @@ def instruments(ui):
     sinal.date_time_enabled_signal.connect(date_time_enabled_signal)
     sinal.date_time_disabled_signal.connect(date_time_disabled_signal)
     sinal.position_now_signal_2.connect(position_now)
+    sinal.pushButton_request_options_structure_cost_signal.connect(pushButton_request_options_structure_cost_signal)
     enable_disable_strike_and_c_or_p_and_maturity()
 
 
