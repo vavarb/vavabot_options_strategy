@@ -6928,7 +6928,7 @@ def instruments(ui):
                                                 'Instrument 3: Unassigned\n' +
                                                 'Instrument 4: Unassigned\n'
                                                 )
-
+                Config().setup_ini_creator()
                 textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
                 sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
                 Config().position_before_trade_save()
@@ -6966,7 +6966,6 @@ def instruments(ui):
                 sinal.instruments_saved_print_and_check_available_signal.emit()
                 quote_new_when_open_app()  # Tem varias ui
                 sinal.msg_box_for_thread_when_open_app3_signal.emit()
-                Config().setup_ini_creator()
                 sinal.strategy_name_update_signal.emit()
                 pass
             else:
@@ -6990,6 +6989,7 @@ def instruments(ui):
                                             'Instrument 3: Unassigned\n' +
                                             'Instrument 4: Unassigned\n'
                                             )
+            Config().setup_ini_creator()
             textedit_instruments_saved_settext_signal_str = str(InstrumentsSaved().instruments_check())
             sinal.textedit_instruments_saved_settext_signal.emit(textedit_instruments_saved_settext_signal_str)
             print_greeks_by_instrument()
@@ -7006,7 +7006,6 @@ def instruments(ui):
             pass
 
             sinal.instruments_saved_print_and_check_available_signal.emit()
-            Config().setup_ini_creator()
             sinal.strategy_name_update_signal.emit()
             pass
 
