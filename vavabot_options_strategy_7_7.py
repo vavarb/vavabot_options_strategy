@@ -7058,7 +7058,7 @@ def instruments(ui):
                 textedit_balance_settext_signal_str = ConfigSaved().position_saved()
                 sinal.textedit_balance_settext_signal.emit(textedit_balance_settext_signal_str)
                 sinal.position_now_signal_2.emit()
-                sinal.pushButton_request_options_structure_cost_signal.emit()
+                sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
 
                 instrument_s_for_list = list()
                 instrument_s_for_list.clear()
@@ -7119,7 +7119,7 @@ def instruments(ui):
             sinal.textedit_balance_settext_signal.emit(str(ConfigSaved().position_saved()))
             position_preview_to_gui()
             sinal.position_now_signal_2.emit()
-            sinal.pushButton_request_options_structure_cost_signal.emit()
+            sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
 
             list_for_signal = list()
             list_for_signal.clear()
@@ -7705,12 +7705,12 @@ def instruments(ui):
                                 Instruments().amount_adjusted_save()
                                 Instruments().adjust_rate_trade_by_reduce_only_save()
                                 print_greeks_by_instrument()  # a função 'print_greeks_by_instrument' já tem sinal nela.
-                                # Config().position_before_trade_save()  # não tem 'ui' na função.
                                 sinal.textedit_balance_settext_signal.emit(
                                     str(ConfigSaved().position_saved()))  # Sbustitui o abaixo
                                 position_preview_to_gui()  # Já tem signal na função.
                                 sinal.position_now_signal_2.emit()
                                 sinal.pushButton_request_options_structure_cost_signal.emit()
+                                # the pushButton_request_options_structure_cost_signal.emit() call Quote().quote_new()
                                 strategy_name_save()
                                 sinal.date_time_enabled_signal.emit()
 
@@ -9227,7 +9227,8 @@ def run(ui):
     def structure_cost_link():
         ConditionsCheck().structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
 
-    def position_preview_to_gui2():
+    def position_preview_to_gui_2():
+        from connection_spread import connect
         max_position_instrument1_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
             instrument_number=1)
         max_position_instrument2_for_gui = Config().max_position_from_position_saved_and_instrument_amount(
@@ -9246,38 +9247,30 @@ def run(ui):
         textedit_balance_after_signal_dict['Instrument 4'] = str(max_position_instrument4_for_gui)
 
         sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
-
-        if 'ERROR' in str(max_position_instrument1_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 1 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-        else:
+        try:
+            if 'ERROR' in str(max_position_instrument1_for_gui):
+                connect.logwriter('********** ERROR - Instrument 1 Syntax ERROR -  Error Code 9252 - **********')
+            else:
+                pass
+            if 'ERROR' in str(max_position_instrument2_for_gui):
+                connect.logwriter('********** ERROR - Instrument 1 Syntax ERROR -  Error Code 9256 - **********')
+            else:
+                pass
+            if 'ERROR' in str(max_position_instrument3_for_gui):
+                connect.logwriter('********** ERROR - Instrument 1 Syntax ERROR -  Error Code 9260 - **********')
+            else:
+                pass
+            if 'ERROR' in str(max_position_instrument4_for_gui):
+                connect.logwriter('********** ERROR - Instrument 1 Syntax ERROR -  Error Code 9264 - **********')
+            else:
+                pass
+        except Exception as error3:
+            from lists import list_monitor_log
+            list_monitor_log.append(
+                '********** ERROR - Instrument 1 Syntax ERROR -  Error Code 9269 - **********' + str(error3)
+            )
             pass
-        if 'ERROR' in str(max_position_instrument2_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 2 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-        else:
-            pass
-        if 'ERROR' in str(max_position_instrument3_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 3 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-        else:
-            pass
-        if 'ERROR' in str(max_position_instrument4_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 4 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-        else:
+        finally:
             pass
 
     def position_now2():
@@ -9343,6 +9336,163 @@ def run(ui):
             finally:
                 pass
 
+    def print_greeks_by_instrument_2():
+        import decimal
+
+        instrument1_mark_greek_cost = Instruments().greeks_by_instruments(instrument_number=1)
+        instrument1_vega = instrument1_mark_greek_cost['vega']
+        instrument1_theta = instrument1_mark_greek_cost['theta']
+        instrument1_rho = instrument1_mark_greek_cost['rho']
+        instrument1_gamma = instrument1_mark_greek_cost['gamma']
+        instrument1_delta = instrument1_mark_greek_cost['delta']
+
+        instrument2_mark_greek_cost = Instruments().greeks_by_instruments(instrument_number=2)
+        instrument2_vega = instrument2_mark_greek_cost['vega']
+        instrument2_theta = instrument2_mark_greek_cost['theta']
+        instrument2_rho = instrument2_mark_greek_cost['rho']
+        instrument2_gamma = instrument2_mark_greek_cost['gamma']
+        instrument2_delta = instrument2_mark_greek_cost['delta']
+
+        instrument3_mark_greek_cost = Instruments().greeks_by_instruments(instrument_number=3)
+        instrument3_vega = instrument3_mark_greek_cost['vega']
+        instrument3_theta = instrument3_mark_greek_cost['theta']
+        instrument3_rho = instrument3_mark_greek_cost['rho']
+        instrument3_gamma = instrument3_mark_greek_cost['gamma']
+        instrument3_delta = instrument3_mark_greek_cost['delta']
+
+        instrument4_mark_greek_cost = Instruments().greeks_by_instruments(instrument_number=4)
+        instrument4_vega = instrument4_mark_greek_cost['vega']
+        instrument4_theta = instrument4_mark_greek_cost['theta']
+        instrument4_rho = instrument4_mark_greek_cost['rho']
+        instrument4_gamma = instrument4_mark_greek_cost['gamma']
+        instrument4_delta = instrument4_mark_greek_cost['delta']
+
+        idg1 = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+            instrument_number=1)
+        if idg1 == 'Unassigned':
+            instrument1_amount_greeks = 0
+        else:
+            if idg1 == 'buy':
+                instrument1_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(instrument_number=1)))
+            elif idg1 == 'sell':
+                instrument1_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(
+                        instrument_number=1))) * -1
+            else:
+                instrument1_amount_greeks = 0
+
+        idg2 = InstrumentsSaved().instrument_direction_construction_from_instrument_file(instrument_number=2)
+        if idg2 == 'Unassigned':
+            instrument2_amount_greeks = 0
+        else:
+            if idg2 == 'buy':
+                instrument2_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(instrument_number=2)))
+            elif idg2 == 'sell':
+                instrument2_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(
+                        instrument_number=2))) * -1
+            else:
+                instrument2_amount_greeks = 0
+
+        idg3 = InstrumentsSaved().instrument_direction_construction_from_instrument_file(instrument_number=3)
+        if idg3 == 'Unassigned':
+            instrument3_amount_greeks = 0
+        else:
+            if idg3 == 'buy':
+                instrument3_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(instrument_number=3)))
+            elif idg3 == 'sell':
+                instrument3_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(
+                        instrument_number=3))) * -1
+            else:
+                instrument3_amount_greeks = 0
+
+        idg4 = InstrumentsSaved().instrument_direction_construction_from_instrument_file(instrument_number=4)
+        if idg4 == 'Unassigned':
+            instrument4_amount_greeks = 0
+        else:
+            if idg4 == 'buy':
+                instrument4_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(instrument_number=4)))
+            elif idg4 == 'sell':
+                instrument4_amount_greeks = abs(float(
+                    InstrumentsSaved().instrument_amount_saved(
+                        instrument_number=4))) * -1
+            else:
+                instrument4_amount_greeks = 0
+
+        instrument1_vega_total = float(instrument1_vega) * float(instrument1_amount_greeks)
+        instrument2_vega_total = float(instrument2_vega) * float(instrument2_amount_greeks)
+        instrument3_vega_total = float(instrument3_vega) * float(instrument3_amount_greeks)
+        instrument4_vega_total = float(instrument4_vega) * float(instrument4_amount_greeks)
+
+        instrument1_theta_total = float(instrument1_theta) * float(instrument1_amount_greeks)
+        instrument2_theta_total = float(instrument2_theta) * float(instrument2_amount_greeks)
+        instrument3_theta_total = float(instrument3_theta) * float(instrument3_amount_greeks)
+        instrument4_theta_total = float(instrument4_theta) * float(instrument4_amount_greeks)
+
+        instrument1_rho_total = float(instrument1_rho) * float(instrument1_amount_greeks)
+        instrument2_rho_total = float(instrument2_rho) * float(instrument2_amount_greeks)
+        instrument3_rho_total = float(instrument3_rho) * float(instrument3_amount_greeks)
+        instrument4_rho_total = float(instrument4_rho) * float(instrument4_amount_greeks)
+
+        instrument1_gamma_total = round(decimal.Context().create_decimal_from_float(
+            instrument1_gamma * instrument1_amount_greeks), 5)
+        instrument2_gamma_total = round(decimal.Context().create_decimal_from_float(
+            instrument2_gamma * instrument2_amount_greeks), 5)
+        instrument3_gamma_total = round(decimal.Context().create_decimal_from_float(
+            instrument3_gamma * instrument3_amount_greeks), 5)
+        instrument4_gamma_total = round(decimal.Context().create_decimal_from_float(
+            instrument4_gamma * instrument4_amount_greeks), 5)
+
+        instrument1_delta_total = float(instrument1_delta) * float(instrument1_amount_greeks)
+        instrument2_delta_total = float(instrument2_delta) * float(instrument2_amount_greeks)
+        instrument3_delta_total = float(instrument3_delta) * float(instrument3_amount_greeks)
+        instrument4_delta_total = float(instrument4_delta) * float(instrument4_amount_greeks)
+
+        print_greeks_by_instrument_dict = dict()
+
+        print_greeks_by_instrument_dict['lineEdit_29'] = round(instrument1_delta_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_47'] = round(instrument2_delta_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_48'] = round(instrument3_delta_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_49'] = round(instrument4_delta_total, 6)
+
+        print_greeks_by_instrument_dict['lineEdit_31'] = round(instrument1_theta_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_37'] = round(instrument2_theta_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_36'] = round(instrument3_theta_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_35'] = round(instrument4_theta_total, 6)
+
+        print_greeks_by_instrument_dict['lineEdit_30'] = round(instrument1_gamma_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_44'] = round(instrument2_gamma_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_45'] = round(instrument3_gamma_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_46'] = round(instrument4_gamma_total, 6)
+
+        print_greeks_by_instrument_dict['lineEdit_32'] = round(instrument1_vega_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_41'] = round(instrument2_vega_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_42'] = round(instrument3_vega_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_43'] = round(instrument4_vega_total, 6)
+
+        print_greeks_by_instrument_dict['lineEdit_33'] = round(instrument1_rho_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_38'] = round(instrument2_rho_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_39'] = round(instrument3_rho_total, 6)
+        print_greeks_by_instrument_dict['lineEdit_40'] = round(instrument4_rho_total, 6)
+
+        sinal.print_greeks_by_instrument_signal.emit(print_greeks_by_instrument_dict)
+
+    def update_position_and_amount_adjusted_and_print_gui():
+        Config().position_before_trade_save()
+        Instruments().amount_adjusted_save()
+        Instruments().adjust_rate_trade_by_reduce_only_save()
+        print_greeks_by_instrument_2()
+        sinal.textedit_balance_settext_signal.emit(
+            str(ConfigSaved().position_saved()))
+        position_preview_to_gui_2()
+        position_now2()
+        sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
+
     def start():
         import time
         from lists import list_monitor_log
@@ -9380,6 +9530,8 @@ def run(ui):
 
         true_or_false_start_ischecked = date_time_setup.getboolean('start_ischecked')
         true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
+
+        update_position = True
 
         if true_or_false_start_ischecked is True:
             waiting_date_time_start = True
@@ -9439,13 +9591,7 @@ def run(ui):
                         date_time_setup_enable = date_time_setup.getboolean('date_time_enabled')
 
                         if date_time_setup_enable is True:
-                            Config().position_before_trade_save()
-                            sinal.textedit_balance_settext_signal.emit(
-                                str(ConfigSaved().position_saved())
-                            )
-                            position_now2()
-                            position_preview_to_gui2()
-                            Quote().quote_new()
+                            update_position_and_amount_adjusted_and_print_gui()
 
                             setup = ConfigParser(
                                 allow_no_value=True,
@@ -9460,8 +9606,8 @@ def run(ui):
                             with open('setup.ini', 'w') as configfile:
                                 setup.write(configfile)
 
-                            connect.logwriter('*** Date and time set Disable saved ***\n'
-                                              '*** Positions before trades and positions preview uptaded ***')
+                            connect.logwriter('*** Date and time Enabled set False saved ***\n'
+                                              '*** Positions before trades and amount adjusted uptaded ***')
                         else:
                             pass
 
@@ -9532,6 +9678,11 @@ def run(ui):
                 pass
             finally:
                 pass
+
+        if update_position is True:
+            pass
+        else:
+            pass
 
         sinal.start_signal_1.emit('start')
 
