@@ -23,6 +23,7 @@ global send_future_orders_while
 global sender_rate_dict
 global password_dict
 global counter_send_order_for_function
+global dont_stop_trading_and_update_amount_adjusted
 
 
 class Sinais(QtCore.QObject):
@@ -1853,6 +1854,7 @@ class Config:
         reduce_only['instrument2'] = 'False'
         reduce_only['instrument3'] = 'False'
         reduce_only['instrument4'] = 'False'
+        reduce_only['dont_stop_trading_and_update_amount_adjusted'] = 'False'
 
         setup['amount'] = {}
         amount = setup['amount']
@@ -2427,9 +2429,9 @@ class Quote:
                 Quote().structure_option_greeks_quote()  # já chama signal (crei ter erro aqui)
                 Quote().last_trade_instrument_conditions_quote()  # já chama signal (creir ter erro aqui)
             except Exception as er:
-                connect.logwriter(str(er) + ' Error Code:: 1693')
-                list_monitor_log.append(str(er) + ' Error Code:: 1824')
-                list_monitor_log.append('********* Quote new ERROR Error Code:: 1695 *********')
+                connect.logwriter(str(er) + ' Error Code:: 2430')
+                list_monitor_log.append(str(er) + ' Error Code:: 2430')
+                list_monitor_log.append('********* Quote new ERROR Error Code:: 2430 *********')
                 pass
             finally:
                 pass
@@ -9491,7 +9493,8 @@ def run(ui):
             str(ConfigSaved().position_saved()))
         position_preview_to_gui_2()
         position_now2()
-        sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
+        Quote().quote_new_structure_cost_for_print_when_stopped_trading()
+        # sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
 
     def start():
         import time
@@ -9503,6 +9506,7 @@ def run(ui):
         global trading_on_off_for_msg
         global run_target_on_off
         global send_future_orders_while
+        global dont_stop_trading_and_update_amount_adjusted
 
         trading_on_off = 'on'
         run_trade_option_on_off = 'on'
@@ -9531,7 +9535,10 @@ def run(ui):
         true_or_false_start_ischecked = date_time_setup.getboolean('start_ischecked')
         true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
 
-        update_position = True
+        reduce_only_setup = setup['reduce_only']
+        dont_stop_trading_and_update_amount_adjusted = reduce_only_setup.getboolean(
+            'dont_stop_trading_and_update_amount_adjusted'
+        )
 
         if true_or_false_start_ischecked is True:
             waiting_date_time_start = True
@@ -9679,7 +9686,7 @@ def run(ui):
             finally:
                 pass
 
-        if update_position is True:
+        if dont_stop_trading_and_update_amount_adjusted is True:
             pass
         else:
             pass
@@ -9705,6 +9712,15 @@ def run(ui):
                         else:
                             counter_run_trade_option = counter_run_trade_option - 1
                             sinal.chronometer_signal.emit(str(counter_run_trade_option))
+
+                            if dont_stop_trading_and_update_amount_adjusted is True:
+                                update_position_and_amount_adjusted_and_print_gui()
+                                list_monitor_log.append(
+                                    '*********** Updated Position and Amounts Adjusteds '
+                                    '***********')
+                            else:
+                                pass
+
                             if counter_run_trade_option == 0:
                                 ConditionsCheck(). \
                                     structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
@@ -9718,13 +9734,37 @@ def run(ui):
                             # Posição tem que ser menor que a quantidade que se quer negociar.
                             aa = ConditionsCheck().position_option_smaller_max_position_instruments_()
                             if aa == 'position_option_smaller_max_position_instruments_no':
-                                list_monitor_log.append('*********** Option Position Bigger Max Position ***********')
-                                connect.logwriter('*********** Option Position Bigger Max Position ***********')
-                                if run_trade_future_on_off == 'on':
+                                if dont_stop_trading_and_update_amount_adjusted is True:
+                                    list_monitor_log.append(
+                                        '*********** Option Position Greater than or Equal to Maximum Position '
+                                        '***********')
+                                    list_monitor_log.append(
+                                        '*********** Don`t Stop Trading Eanbled ***********')
+                                    connect.logwriter(
+                                        '*********** Option Position Greater than or Equal to Maximum Position '
+                                        '***********')
+                                    connect.logwriter(
+                                        '*********** Don`t Stop Trading Eanbled ***********')
                                     run_trade_future()
+                                    trading_on_off = 'on'
+                                    run_trade_option_on_off = 'on'
+                                    run_trade_future_on_off = 'on'
+                                    trading_on_off_for_msg = 'on'
+                                    run_target_on_off = 'on'
+                                    send_future_orders_while = True
+                                    pass
                                 else:
-                                    run_trade_option_on_off = 'off'
-                                    break
+                                    list_monitor_log.append(
+                                        '*********** Option Position Greater than or Equal to Maximum Position '
+                                        '***********')
+                                    connect.logwriter(
+                                        '*********** Option Position Greater than or Equal to Maximum Position '
+                                        '***********')
+                                    if run_trade_future_on_off == 'on':
+                                        run_trade_future()
+                                    else:
+                                        run_trade_option_on_off = 'off'
+                                        break
                             elif aa == 'position_option_smaller_max_position_instruments_ok':
                                 list_monitor_log.append('*** Option Position Smaller Max Position ***')
                                 run_target_on_off = 'on'  # para poder executar o targets_achieved() se ainda há options
@@ -9759,7 +9799,7 @@ def run(ui):
                                         bid_ask_offer = Quote().bid_ask_offer()
                                         if bid_ask_offer != 'waiting bid/ask offer':
                                             list_monitor_log.append('*** There are bid/ask offer - '
-                                                                    'Waiting start trading ***')
+                                                                    'Waiting Send Orders ***')
                                             ConditionsCheck().send_options_orders()
                                             run_trade_future()
                                         else:
@@ -9925,6 +9965,7 @@ def run(ui):
         global run_target_on_off
         global trading_on_off_for_msg
         global send_future_orders_while
+        global dont_stop_trading_and_update_amount_adjusted
 
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -9941,6 +9982,7 @@ def run(ui):
             run_target_on_off = 'off'
             trading_on_off_for_msg = 'off'
             send_future_orders_while = False
+            dont_stop_trading_and_update_amount_adjusted = False
         else:
             pass  # cancel clicke
 
@@ -10036,6 +10078,29 @@ def about(ui):
     ui.radioButton_disagree.clicked.connect(disagree_license)
 
 
+# noinspection PyShadowingNames
+def add_widges(ui):
+    # ADD check_box_dont_stop_trading
+    check_box_dont_stop_trading = QtWidgets.QCheckBox(ui.frame_2)
+
+    def set_check_box_dont_stop_trading():
+        check_box_dont_stop_trading.setGeometry(QtCore.QRect(510, 0, 140, 40))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setPointSize(8)
+        font.setBold(True)
+        check_box_dont_stop_trading.setFont(font)
+        check_box_dont_stop_trading.setObjectName("check_box_reduce_only_9")
+        check_box_dont_stop_trading.setText('Don`t Stop Trading\neven if there are no\norders to be sent')
+
+    def dont_stop_trading_and_update_amount_adjusted_save():
+        if check_box_dont_stop_trading.isChecked() is True:
+            print('test')
+
+    set_check_box_dont_stop_trading()
+    check_box_dont_stop_trading.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
+
+
 if __name__ == "__main__":
     import sys
 
@@ -10050,4 +10115,5 @@ if __name__ == "__main__":
     run(ui=ui)
     instruments(ui=ui)
     about(ui=ui)
+    add_widges(ui=ui)
     sys.exit(app.exec_())
