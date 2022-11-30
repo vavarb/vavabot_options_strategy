@@ -10079,7 +10079,7 @@ def about(ui):
 
 
 # noinspection PyShadowingNames
-def add_widges(ui):
+def add_widgets(ui):
     # ADD check_box_dont_stop_trading
     check_box_dont_stop_trading = QtWidgets.QCheckBox(ui.frame_2)
 
@@ -10115,5 +10115,5 @@ if __name__ == "__main__":
     run(ui=ui)
     instruments(ui=ui)
     about(ui=ui)
-    add_widges(ui=ui)
+    add_widgets(ui=ui)
     sys.exit(app.exec_())
