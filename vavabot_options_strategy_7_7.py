@@ -69,6 +69,7 @@ class Sinais(QtCore.QObject):
     msg_box_for_thread_when_open_app3_signal = QtCore.pyqtSignal()
     position_now_signal_2 = QtCore.pyqtSignal()
     pushButton_request_options_structure_cost_signal = QtCore.pyqtSignal()
+    enable_disable_strike_and_c_or_p_and_maturity_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -8085,6 +8086,7 @@ def instruments(ui):
     sinal.date_time_disabled_signal.connect(date_time_disabled_signal)
     sinal.position_now_signal_2.connect(position_now)
     sinal.pushButton_request_options_structure_cost_signal.connect(pushbutton_request_options_structure_cost_signal)
+    sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.connect(enable_disable_strike_and_c_or_p_and_maturity)
     enable_disable_strike_and_c_or_p_and_maturity()
 
 
@@ -9536,9 +9538,9 @@ def run(ui):
         true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
 
         reduce_only_setup = setup['reduce_only']
+
         dont_stop_trading_and_update_amount_adjusted = reduce_only_setup.getboolean(
-            'dont_stop_trading_and_update_amount_adjusted'
-        )
+                'dont_stop_trading_and_update_amount_adjusted')
 
         if true_or_false_start_ischecked is True:
             waiting_date_time_start = True
@@ -9685,11 +9687,6 @@ def run(ui):
                 pass
             finally:
                 pass
-
-        if dont_stop_trading_and_update_amount_adjusted is True:
-            pass
-        else:
-            pass
 
         sinal.start_signal_1.emit('start')
 
@@ -9881,6 +9878,7 @@ def run(ui):
             sinal.start_signal_3.emit()
 
             btc_index_print_start_thread()
+            sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.emit()
             pass
         else:
             try:
@@ -9903,6 +9901,7 @@ def run(ui):
             sinal.start_signal_4.emit()
 
             btc_index_print_start_thread()
+            sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.emit()
             pass
 
     def start_thread_trade_signal():
@@ -9944,6 +9943,30 @@ def run(ui):
 
     def start_trading():
         global index_greeks_print_on_off
+        from connection_spread import connect
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        reduce_only_setup = setup['reduce_only']
+
+        if reduce_only_setup.getboolean('instrument1') is True or \
+            reduce_only_setup.getboolean('instrument2') is True or \
+            reduce_only_setup.getboolean('instrument3') is True or \
+                reduce_only_setup.getboolean('instrument4') is True:
+            dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
+                'dont_stop_trading_and_update_amount_adjusted')
+        else:
+            dont_stop_trading_and_update_amount_adjusted_saved = False
+            reduce_only_setup[
+                'dont_stop_trading_and_update_amount_adjusted'] = 'False'
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('***  dont_stop_trading updated and saved ***')
 
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -9953,10 +9976,24 @@ def run(ui):
         msg.addButton('Cancel', msg.RejectRole)
         pass
 
-        if msg.exec_() == msg.Rejected:
-            index_greeks_print_on_off = 'off'  # ok clicked
+        if msg.exec_() == msg.Rejected:  # ok clicked
+            if dont_stop_trading_and_update_amount_adjusted_saved is True:
+                msg1 = QtWidgets.QMessageBox()
+                msg1.setIcon(QtWidgets.QMessageBox.Information)
+                msg1.setText('Don`t stop Tading is Checked!!!\nStart Trading?')
+                msg1.setWindowTitle('*** WARNING ***')
+                msg1.addButton('Ok', msg1.AcceptRole)
+                msg1.addButton('Cancel', msg1.RejectRole)
+                pass
+
+                if msg1.exec_() == msg1.Rejected:
+                    index_greeks_print_on_off = 'off'  # ok clicked msg1
+                else:
+                    pass
+            else:
+                index_greeks_print_on_off = 'off'  # ok clicked msg
         else:
-            pass  # cancel clicked
+            pass
 
     def stop_trading():
         global trading_on_off
@@ -10094,11 +10131,84 @@ def add_widgets(ui):
         check_box_dont_stop_trading.setText('Don`t Stop Trading\neven if there are no\norders to be sent')
 
     def dont_stop_trading_and_update_amount_adjusted_save():
+        from connection_spread import connect
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        reduce_only_setup = setup['reduce_only']
+
         if check_box_dont_stop_trading.isChecked() is True:
-            print('test')
+            if ui.check_box_reduce_only_1.isChecked() is True or \
+                ui.check_box_reduce_only_2.isChecked() is True or \
+                ui.check_box_reduce_only_3.isChecked() is True or \
+                    ui.check_box_reduce_only_4.isChecked() is True:
+                reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'True'
+            else:
+                reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+        else:
+            reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+        connect.logwriter('***  Don`t Stop Trading set enabled true or false saved ***')
+
+    def check_box_dont_stop_trading_set_check_when_open_app():
+        from connection_spread import connect
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        reduce_only_setup = setup['reduce_only']
+        dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
+            'dont_stop_trading_and_update_amount_adjusted')
+
+        if reduce_only_setup.getboolean('instrument1') is True or \
+            reduce_only_setup.getboolean('instrument2') is True or \
+            reduce_only_setup.getboolean('instrument3') is True or \
+                reduce_only_setup.getboolean('instrument4') is True:
+            check_box_dont_stop_trading.setEnabled(True)
+            if dont_stop_trading_and_update_amount_adjusted_saved is True:
+                check_box_dont_stop_trading.setChecked(True)
+            else:
+                check_box_dont_stop_trading.setChecked(False)
+                check_box_dont_stop_trading.setEnabled(False)
+                reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+                with open('setup.ini', 'w') as configfile:
+                    setup.write(configfile)
+                connect.logwriter('***  Don`t Stop Trading set enabled true or false saved ***')
+        else:
+            check_box_dont_stop_trading.setChecked(False)
+            check_box_dont_stop_trading.setEnabled(False)
+            reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+            with open('setup.ini', 'w') as configfile:
+                setup.write(configfile)
+            connect.logwriter('***  Don`t Stop Trading set enabled true or false saved ***')
+
+    def check_box_dont_stop_trading_set_enabled():
+
+        if ui.check_box_reduce_only_1.isChecked() is True or \
+            ui.check_box_reduce_only_2.isChecked() is True or \
+            ui.check_box_reduce_only_3.isChecked() is True or \
+                ui.check_box_reduce_only_4.isChecked() is True:
+            check_box_dont_stop_trading.setEnabled(True)
+        else:
+            check_box_dont_stop_trading.setChecked(False)
+            check_box_dont_stop_trading.setEnabled(False)
+            dont_stop_trading_and_update_amount_adjusted_save()
 
     set_check_box_dont_stop_trading()
+    check_box_dont_stop_trading_set_check_when_open_app()
     check_box_dont_stop_trading.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    ui.check_box_reduce_only_1.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.check_box_reduce_only_2.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.check_box_reduce_only_3.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.check_box_reduce_only_4.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.pushButton_submit_new_instruments.clicked.connect(dont_stop_trading_and_update_amount_adjusted_save)
 
 
 if __name__ == "__main__":
