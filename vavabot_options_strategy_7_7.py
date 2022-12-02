@@ -1862,7 +1862,7 @@ class Config:
         reduce_only['instrument2'] = 'False'
         reduce_only['instrument3'] = 'False'
         reduce_only['instrument4'] = 'False'
-        reduce_only['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+        reduce_only['infinite_loop'] = 'False'
 
         setup['amount'] = {}
         amount = setup['amount']
@@ -9548,7 +9548,7 @@ def run(ui):
         reduce_only_setup = setup['reduce_only']
 
         dont_stop_trading_and_update_amount_adjusted = reduce_only_setup.getboolean(
-                'dont_stop_trading_and_update_amount_adjusted')
+                'infinite_loop')
 
         if true_or_false_start_ischecked is True:
             waiting_date_time_start = True
@@ -9744,12 +9744,12 @@ def run(ui):
                                         '*********** Option Position Greater than or Equal to Maximum Position '
                                         '***********')
                                     list_monitor_log.append(
-                                        '*********** Don`t Stop Trading Eanbled ***********')
+                                        '*********** Infinite Loop of Position Update Eanbled ***********')
                                     connect.logwriter(
                                         '*********** Option Position Greater than or Equal to Maximum Position '
                                         '***********')
                                     connect.logwriter(
-                                        '*********** Don`t Stop Trading Eanbled ***********')
+                                        '*********** Infinite Loop of Position Update Eanbled ***********')
                                     run_trade_future()
                                     trading_on_off = 'on'
                                     run_trade_option_on_off = 'on'
@@ -9969,11 +9969,11 @@ def run(ui):
             reduce_only_setup.getboolean('instrument3') is True or \
                 reduce_only_setup.getboolean('instrument4') is True:
             dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
-                'dont_stop_trading_and_update_amount_adjusted')
+                'infinite_loop')
         else:
             dont_stop_trading_and_update_amount_adjusted_saved = False
             reduce_only_setup[
-                'dont_stop_trading_and_update_amount_adjusted'] = 'False'
+                'infinite_loop'] = 'False'
             with open('setup.ini', 'w') as configfile:
                 setup.write(configfile)
             connect.logwriter('***  dont_stop_trading updated and saved ***')
@@ -9990,7 +9990,7 @@ def run(ui):
             if dont_stop_trading_and_update_amount_adjusted_saved is True:
                 msg1 = QtWidgets.QMessageBox()
                 msg1.setIcon(QtWidgets.QMessageBox.Information)
-                msg1.setText('Don`t stop Tading is Checked!!!\nStart Trading?')
+                msg1.setText('Infinite Loop of Position Update is Checked!!!\nStart Trading?')
                 msg1.setWindowTitle('*** WARNING ***')
                 msg1.addButton('Ok', msg1.AcceptRole)
                 msg1.addButton('Cancel', msg1.RejectRole)
@@ -10128,18 +10128,18 @@ def about(ui):
 
 # noinspection PyShadowingNames
 def add_widgets(ui):
-    # ADD check_box_dont_stop_trading
-    check_box_dont_stop_trading = QtWidgets.QCheckBox(ui.frame_2)
+    # ADD infinite_loop
+    infinite_loop = QtWidgets.QCheckBox(ui.frame_2)
 
-    def set_check_box_dont_stop_trading():
-        check_box_dont_stop_trading.setGeometry(QtCore.QRect(510, 0, 140, 40))
+    def set_infinite_loop():
+        infinite_loop.setGeometry(QtCore.QRect(510, 0, 140, 40))
         font = QtGui.QFont()
         font.setWeight(75)
         font.setPointSize(8)
         font.setBold(True)
-        check_box_dont_stop_trading.setFont(font)
-        check_box_dont_stop_trading.setObjectName("check_box_reduce_only_9")
-        check_box_dont_stop_trading.setText('Don`t Stop Trading\neven if there are no\norders to be sent')
+        infinite_loop.setFont(font)
+        infinite_loop.setObjectName("infinite_loop")
+        infinite_loop.setText('Infinite Loop of\n Position Update')
 
     def dont_stop_trading_and_update_amount_adjusted_save():
         from connection_spread import connect
@@ -10151,22 +10151,22 @@ def add_widgets(ui):
         setup.read('setup.ini')
         reduce_only_setup = setup['reduce_only']
 
-        if check_box_dont_stop_trading.isChecked() is True:
+        if infinite_loop.isChecked() is True:
             if ui.check_box_reduce_only_1.isChecked() is True or \
                 ui.check_box_reduce_only_2.isChecked() is True or \
                 ui.check_box_reduce_only_3.isChecked() is True or \
                     ui.check_box_reduce_only_4.isChecked() is True:
-                reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'True'
+                reduce_only_setup['infinite_loop'] = 'True'
             else:
-                reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+                reduce_only_setup['infinite_loop'] = 'False'
         else:
-            reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+            reduce_only_setup['infinite_loop'] = 'False'
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
-        connect.logwriter('***  Don`t Stop Trading set enabled true or false saved ***')
+        connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
 
-    def check_box_dont_stop_trading_set_check_when_open_app():
+    def infinite_loop_set_check_when_open_app():
         from connection_spread import connect
         setup = ConfigParser(
             allow_no_value=True,
@@ -10176,31 +10176,31 @@ def add_widgets(ui):
         setup.read('setup.ini')
         reduce_only_setup = setup['reduce_only']
         dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
-            'dont_stop_trading_and_update_amount_adjusted')
+            'infinite_loop')
 
         if reduce_only_setup.getboolean('instrument1') is True or \
             reduce_only_setup.getboolean('instrument2') is True or \
             reduce_only_setup.getboolean('instrument3') is True or \
                 reduce_only_setup.getboolean('instrument4') is True:
-            check_box_dont_stop_trading.setEnabled(True)
+            infinite_loop.setEnabled(True)
             if dont_stop_trading_and_update_amount_adjusted_saved is True:
-                check_box_dont_stop_trading.setChecked(True)
+                infinite_loop.setChecked(True)
             else:
-                check_box_dont_stop_trading.setChecked(False)
-                check_box_dont_stop_trading.setEnabled(False)
-                reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+                infinite_loop.setChecked(False)
+                infinite_loop.setEnabled(False)
+                reduce_only_setup['infinite_loop'] = 'False'
                 with open('setup.ini', 'w') as configfile:
                     setup.write(configfile)
-                connect.logwriter('***  Don`t Stop Trading set enabled true or false saved ***')
+                connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
         else:
-            check_box_dont_stop_trading.setChecked(False)
-            check_box_dont_stop_trading.setEnabled(False)
-            reduce_only_setup['dont_stop_trading_and_update_amount_adjusted'] = 'False'
+            infinite_loop.setChecked(False)
+            infinite_loop.setEnabled(False)
+            reduce_only_setup['infinite_loop'] = 'False'
             with open('setup.ini', 'w') as configfile:
                 setup.write(configfile)
-            connect.logwriter('***  Don`t Stop Trading set enabled true or false saved ***')
+            connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
 
-    def check_box_dont_stop_trading_set_enabled():
+    def infinite_loop_set_enabled():
 
         if ui.check_box_reduce_only_1.isChecked() is True or \
             ui.check_box_reduce_only_2.isChecked() is True or \
@@ -10214,31 +10214,31 @@ def add_widgets(ui):
             setup.read('setup.ini')
             date_time_setup = setup['date_time']
             if date_time_setup.getboolean('date_time_enabled') is True:
-                check_box_dont_stop_trading.setEnabled(True)
+                infinite_loop.setEnabled(True)
             else:
-                check_box_dont_stop_trading.setEnabled(False)
+                infinite_loop.setEnabled(False)
         else:
-            check_box_dont_stop_trading.setChecked(False)
-            check_box_dont_stop_trading.setEnabled(False)
+            infinite_loop.setChecked(False)
+            infinite_loop.setEnabled(False)
             dont_stop_trading_and_update_amount_adjusted_save()
 
     def dont_stop_trading_and_update_amount_adjusted_set_enable_signal(info):
         if info is True:
-            check_box_dont_stop_trading_set_enabled()
+            infinite_loop_set_enabled()
         else:
-            check_box_dont_stop_trading.setEnabled(False)
+            infinite_loop.setEnabled(False)
 
-    set_check_box_dont_stop_trading()
-    check_box_dont_stop_trading_set_check_when_open_app()
-    check_box_dont_stop_trading.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
-    ui.check_box_reduce_only_1.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.check_box_reduce_only_2.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.check_box_reduce_only_3.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.check_box_reduce_only_4.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.lineEdit_o_or_f_instrumet1.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.lineEdit_o_or_f_instrumet2.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
-    ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
+    set_infinite_loop()
+    infinite_loop_set_check_when_open_app()
+    infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    ui.check_box_reduce_only_1.stateChanged.connect(infinite_loop_set_enabled)
+    ui.check_box_reduce_only_2.stateChanged.connect(infinite_loop_set_enabled)
+    ui.check_box_reduce_only_3.stateChanged.connect(infinite_loop_set_enabled)
+    ui.check_box_reduce_only_4.stateChanged.connect(infinite_loop_set_enabled)
+    ui.lineEdit_o_or_f_instrumet1.currentTextChanged.connect(infinite_loop_set_enabled)
+    ui.lineEdit_o_or_f_instrumet2.currentTextChanged.connect(infinite_loop_set_enabled)
+    ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(infinite_loop_set_enabled)
+    ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.pushButton_submit_new_instruments.clicked.connect(dont_stop_trading_and_update_amount_adjusted_save)
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
