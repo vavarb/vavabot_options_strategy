@@ -70,6 +70,7 @@ class Sinais(QtCore.QObject):
     position_now_signal_2 = QtCore.pyqtSignal()
     pushButton_request_options_structure_cost_signal = QtCore.pyqtSignal()
     enable_disable_strike_and_c_or_p_and_maturity_signal = QtCore.pyqtSignal()
+    dont_stop_trading_and_update_amount_adjusted_set_enable_signal = QtCore.pyqtSignal(bool)
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -1834,6 +1835,12 @@ class Config:
         now_10_text = now10.strftime('%d/%m/%Y %H:%M')
         now_text = now.strftime('%d/%m/%Y %H:%M')
 
+        test_net_now = ui.lineEdit_testenet_true_or_false_satatus.text()
+        if test_net_now == 'Real Account':
+            test_net_now = 'False'
+        else:
+            test_net_now = 'True'
+
         setup = ConfigParser()
 
         dict_setup_default = {
@@ -1847,7 +1854,7 @@ class Config:
 
         setup['credentials'] = {}
         credentials_ = setup['credentials']
-        credentials_['test_net'] = 'True'
+        credentials_['test_net'] = test_net_now
 
         setup['reduce_only'] = {}
         reduce_only = setup['reduce_only']
@@ -7092,6 +7099,7 @@ def instruments(ui):
                 quote_new_when_open_app()  # Tem varias ui
                 sinal.msg_box_for_thread_when_open_app3_signal.emit()
                 sinal.strategy_name_update_signal.emit()
+                sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.emit()
                 pass
             else:
                 print_greeks_by_instrument()  # já se repete em:  ui.textEdit_targets_saved_3.append('Change1')
@@ -7103,7 +7111,7 @@ def instruments(ui):
                 sinal.msg_box_for_thread_when_open_app3_signal.emit()
                 Config().date_time_saved()
                 Config().reduce_only_saved()
-                enable_disable_strike_and_c_or_p_and_maturity()
+                sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.emit()
 
         except Exception as er:
             from connection_spread import connect
@@ -9938,6 +9946,8 @@ def run(ui):
 
         sinal.start_thread_trade_signal.emit()
 
+        sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.emit(False)
+
         start_thread_trade_clicked = threading.Thread(daemon=True, target=start)
         start_thread_trade_clicked.start()
 
@@ -10020,6 +10030,7 @@ def run(ui):
             trading_on_off_for_msg = 'off'
             send_future_orders_while = False
             dont_stop_trading_and_update_amount_adjusted = False
+            sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.emit(True)
         else:
             pass  # cancel clicke
 
@@ -10195,11 +10206,27 @@ def add_widgets(ui):
             ui.check_box_reduce_only_2.isChecked() is True or \
             ui.check_box_reduce_only_3.isChecked() is True or \
                 ui.check_box_reduce_only_4.isChecked() is True:
-            check_box_dont_stop_trading.setEnabled(True)
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False
+            )
+            setup.read('setup.ini')
+            date_time_setup = setup['date_time']
+            if date_time_setup.getboolean('date_time_enabled') is True:
+                check_box_dont_stop_trading.setEnabled(True)
+            else:
+                check_box_dont_stop_trading.setEnabled(False)
         else:
             check_box_dont_stop_trading.setChecked(False)
             check_box_dont_stop_trading.setEnabled(False)
             dont_stop_trading_and_update_amount_adjusted_save()
+
+    def dont_stop_trading_and_update_amount_adjusted_set_enable_signal(info):
+        if info is True:
+            check_box_dont_stop_trading_set_enabled()
+        else:
+            check_box_dont_stop_trading.setEnabled(False)
 
     set_check_box_dont_stop_trading()
     check_box_dont_stop_trading_set_check_when_open_app()
@@ -10208,7 +10235,13 @@ def add_widgets(ui):
     ui.check_box_reduce_only_2.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
     ui.check_box_reduce_only_3.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
     ui.check_box_reduce_only_4.stateChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.lineEdit_o_or_f_instrumet1.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.lineEdit_o_or_f_instrumet2.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
+    ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(check_box_dont_stop_trading_set_enabled)
     ui.pushButton_submit_new_instruments.clicked.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
+        dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
 
 
 if __name__ == "__main__":
