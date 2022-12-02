@@ -1845,7 +1845,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '7.7',
+            'version': '8.0',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
@@ -10139,7 +10139,7 @@ def add_widgets(ui):
         font.setBold(True)
         infinite_loop.setFont(font)
         infinite_loop.setObjectName("infinite_loop")
-        infinite_loop.setText('Infinite Loop of\n Position Update')
+        infinite_loop.setText('Infinite Loop of\nPosition Update')
 
     def dont_stop_trading_and_update_amount_adjusted_save():
         from connection_spread import connect
