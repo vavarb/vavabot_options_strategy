@@ -4,3 +4,4 @@ log_strategy.log
 log_spread_backup.log
 pyinstaller.py
 send_orders_rate.txt
+setup.ini
