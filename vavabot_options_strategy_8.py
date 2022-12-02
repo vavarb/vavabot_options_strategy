@@ -1835,11 +1835,17 @@ class Config:
         now_10_text = now10.strftime('%d/%m/%Y %H:%M')
         now_text = now.strftime('%d/%m/%Y %H:%M')
 
-        test_net_now = ui.lineEdit_testenet_true_or_false_satatus.text()
-        if test_net_now == 'Real Account':
-            test_net_now = 'False'
-        else:
+        try:
+            test_net_now = ui.lineEdit_testenet_true_or_false_satatus.text()
+            if test_net_now == 'Real Account':
+                test_net_now = 'False'
+            else:
+                test_net_now = 'True'
+        except Exception as er:
             test_net_now = 'True'
+            list_monitor_log.append('***** Test Account Saved ***** ' + str(er))
+        finally:
+            pass
 
         setup = ConfigParser()
 
