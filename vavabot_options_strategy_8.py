@@ -71,6 +71,7 @@ class Sinais(QtCore.QObject):
     pushButton_request_options_structure_cost_signal = QtCore.pyqtSignal()
     enable_disable_strike_and_c_or_p_and_maturity_signal = QtCore.pyqtSignal()
     dont_stop_trading_and_update_amount_adjusted_set_enable_signal = QtCore.pyqtSignal(bool)
+    instruments_save_msg_box_signal = QtCore.pyqtSignal(dict)
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -914,11 +915,6 @@ class InstrumentsSaved:
             return 'option'
         else:
             connect.logwriter('*** Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 746 ***')
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 749')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
             pass
 
     def instrument_direction_construction_from_instrument_file(self, instrument_number=None):
@@ -943,11 +939,6 @@ class InstrumentsSaved:
             else:
                 connect.logwriter(str(
                     '*** Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 775 ***'))
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 778')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
                 pass
 
 
@@ -1022,44 +1013,44 @@ class Instruments:
 
             if Instruments().instrument_available_before_save(instrument_name=instrument_name1) == \
                     'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 1 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 1 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if Instruments().instrument_available_before_save(instrument_name=instrument_name2) == \
                     'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 2 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 2 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if Instruments().instrument_available_before_save(instrument_name=instrument_name3) == \
                     'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 3 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 3 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if Instruments().instrument_available_before_save(instrument_name=instrument_name4) == \
                     'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 4 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 4 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
@@ -1067,11 +1058,11 @@ class Instruments:
         except Exception as er:
             connect.logwriter(str(er) + ' Error Code:: 898')
             list_monitor_log.append(str(er) + ' Error Code:: 899')
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instruments Checking before save\n Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'Instruments Checking before save\n Syntax ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
             pass
         finally:
             pass
@@ -1594,11 +1585,11 @@ class Config:
 
         if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) > \
                 float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('\'Trade if currency quote UPPER\'\nmust be LOWER then\n\'Trade if currency quote LOWER\'')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': '\'Trade if currency quote UPPER\'\nmust be LOWER then\n\'Trade if currency quote LOWER\''
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
             pass
         else:
             with open('targets_spread.txt', 'w') as ft1:
@@ -1650,11 +1641,11 @@ class Config:
                     pass
 
                 else:
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Information)
-                    msg.setText('Set Strategy BUY or SELL')
-                    msg.setWindowTitle('***** ERROR *****')
-                    msg.exec_()
+                    instruments_save_info_msg = {
+                        'title': '***** ERROR *****',
+                        'msg_text': 'Set Strategy BUY or SELL'
+                    }
+                    sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                     pass
 
                 if str(ui.comboBox_value_given_2.currentText()) != \
@@ -2054,11 +2045,11 @@ class Quote:
             else:
                 pass
         else:
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('instrument market price ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'instrument market price ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
             pass
             return '***** ERROR in instrument market price'
 
@@ -2326,11 +2317,11 @@ class Quote:
         from lists import list_monitor_log
 
         if led_color() == 'red':
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText(' Connection Offline ')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': ' Connection Offline '
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
             pass
         else:
             try:
@@ -6601,52 +6592,51 @@ def instruments(ui):
                      instrument3_available == 'Unassigned') and \
                     (instrument4_available == 'instrument available' or
                      instrument4_available == 'Unassigned'):
-
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instruments Syntax OK')
-                msg.setWindowTitle('INFO')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': 'INFO',
+                    'msg_text': 'Instruments Syntax OK'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if instrument1_available == 'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 1 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 1 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if instrument2_available == 'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 2 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 2 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if instrument3_available == 'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 3 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 3 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
 
             if instrument4_available == 'instrument NO available':
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Instrument 4 Syntax ERROR')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Instrument 4 Syntax ERROR'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
                 pass
@@ -7300,6 +7290,19 @@ def instruments(ui):
             setup.write(configfile)
         connect.logwriter('*** Amount Adjusted Saved - ' + 'Instrument ' + str(instrument4) + ' ***')
 
+    def instruments_save_msg_box_signal(info):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText(str(info['msg_text']))
+        msg.setWindowTitle(str(info['title']))
+        msg.exec_()
+        pass
+
+    def instruments_save_start_thread():
+        instruments_save_thread = threading.Thread(
+            daemon=True, target=instruments_save)
+        instruments_save_thread.start()
+
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
         from connection_spread import led_color
         date_now_instrument = QtCore.QDate.currentDate()
@@ -7374,11 +7377,11 @@ def instruments(ui):
                                 ui.checkBox_perpetual_4.isChecked() is False and
                                 ui.lineEdit_maturity_instrumet4.date() == date_now_instrument.addDays(-1))
                 )):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('All fields are required - ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'All fields are required - ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
             pass
         else:
             try:
@@ -7410,11 +7413,11 @@ def instruments(ui):
                         (ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and (
                                 str.replace(ui.lineEdit_amount_instrumet4.text(), ',', '.') == 0
                         )):
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Information)
-                    msg.setText('Zero is NOT accept')
-                    msg.setWindowTitle('***** ERROR *****')
-                    msg.exec_()
+                    instruments_save_info_msg = {
+                        'title': '***** ERROR *****',
+                        'msg_text': 'Zero is NOT accept'
+                    }
+                    sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                     pass
                 else:
                     if (ui.lineEdit_currency_instrumet1.currentText() == 'BTC' and (
@@ -7427,81 +7430,80 @@ def instruments(ui):
                                     ui.lineEdit_currency_instrumet3.currentText() == 'BTC' or
                                     ui.lineEdit_currency_instrumet4.currentText() == 'BTC'
                             )):
-
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instruments currency must be the same')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instruments currency must be the same'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'o' and (int(float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 1 Amount must be \n0.1 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 1 Amount must be \n0.1 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet1.currentText() == 'f' and (float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) % 10 != 0):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 1 Amount must be \n10 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 1 Amount must be \n10 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'o' and (int(float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 2 Amount must be \n0.1 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 2 Amount must be \n0.1 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet2.currentText() == 'f' and (float(
                             str.replace(str(ui.lineEdit_amount_instrumet2.text()), ',', '.')) % 10 != 0):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 2 Amount must be \n10 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 2 Amount must be \n10 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'o' and (int(float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 3 Amount must be \n0.1 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 3 Amount must be \n0.1 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet3.currentText() == 'f' and (float(
                             str.replace(str(ui.lineEdit_amount_instrumet3.text()), ',', '.')) % 10 != 0):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 3 Amount must be \n10 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 3 Amount must be \n10 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'o' and (int(float(
                             str.replace(str(ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10) != float(
                         str.replace(str(
                             ui.lineEdit_amount_instrumet1.text()), ',', '.')) * 10):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 4 Amount must be \n0.1 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 4 Amount must be \n0.1 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     elif ui.lineEdit_o_or_f_instrumet4.currentText() == 'f' and (float(
                             str.replace(str(ui.lineEdit_amount_instrumet4.text()), ',', '.')) % 10 != 0):
-                        msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
-                        msg.setText('Instrument 4 Amount must be \n10 multiple')
-                        msg.setWindowTitle('***** ERROR *****')
-                        msg.exec_()
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Instrument 4 Amount must be \n10 multiple'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
                     else:
                         if ui.lineEdit_o_or_f_instrumet1.currentText() == '':
@@ -7680,11 +7682,11 @@ def instruments(ui):
                             instrument_name4_before_save = 'Unassigned'
 
                         if led_color() == 'red':
-                            msg = QtWidgets.QMessageBox()
-                            msg.setIcon(QtWidgets.QMessageBox.Information)
-                            msg.setText('Connection Offline\nInstrument don´t updated')
-                            msg.setWindowTitle('***** ERROR *****')
-                            msg.exec_()
+                            instruments_save_info_msg = {
+                                'title': '***** ERROR *****',
+                                'msg_text': 'Connection Offline\nInstrument don´t updated'
+                            }
+                            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         else:
                             if Instruments().instrument_check_available_before_save(
                                     instrument_name1=instrument_name1_before_save,
@@ -7732,18 +7734,18 @@ def instruments(ui):
                                 sinal.date_time_enabled_signal.emit()
 
                             else:
-                                msg = QtWidgets.QMessageBox()
-                                msg.setIcon(QtWidgets.QMessageBox.Information)
-                                msg.setText('Instrument don´t updated')
-                                msg.setWindowTitle('***** ERROR *****')
-                                msg.exec_()
+                                instruments_save_info_msg = {
+                                    'title': '***** ERROR *****',
+                                    'msg_text': 'Instrument don´t updated'
+                                }
+                                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                                 pass
             except ValueError:
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Only Numbers are accepted')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
+                instruments_save_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Only Numbers are accepted'
+                }
+                sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
 
     def position_preview_to_gui():
@@ -7767,35 +7769,35 @@ def instruments(ui):
         sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
 
         if 'ERROR' in str(max_position_instrument1_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 1 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'Instrument 1 Syntax ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
         else:
             pass
         if 'ERROR' in str(max_position_instrument2_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 2 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'Instrument 2 Syntax ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
         else:
             pass
         if 'ERROR' in str(max_position_instrument3_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 3 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'Instrument 3 Syntax ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
         else:
             pass
         if 'ERROR' in str(max_position_instrument4_for_gui):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Instrument 4 Syntax ERROR')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            instruments_save_info_msg = {
+                'title': '***** ERROR *****',
+                'msg_text': 'Instrument 4 Syntax ERROR'
+            }
+            sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
         else:
             pass
 
@@ -8010,11 +8012,9 @@ def instruments(ui):
 
         if led_color() == 'red':
             # sinal.msg_box_for_position_now_signal.emit()
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Connection Offline\nCurrent Positions don´t updated')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
+            list_monitor_log.append(
+                '***** ERROR - Connection Offline\nCurrent Positions don´t updated - Error Code 8016*****'
+            )
             pass
         else:
             try:
@@ -8063,14 +8063,11 @@ def instruments(ui):
 
             except Exception as er:
                 connect.logwriter(str(er) + ' Error Code:: 6778')
-                list_monitor_log.append(str(er) + ' Error Code:: 6779')
+                list_monitor_log.append(
+                    '***** ERROR - ' + str(er) + ' - Current Positions don´t checked Error Code:: 6779 - *****'
+                )
                 ui.textEdit_balance_2.clear()
                 ui.textEdit_balance_2.setText(str(er) + ' Error Code:: 6781')
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Current Positions don´t checked')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
                 pass
             finally:
                 pass
@@ -8089,7 +8086,7 @@ def instruments(ui):
     ui.checkBox_perpetual_2.stateChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.checkBox_perpetual_3.stateChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
     ui.checkBox_perpetual_4.stateChanged.connect(enable_disable_strike_and_c_or_p_and_maturity)
-    ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
+    ui.pushButton_submit_new_instruments.clicked.connect(instruments_save_start_thread)
     ui.pushButton_submit_new_plot_payoff.clicked.connect(plot_payoff_for_4_instruments)
     sinal.instruments_saved_print_and_check_available_signal.connect(msg_box_for_thread_when_open_app2)
     sinal.msg_box_for_thread_when_open_app3_signal.connect(msg_box_for_thread_when_open_app3)
@@ -8102,6 +8099,7 @@ def instruments(ui):
     sinal.pushButton_request_options_structure_cost_signal.connect(pushbutton_request_options_structure_cost_signal)
     sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.connect(enable_disable_strike_and_c_or_p_and_maturity)
     enable_disable_strike_and_c_or_p_and_maturity()
+    sinal.instruments_save_msg_box_signal.connect(instruments_save_msg_box_signal)
 
 
 # noinspection PyShadowingNames
