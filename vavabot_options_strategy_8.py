@@ -9725,6 +9725,22 @@ def run(ui):
                             sinal.chronometer_signal.emit(str(counter_run_trade_option))
 
                             if dont_stop_trading_and_update_amount_adjusted is True:
+                                if true_or_false_end_ischecked is True:
+                                    if date_time_end_stamp < datetime.now().timestamp():
+                                        trading_on_off = 'off'
+                                        run_trade_future_on_off = 'off'
+                                        run_trade_option_on_off = 'off'
+                                        run_target_on_off = 'off'
+                                        trading_on_off_for_msg = 'off'
+                                        send_future_orders_while = False
+
+                                        list_monitor_log.append('*** Trading Stopped by Timeout ***')
+                                        connect.logwriter('*** Trading Stopped by Timeout ***')
+                                        break
+                                    else:
+                                        list_monitor_log.append('*** Trading time is NOT over ***')
+                                else:
+                                    pass
                                 update_position_and_amount_adjusted_and_print_gui()
                                 list_monitor_log.append(
                                     '*********** Updated Position and Amounts Adjusteds '
