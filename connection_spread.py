@@ -1,5 +1,5 @@
 
-from vavabot_options_strategy_8_2 import Deribit, CredentialsSaved, ConfigSaved
+from vavabot_options_strategy_8_3 import Deribit, CredentialsSaved, ConfigSaved
 import time
 from lists import list_monitor_log
 import threading

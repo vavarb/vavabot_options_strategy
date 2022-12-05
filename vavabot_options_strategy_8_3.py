@@ -1970,7 +1970,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '8.2',
+            'version': '8.3',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
@@ -10363,26 +10363,28 @@ def add_widgets(ui):
             connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
 
     def infinite_loop_set_enabled():
-
-        if ui.check_box_reduce_only_1.isChecked() is True or \
-            ui.check_box_reduce_only_2.isChecked() is True or \
-            ui.check_box_reduce_only_3.isChecked() is True or \
-                ui.check_box_reduce_only_4.isChecked() is True:
-            setup = ConfigParser(
-                allow_no_value=True,
-                inline_comment_prefixes='#',
-                strict=False
-            )
-            setup.read('setup.ini')
-            date_time_setup = setup['date_time']
-            if date_time_setup.getboolean('date_time_enabled') is True:
-                infinite_loop.setEnabled(True)
+        if ui.pushButton_stop_arbitrage.isEnabled() is False:
+            if ui.check_box_reduce_only_1.isChecked() is True or \
+                ui.check_box_reduce_only_2.isChecked() is True or \
+                ui.check_box_reduce_only_3.isChecked() is True or \
+                    ui.check_box_reduce_only_4.isChecked() is True:
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False
+                )
+                setup.read('setup.ini')
+                date_time_setup = setup['date_time']
+                if date_time_setup.getboolean('date_time_enabled') is True:
+                    infinite_loop.setEnabled(True)
+                else:
+                    infinite_loop.setEnabled(False)
             else:
+                infinite_loop.setChecked(False)
                 infinite_loop.setEnabled(False)
+                dont_stop_trading_and_update_amount_adjusted_save()
         else:
-            infinite_loop.setChecked(False)
             infinite_loop.setEnabled(False)
-            dont_stop_trading_and_update_amount_adjusted_save()
 
     def dont_stop_trading_and_update_amount_adjusted_set_enable_signal(info):
         if info is True:
