@@ -1,4 +1,4 @@
-Instrument 1: option sell 0.1 BTC-9DEC22-17000-C
+Instrument 1: Unassigned
 Instrument 2: Unassigned
 Instrument 3: Unassigned
 Instrument 4: Unassigned

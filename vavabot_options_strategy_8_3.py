@@ -8680,6 +8680,9 @@ def config(ui):
             connect.logwriter('*** Date and time saved ***')
             Config().date_time_saved()
 
+    def pushButton_update_balance_2_clicked_call_position_now():
+        sinal.position_now_signal_2.emit()
+
     sinal.set_version_and_icon_and_texts_and_dates_signal.connect(
         set_version_and_icon_and_texts_and_dates_signal_receive)
     set_version_and_icon_and_texts_and_dates()
@@ -8695,6 +8698,7 @@ def config(ui):
     ui.checkbox_date_time_end.stateChanged.connect(date_time_save)
     ui.date_time_start.editingFinished.connect(date_time_save)
     ui.date_time_end.editingFinished.connect(date_time_save)
+    ui.pushButton_update_balance_2.clicked.connect(pushButton_update_balance_2_clicked_call_position_now)
 
 
 # noinspection PyShadowingNames
