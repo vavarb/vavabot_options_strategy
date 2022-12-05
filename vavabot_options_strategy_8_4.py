@@ -1970,7 +1970,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '8.3',
+            'version': '8.4',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
