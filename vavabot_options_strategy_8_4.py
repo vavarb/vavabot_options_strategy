@@ -1955,9 +1955,16 @@ class Config:
         now_text = now.strftime('%d/%m/%Y %H:%M')
 
         try:
-            test_net_now = ui.lineEdit_testenet_true_or_false_satatus.text()
-            if test_net_now == 'Real Account':
-                test_net_now = 'False'
+            import os
+            if os.path.isfile('setup.ini') is True:
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False
+                )
+                setup.read('setup.ini')
+                credentials_setup = setup['credentials']
+                test_net_now = str(credentials_setup.getboolean('test_net'))
             else:
                 test_net_now = 'True'
         except Exception as er:
@@ -8680,7 +8687,7 @@ def config(ui):
             connect.logwriter('*** Date and time saved ***')
             Config().date_time_saved()
 
-    def pushButton_update_balance_2_clicked_call_position_now():
+    def pushbutton_update_balance_2_clicked_call_position_now():
         sinal.position_now_signal_2.emit()
 
     sinal.set_version_and_icon_and_texts_and_dates_signal.connect(
@@ -8698,7 +8705,7 @@ def config(ui):
     ui.checkbox_date_time_end.stateChanged.connect(date_time_save)
     ui.date_time_start.editingFinished.connect(date_time_save)
     ui.date_time_end.editingFinished.connect(date_time_save)
-    ui.pushButton_update_balance_2.clicked.connect(pushButton_update_balance_2_clicked_call_position_now)
+    ui.pushButton_update_balance_2.clicked.connect(pushbutton_update_balance_2_clicked_call_position_now)
 
 
 # noinspection PyShadowingNames
