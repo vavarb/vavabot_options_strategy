@@ -1,6 +1,6 @@
 Trade if exchange rate upper then: > 1 USD
-Trade if exchange rate lower then: < 150000 USD
-buy or sell the structure: sell
-Structure cost should be higher/less: > 0.1 BTC
+Trade if exchange rate lower then: < 100000 USD
+buy or sell the structure: buy
+Structure cost should be higher/less: < 10 BTC
 instrument name to consider for target setting: BTC-PERPETUAL
 Set the cost of the Options Structure as trigger (optional)

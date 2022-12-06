@@ -675,7 +675,6 @@ class CredentialsSaved:
 
     @staticmethod
     def secret_key_saved():
-        import os
         import base64
         from cryptography.fernet import Fernet, InvalidToken, InvalidSignature
         from cryptography.hazmat.primitives import hashes
@@ -1773,10 +1772,23 @@ class Config:
                         file_targets.write('\n' + str('Set the cost of the Options Structure as trigger (optional)'))
                         pass
 
-                with open('value_given_in.txt', 'w') as file_value_given_in:
-                    write_in_value_given_in = ui.comboBox_value_given.currentText()
-                    file_value_given_in.write(str(write_in_value_given_in))
-                pass
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False,
+                    interpolation=None
+                )
+                setup.read('setup.ini')
+
+                targets_setup = setup['targets']
+                targets_setup['value_given_in'] = ui.comboBox_value_given.currentText()
+
+                with open('setup.ini', 'w') as setupfile:
+                    setup.write(setupfile)
+                list_monitor_log.append(
+                    '***** Value given in saved: ' + str(ui.comboBox_value_given.currentText()) + ' *****'
+                )
+
         except Exception as er:
             from lists import list_monitor_log
             list_monitor_log.append(
@@ -2047,6 +2059,10 @@ class Config:
         date_time['end_ischecked'] = 'False'
         date_time['end'] = now_10_text
         date_time['date_time_enabled'] = 'True'
+
+        setup['targets'] = {}
+        targets = setup['targets']
+        targets['value_given_in'] = 'BTC'
 
         with open('setup.ini', 'w') as setupfile:
             setup.write(setupfile)
@@ -3218,8 +3234,16 @@ class ConditionsCheck:
     def value_give_in_achieved():
         from lists import list_monitor_log
 
-        with open('value_given_in.txt', 'r') as file_vgi:
-            read_file_vgi = str(file_vgi.read())
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        read_file_vgi = str(targets_setup['value_given_in'])
+
         try:
             from connection_spread import connect
             if 'BTC' not in read_file_vgi:
@@ -8597,62 +8621,70 @@ def config(ui):
                 pass
 
     def target_saved_check_signal_receive():
-        with open('value_given_in.txt', 'r') as f7:
-            f6 = f7.read()
-            if 'BTC' in f6:
-                text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
-                text_to_textedit_targets_saved_if_btc_1 = str.replace(
-                                                                      text_to_textedit_targets_saved_if_btc,
-                                                                      'Set the cost of the Options Structure as '
-                                                                      'trigger (optional)',
-                                                                      'Set Option Strategy Cost as TRIGGER (optional)')
-                text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
-                                                                      'buy or sell the structure',
-                                                                      'Buy or sell strategy')
-                text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
-                                                                      'Structure cost should be',
-                                                                      'Strategy costshould be')
-                ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
-            elif 'USD' in f6:
-                with open('targets_spread.txt', 'r') as f4:
-                    f4l = f4.readlines()
-                    f4s1 = str(f4l[0])
-                    f4s2 = str(f4l[1])
-                    f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
-                    f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
-                    f4s5 = str(f4l[4])
-                    f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
-                                       'Set Option Strategy Cost as TRIGGER (optional)')
-                    f5 = str.replace(f4s4, 'BTC', 'USD')
-                    f6 = str.replace(f4s5, 'for target setting', 'for conditions')
-                    ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
-            elif 'Mark Price %' in f6:
-                with open('targets_spread.txt', 'r') as f4:
-                    f4l = f4.readlines()
-                    f4s1 = str(f4l[0])
-                    f4s2 = str(f4l[1])
-                    f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
-                    f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
-                    f4s5 = str(f4l[4])
-                    f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
-                                       'Set Option Strategy Cost as TRIGGER (optional)')
-                    f5 = str.replace(f4s4, 'BTC', '% of the Mark Price')
-                    f6 = str.replace(f4s5, 'for target setting', 'for conditions')
-                    ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
-            else:
-                text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
-                text_to_textedit_targets_saved_if_btc_1 = str.replace(
-                    text_to_textedit_targets_saved_if_btc,
-                    'Set the cost of the Options Structure as '
-                    'trigger (optional)',
-                    'Set Option Strategy Cost as TRIGGER (optional)')
-                text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
-                                                                      'buy or sell the structure',
-                                                                      'Buy or sell strategy')
-                text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
-                                                                      'Structure cost should be',
-                                                                      'Strategy cost should be')
-                ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        f6 = str(targets_setup['value_given_in'])
+
+        if 'BTC' in f6:
+            text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
+            text_to_textedit_targets_saved_if_btc_1 = str.replace(
+                text_to_textedit_targets_saved_if_btc,
+                'Set the cost of the Options Structure as '
+                'trigger (optional)',
+                'Set Option Strategy Cost as TRIGGER (optional)')
+            text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
+                                                                  'buy or sell the structure',
+                                                                  'Buy or sell strategy')
+            text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
+                                                                  'Structure cost should be',
+                                                                  'Strategy costshould be')
+            ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
+        elif 'USD' in f6:
+            with open('targets_spread.txt', 'r') as f4:
+                f4l = f4.readlines()
+                f4s1 = str(f4l[0])
+                f4s2 = str(f4l[1])
+                f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
+                f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
+                f4s5 = str(f4l[4])
+                f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
+                                   'Set Option Strategy Cost as TRIGGER (optional)')
+                f5 = str.replace(f4s4, 'BTC', 'USD')
+                f6 = str.replace(f4s5, 'for target setting', 'for conditions')
+                ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
+        elif 'Mark Price %' in f6:
+            with open('targets_spread.txt', 'r') as f4:
+                f4l = f4.readlines()
+                f4s1 = str(f4l[0])
+                f4s2 = str(f4l[1])
+                f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
+                f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
+                f4s5 = str(f4l[4])
+                f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
+                                   'Set Option Strategy Cost as TRIGGER (optional)')
+                f5 = str.replace(f4s4, 'BTC', '% of the Mark Price')
+                f6 = str.replace(f4s5, 'for target setting', 'for conditions')
+                ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
+        else:
+            text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
+            text_to_textedit_targets_saved_if_btc_1 = str.replace(
+                text_to_textedit_targets_saved_if_btc,
+                'Set the cost of the Options Structure as '
+                'trigger (optional)',
+                'Set Option Strategy Cost as TRIGGER (optional)')
+            text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
+                                                                  'buy or sell the structure',
+                                                                  'Buy or sell strategy')
+            text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
+                                                                  'Structure cost should be',
+                                                                  'Strategy cost should be')
+            ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
 
     def date_time_signal(info):
         text_date_time_start = info['text_date_time_start']
