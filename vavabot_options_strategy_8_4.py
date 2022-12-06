@@ -2069,6 +2069,7 @@ class Config:
         list_monitor_log.append('***** Setup.ini file created *****')
         Config().date_time_saved()
         Config().reduce_only_saved()
+        ConfigSaved().target_saved_check()
 
     @staticmethod
     def date_time_saved():
