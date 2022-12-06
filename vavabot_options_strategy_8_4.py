@@ -1979,26 +1979,31 @@ class Config:
                 setup = ConfigParser(
                     allow_no_value=True,
                     inline_comment_prefixes='#',
-                    strict=False
+                    strict=False,
+                    interpolation=None
                 )
                 setup.read('setup.ini')
                 credentials_setup = setup['credentials']
                 test_net_now = str(credentials_setup.getboolean('test_net'))
                 api_key_now = credentials_setup['api_key']
                 secret_key_now = credentials_setup['secret_key']
+                targets_setup = setup['targets']
+                value_given_in = targets_setup['value_given_in']
             else:
                 test_net_now = 'True'
                 api_key_now = '<Type your Deribit Key>'
                 secret_key_now = '<Type your Deribit Secret Key>'
+                value_given_in = 'BTC'
         except Exception as er:
             test_net_now = 'True'
             api_key_now = '<Type your Deribit Key>'
             secret_key_now = '<Type your Deribit Secret Key>'
+            value_given_in = 'BTC'
             list_monitor_log.append('***** Test Account Saved ***** ' + str(er))
         finally:
             pass
 
-        setup = ConfigParser()
+        setup = ConfigParser(interpolation=None)
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
@@ -2062,7 +2067,7 @@ class Config:
 
         setup['targets'] = {}
         targets = setup['targets']
-        targets['value_given_in'] = 'BTC'
+        targets['value_given_in'] = value_given_in
 
         with open('setup.ini', 'w') as setupfile:
             setup.write(setupfile)
