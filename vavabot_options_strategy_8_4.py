@@ -624,7 +624,6 @@ class CredentialsSaved:
 
     @staticmethod
     def api_secret_saved():
-        import os
         import base64
         from cryptography.fernet import Fernet, InvalidToken, InvalidSignature
         from cryptography.hazmat.primitives import hashes
@@ -634,39 +633,43 @@ class CredentialsSaved:
 
         password1 = str(password_dict['pwd'])
 
-        if os.path.isfile('api-key_spread.txt') is False:
-            with open('api-key_spread.txt', 'a') as api_key_save_file:
-                api_key_save_file.write(str('<Type your Deribit Key>'))
-            api_secret_saved_file_read = str('<Type your Deribit Key>')
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+        api_key_now = credentials_setup['api_key']
+
+        if '<Type your Deribit Key>' in str(api_key_now):
+            file_read = str('<Type your Deribit Key>')
         else:
-            with open('api-key_spread.txt', 'r') as file:
-                if '<Type your Deribit Key>' in str(file.read()):
-                    file_read = str('<Type your Deribit Key>')
-                else:
-                    file_read = 'True'
-            if file_read == 'True':
-                salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
-                kdf = PBKDF2HMAC(
-                    algorithm=hashes.SHA256(),
-                    length=32,
-                    salt=salt,
-                    iterations=390000,
-                )
+            file_read = 'True'
 
-                key = base64.urlsafe_b64encode(kdf.derive(str(password1).encode('utf-8')))
-                f = Fernet(key)
+        if file_read == 'True':
+            salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+            kdf = PBKDF2HMAC(
+                algorithm=hashes.SHA256(),
+                length=32,
+                salt=salt,
+                iterations=390000,
+            )
 
-                with open('api-key_spread.txt', 'rb') as enc_file:
-                    encrypted = enc_file.read()
-                try:
-                    decrypted = f.decrypt(encrypted).decode('utf-8')
-                    api_secret_saved_file_read = str(decrypted)
-                except InvalidToken or InvalidSignature:
-                    api_secret_saved_file_read = str('<Type your Deribit Key>')
-                finally:
-                    pass
-            else:
+            key = base64.urlsafe_b64encode(kdf.derive(str(password1).encode('utf-8')))
+            f = Fernet(key)
+
+            encrypted = api_key_now
+
+            try:
+                decrypted = f.decrypt(encrypted).decode('utf-8')
+                api_secret_saved_file_read = str(decrypted)
+            except InvalidToken or InvalidSignature:
                 api_secret_saved_file_read = str('<Type your Deribit Key>')
+            finally:
+                pass
+        else:
+            api_secret_saved_file_read = str('<Type your Deribit Key>')
 
         return api_secret_saved_file_read
 
@@ -682,39 +685,43 @@ class CredentialsSaved:
 
         password2 = str(password_dict['pwd'])
 
-        if os.path.isfile('secret-key_spread.txt') is False:
-            with open('secret-key_spread.txt', 'a') as secret_key_saved_file:
-                secret_key_saved_file.write(str('<Type your Deribit Secret Key>'))
-            secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+        secret_key_now = credentials_setup['secret_key']
+
+        if '<Type your Deribit Secret Key>' in str(secret_key_now):
+            file_read = str('<Type your Deribit Secret Key>')
         else:
-            with open('secret-key_spread.txt', 'r') as file:
-                if '<Type your Deribit Secret Key>' in str(file.read()):
-                    file_read = str('<Type your Deribit Secret Key>')
-                else:
-                    file_read = 'True'
-            if file_read == 'True':
-                salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
-                kdf = PBKDF2HMAC(
-                    algorithm=hashes.SHA256(),
-                    length=32,
-                    salt=salt,
-                    iterations=390000,
-                )
+            file_read = 'True'
 
-                key = base64.urlsafe_b64encode(kdf.derive(str(password2).encode('utf-8')))
-                f = Fernet(key)
+        if file_read == 'True':
+            salt = b'\x90"\x90J\r\xa6\x08\xb6_\xbdfEd\x1cDE'
+            kdf = PBKDF2HMAC(
+                algorithm=hashes.SHA256(),
+                length=32,
+                salt=salt,
+                iterations=390000,
+            )
 
-                with open('secret-key_spread.txt', 'rb') as enc_file:
-                    encrypted = enc_file.read()
-                try:
-                    decrypted = f.decrypt(encrypted).decode('utf-8')
-                    secret_key_saved_file_read = str(decrypted)
-                except InvalidToken or InvalidSignature:
-                    secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
-                finally:
-                    pass
-            else:
+            key = base64.urlsafe_b64encode(kdf.derive(str(password2).encode('utf-8')))
+            f = Fernet(key)
+
+            encrypted = secret_key_now
+
+            try:
+                decrypted = f.decrypt(encrypted).decode('utf-8')
+                secret_key_saved_file_read = str(decrypted)
+            except InvalidToken or InvalidSignature:
                 secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
+            finally:
+                pass
+        else:
+            secret_key_saved_file_read = str('<Type your Deribit Secret Key>')
 
         return secret_key_saved_file_read
 
@@ -1965,10 +1972,16 @@ class Config:
                 setup.read('setup.ini')
                 credentials_setup = setup['credentials']
                 test_net_now = str(credentials_setup.getboolean('test_net'))
+                api_key_now = credentials_setup['api_key']
+                secret_key_now = credentials_setup['secret_key']
             else:
                 test_net_now = 'True'
+                api_key_now = '<Type your Deribit Key>'
+                secret_key_now = '<Type your Deribit Secret Key>'
         except Exception as er:
             test_net_now = 'True'
+            api_key_now = '<Type your Deribit Key>'
+            secret_key_now = '<Type your Deribit Secret Key>'
             list_monitor_log.append('***** Test Account Saved ***** ' + str(er))
         finally:
             pass
@@ -1987,6 +2000,8 @@ class Config:
         setup['credentials'] = {}
         credentials_ = setup['credentials']
         credentials_['test_net'] = test_net_now
+        credentials_['api_key'] = api_key_now
+        credentials_['secret_key'] = secret_key_now
 
         setup['reduce_only'] = {}
         reduce_only = setup['reduce_only']
@@ -5785,8 +5800,17 @@ def credentials(ui):
         original = str(ui.lineEdit_api_key_new.text()).encode('utf-8')
         token = f.encrypt(original)
 
-        with open('api-key_spread.txt', 'wb') as encrypted_file:
-            encrypted_file.write(token)
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+        credentials_setup['api_key'] = token.decode('utf-8')
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
 
         secret_key_save()
         api_key_saved_print()
@@ -5814,8 +5838,17 @@ def credentials(ui):
         original = str(ui.lineEdit_api_secret_new.text()).encode('utf-8')
         token = f.encrypt(original)
 
-        with open('secret-key_spread.txt', 'wb') as encrypted_file:
-            encrypted_file.write(token)
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+        credentials_setup['secret_key'] = token.decode('utf-8')
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
 
         secret_key_saved_print()
 
@@ -5868,15 +5901,26 @@ def credentials(ui):
         time.sleep(0.5)
 
     def invalid_password_counter_bigger_three():
-        import os
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText('Credentials will be reset\nAnd APP will be close')
         msg.setWindowTitle('INFO')
         msg.exec_()
         pass
-        os.unlink('api-key_spread.txt')
-        os.unlink('secret-key_spread.txt')
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+
+        credentials_setup = setup['credentials']
+        credentials_setup['api_key'] = '<Type your Deribit Key>'
+        credentials_setup['secret_key'] = '<Type your Deribit Secret Key>'
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+
         time.sleep(1)
         sys.exit()
 
@@ -5890,21 +5934,18 @@ def credentials(ui):
 
     def message_box_password_input():
         from connection_spread import connection1
-        import os
         from lists import password_dict
         global password_dict
 
-        if os.path.isfile('secret-key_spread.txt') is True:
-            with open('secret-key_spread.txt', 'r') as file1:
-                sks = file1.read()
-        else:
-            sks = '<Type your Deribit Secret Key>'
-
-        if os.path.isfile('api-key_spread.txt') is True:
-            with open('api-key_spread.txt', 'r') as file2:
-                a_s_saved = file2.read()
-        else:
-            a_s_saved = '<Type your Deribit Key>'
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        credentials_setup = setup['credentials']
+        a_s_saved = credentials_setup['api_key']
+        sks = credentials_setup['secret_key']
 
         if '<Type your Deribit Key>' in str(a_s_saved) or '<Type your Deribit Secret Key>' in str(sks):
             connection1()
@@ -5957,10 +5998,8 @@ def credentials(ui):
                         key = base64.urlsafe_b64encode(kdf.derive(str(password_dict['pwd']).encode('utf-8')))
                         f = Fernet(key)
 
-                        with open('api-key_spread.txt', 'rb') as enc_file:
-                            encrypted1 = enc_file.read()
-                        with open('secret-key_spread.txt', 'rb') as enc_file:
-                            encrypted2 = enc_file.read()
+                        encrypted1 = a_s_saved
+                        encrypted2 = sks
 
                         if invalid_password_counter <= 3:
                             try:
