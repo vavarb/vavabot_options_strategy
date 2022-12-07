@@ -1600,11 +1600,42 @@ class ConfigSaved:
 
     @staticmethod
     def targets_saved():
-        file_open = 'targets_spread.txt'
-        with open(file_open, 'r') as f1:
-            f2 = str(f1.read())
-            f3 = str.replace(f2, 'for target setting', 'for conditions')
-            return f3
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+
+        targets_setup = setup['targets']
+        line_0 = str('Trade if exchange rate upper then: > ' + str(targets_setup['upper']) + ' USD')
+        line_1 = str('Trade if exchange rate lower then: < ' + str(targets_setup['lower']) + ' USD')
+        line_2 = str('Buy or sell strategy: ' + str(targets_setup['buy_or_sell_structure']))
+        if str(targets_setup['buy_or_sell_structure']) == 'buy':
+            line_3 = str(
+                'Structure cost should be higher/less: < ' + str(targets_setup['amount_value_given_in']) + ' ' +
+                str(targets_setup['value_given_in'])
+            )
+        else:
+            line_3 = str(
+                'Structure cost should be higher/less: >' + str(targets_setup['amount_value_given_in']) + ' ' +
+                str(targets_setup['value_given_in'])
+            )
+        line_4 = str('instrument name to consider for conditions: ' + str(targets_setup['instrument_targets']))
+        if str(targets_setup['trigger_kind']) == 'Set Option Strategy Cost as TRIGGER (optional)':
+            line_5 = 'Set Option Strategy Cost as TRIGGER (optional)'
+        else:
+            line_5 = str(str(targets_setup['trigger_kind']) + str(targets_setup['trigger_value']))
+
+        return str(
+            str(line_0) +
+            '\n' + str(line_1) +
+            '\n' + str(line_2) +
+            '\n' + str(line_3) +
+            '\n' + str(line_4) +
+            '\n' + str(line_5)
+        )
 
     @staticmethod
     def target_saved_check():
@@ -1629,38 +1660,63 @@ class ConfigSaved:
 
     @staticmethod
     def currency_exchange_rate_for_upper_and_lower():
-        with open('targets_spread.txt', 'r') as file:
-            lines_file = file.readlines()  # file instruments_spread.txt ==> lines
-            list_line_file = lines_file[4].split()  # line ==> list
-            return str(list_line_file[7])
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        return str(targets_setup['instrument_targets'])
 
     @staticmethod
     def exchange_rate_lower_then():
-        with open('targets_spread.txt', 'r') as file:
-            lines_file = file.readlines()  # file instruments_spread.txt ==> lines
-            list_line_file = lines_file[1].split()  # line ==> list
-            return float(list_line_file[7])
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        return float(str(targets_setup['lower']))
 
     @staticmethod
     def exchange_rate_upper_then():
-        with open('targets_spread.txt', 'r') as file:
-            lines_file = file.readlines()  # file instruments_spread.txt ==> lines
-            list_line_file = lines_file[0].split()  # line ==> list
-            return float(list_line_file[7])
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        return float(str(targets_setup['upper']))
 
     @staticmethod
     def buy_or_sell_structure():
-        with open('targets_spread.txt', 'r') as file:
-            lines_file = file.readlines()  # file instruments_spread.txt ==> lines
-            list_line_file = lines_file[2].split()  # line ==> list
-            return list_line_file[5]
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        return str(targets_setup['buy_or_sell_structure'])
 
     @staticmethod
     def target_cost_structure_in_btc():
-        with open('targets_spread.txt', 'r') as file:
-            lines_file = file.readlines()  # file instruments_spread.txt ==> lines
-            list_line_file = lines_file[3].split()  # line ==> list
-            return float(list_line_file[6])
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+        return float(str(targets_setup['amount_value_given_in']))
 
     @staticmethod
     def setup_ini_check():
@@ -1705,72 +1761,71 @@ class Config:
                 sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
             else:
-                with open('targets_spread.txt', 'w') as ft1:
-                    file_targets = ft1
-                    if buy_or_sell_structure1 == 'buy':
-                        spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
-                        mark_price_percentage_yes_or_no = ui.comboBox_value_given.currentText()
-                        mppyon = mark_price_percentage_yes_or_no
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False,
+                    interpolation=None
+                )
+                setup.read('setup.ini')
+                targets_setup = setup['targets']
 
-                        if spread_structure1_adjusted != ' ':
-                            if 'Mark Price %' in mppyon:
-                                pass
-                            elif 'USD' in mppyon or 'BTC' in mppyon:
-                                spread_structure1_adjusted = str(abs(float(spread_structure1_adjusted)) * -1)
-                            else:
-                                connect.logwriter("Code Error 1711")
-                                list_monitor_log.append("Code Error 1711")
-                        else:
+                if buy_or_sell_structure1 == 'buy':
+                    spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
+                    mark_price_percentage_yes_or_no = ui.comboBox_value_given.currentText()
+                    mppyon = mark_price_percentage_yes_or_no
+
+                    if spread_structure1_adjusted != ' ':
+                        if 'Mark Price %' in mppyon:
                             pass
-
-                        spread_structure1_higher_or_less1 = '<'
-                        file_targets.write(
-                            'Trade if exchange rate upper then: ' + '> ' + currency_exchange_rate_upper1 + ' USD' +
-                            '\n' +
-                            'Trade if exchange rate lower then: ' + '< ' + currency_exchange_rate_lower1 + ' USD' +
-                            '\n' +
-                            'buy or sell the structure: ' + buy_or_sell_structure1 + '\n' +
-                            'Structure cost should be higher/less: ' + spread_structure1_higher_or_less1 + ' ' +
-                            spread_structure1_adjusted + ' BTC' + '\n' +
-                            'instrument name to consider for target setting: ' +
-                            currency_exchange_rate_for_upper_and_lower1.upper()
-                        )
-                        pass
-
-                    elif buy_or_sell_structure1 == 'sell':
-                        spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
-                        spread_structure1_higher_or_less1 = '>'
-                        file_targets.write(
-                            'Trade if exchange rate upper then: ' + '> ' + currency_exchange_rate_upper1 + ' USD' +
-                            '\n' +
-                            'Trade if exchange rate lower then: ' + '< ' + currency_exchange_rate_lower1 + ' USD' +
-                            '\n' +
-                            'buy or sell the structure: ' + buy_or_sell_structure1 + '\n' +
-                            'Structure cost should be higher/less: ' + spread_structure1_higher_or_less1 + ' ' +
-                            spread_structure1_adjusted + ' BTC' + '\n' +
-                            'instrument name to consider for target setting: ' +
-                            currency_exchange_rate_for_upper_and_lower1.upper()
-                        )
-                        pass
-
+                        elif 'USD' in mppyon or 'BTC' in mppyon:
+                            spread_structure1_adjusted = str(abs(float(spread_structure1_adjusted)) * -1)
+                        else:
+                            connect.logwriter("Code Error 1711")
+                            list_monitor_log.append("Code Error 1711")
                     else:
-                        instruments_save_info_msg = {
-                            'title': '***** ERROR *****',
-                            'msg_text': 'Set Strategy BUY or SELL'
-                        }
-                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
 
-                    if str(ui.comboBox_value_given_2.currentText()) != \
-                            'Set Option Strategy Cost as TRIGGER (optional)':
-                        lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
-                        lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
-                        file_targets.write('\n' + str(ui.comboBox_value_given_2.currentText()) +
-                                           str(lcerl1_2_adjusted_dot))
-                        pass
-                    else:
-                        file_targets.write('\n' + str('Set the cost of the Options Structure as trigger (optional)'))
-                        pass
+                    targets_setup['buy_or_sell_structure'] = str(buy_or_sell_structure1)
+                    targets_setup['upper'] = str(currency_exchange_rate_upper1)
+                    targets_setup['lower'] = str(currency_exchange_rate_lower1)
+                    targets_setup['amount_value_given_in'] = str(spread_structure1_adjusted)
+                    targets_setup['instrument_targets'] = str(
+                        currency_exchange_rate_for_upper_and_lower1.upper())
+
+                elif buy_or_sell_structure1 == 'sell':
+                    spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
+
+                    targets_setup['buy_or_sell_structure'] = str(buy_or_sell_structure1)
+                    targets_setup['upper'] = str(currency_exchange_rate_upper1)
+                    targets_setup['lower'] = str(currency_exchange_rate_lower1)
+                    targets_setup['amount_value_given_in'] = str(spread_structure1_adjusted)
+                    targets_setup['instrument_targets'] = str(
+                        currency_exchange_rate_for_upper_and_lower1.upper())
+
+                else:
+                    instruments_save_info_msg = {
+                        'title': '***** ERROR *****',
+                        'msg_text': 'Set Strategy BUY or SELL'
+                    }
+                    sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
+                    pass
+
+                if str(ui.comboBox_value_given_2.currentText()) != 'Set Option Strategy Cost as TRIGGER (optional)':
+                    lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
+                    lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
+
+                    targets_setup['trigger_kind'] = str(ui.comboBox_value_given_2.currentText())
+                    targets_setup['trigger_value'] = str(lcerl1_2_adjusted_dot)
+
+                else:
+                    targets_setup['trigger_kind'] = 'Set Option Strategy Cost as TRIGGER (optional)'
+                    targets_setup['trigger_value'] = ''
+
+                targets_setup['value_given_in'] = ui.comboBox_value_given.currentText()
+
+                with open('setup.ini', 'w') as setupfile:
+                    setup.write(setupfile)
 
                 setup = ConfigParser(
                     allow_no_value=True,
@@ -1779,14 +1834,31 @@ class Config:
                     interpolation=None
                 )
                 setup.read('setup.ini')
-
                 targets_setup = setup['targets']
-                targets_setup['value_given_in'] = ui.comboBox_value_given.currentText()
 
-                with open('setup.ini', 'w') as setupfile:
-                    setup.write(setupfile)
                 list_monitor_log.append(
-                    '***** Value given in saved: ' + str(ui.comboBox_value_given.currentText()) + ' *****'
+                    '***** Currency to targets saved: ' + str(targets_setup['instrument_targets']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Upper saved: ' + str(targets_setup['upper']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Lower saved: ' + str(targets_setup['lower']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Buy or sell strategy saved: ' + str(targets_setup['buy_or_sell_structure']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Value given in saved: ' + str(targets_setup['value_given_in']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Value given in amount saved: ' + str(targets_setup['amount_value_given_in']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Trigger kind saved: ' + str(targets_setup['trigger_kind']) + ' *****'
+                )
+                list_monitor_log.append(
+                    '***** Trigger value saved: ' + str(targets_setup['trigger_value']) + ' *****'
                 )
 
         except Exception as er:
@@ -1989,16 +2061,37 @@ class Config:
                 secret_key_now = credentials_setup['secret_key']
                 targets_setup = setup['targets']
                 value_given_in = targets_setup['value_given_in']
+                upper = str(targets_setup['upper'])
+                lower = str(targets_setup['lower'])
+                buy_or_sell_structure = str(targets_setup['buy_or_sell_structure'])
+                amount_value_given_in = str(targets_setup['amount_value_given_in'])
+                instrument_targets = str(targets_setup['instrument_targets'])
+                trigger_kind = str(targets_setup['trigger_kind'])
+                trigger_value = str(targets_setup['trigger_value'])
             else:
                 test_net_now = 'True'
                 api_key_now = '<Type your Deribit Key>'
                 secret_key_now = '<Type your Deribit Secret Key>'
                 value_given_in = 'BTC'
+                upper = '1'
+                lower = '2'
+                buy_or_sell_structure = 'sell'
+                amount_value_given_in = '10'
+                instrument_targets = 'BTC-PERPETUAL'
+                trigger_kind = 'Set Option Strategy Cost as TRIGGER (optional)'
+                trigger_value = ''
         except Exception as er:
             test_net_now = 'True'
             api_key_now = '<Type your Deribit Key>'
             secret_key_now = '<Type your Deribit Secret Key>'
             value_given_in = 'BTC'
+            upper = '1'
+            lower = '2'
+            buy_or_sell_structure = 'sell'
+            amount_value_given_in = '10'
+            instrument_targets = 'BTC-PERPETUAL'
+            trigger_kind = 'Set Option Strategy Cost as TRIGGER (optional)'
+            trigger_value = ''
             list_monitor_log.append('***** Test Account Saved ***** ' + str(er))
         finally:
             pass
@@ -2068,6 +2161,13 @@ class Config:
         setup['targets'] = {}
         targets = setup['targets']
         targets['value_given_in'] = value_given_in
+        targets['upper'] = upper
+        targets['lower'] = lower
+        targets['buy_or_sell_structure'] = buy_or_sell_structure
+        targets['amount_value_given_in'] = amount_value_given_in
+        targets['instrument_targets'] = instrument_targets
+        targets['trigger_kind'] = trigger_kind
+        targets['trigger_value'] = trigger_value
 
         with open('setup.ini', 'w') as setupfile:
             setup.write(setupfile)
@@ -2706,9 +2806,16 @@ class ConditionsCheck:
         from lists import list_monitor_log
         from connection_spread import connect
 
-        with open('targets_spread.txt', 'r') as file_structure_market_cost_trigger:
-            lines_file_structure_market_cost_trigger = file_structure_market_cost_trigger.readlines()
-            list_lines_file_structure_market_cost_trigger = lines_file_structure_market_cost_trigger[5].split()
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        targets_setup = setup['targets']
+
+        lines_file_structure_market_cost_trigger = str(targets_setup['trigger_kind'])
 
         if 'Set' in str(lines_file_structure_market_cost_trigger):
             list_monitor_log.append('*** STRATEGY COST TRIGGER NO SET (optional) ***')
@@ -2717,7 +2824,7 @@ class ConditionsCheck:
         elif 'in BTC >' in str(lines_file_structure_market_cost_trigger):
             # arg fixed
             value_in_btc_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN BTC > ' +
                                     str(value_in_btc_list_lines_file_structure_market_cost_trigger) + ' ***')
             if Quote().structure_option_market_cost() > value_in_btc_list_lines_file_structure_market_cost_trigger:
@@ -2727,9 +2834,9 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in BTC < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in BTC <' in str(lines_file_structure_market_cost_trigger):
             value_in_btc_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN BTC < ' +
                                     str(value_in_btc_list_lines_file_structure_market_cost_trigger) + ' ***')
 
@@ -2740,9 +2847,9 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Mark Price % > ' in str(lines_file_structure_market_cost_trigger):  # aqui tem ERRO
+        elif 'in Mark Price % >' in str(lines_file_structure_market_cost_trigger):  # penso que aqui tinha ERRO
             value_in_mark_price_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[5])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN Mark Price % > *** \n')
             list_monitor_log.append('*** Mark Price selected: Strategy MARKET Price will be >' +
                                     str(value_in_mark_price_list_lines_file_structure_market_cost_trigger) +
@@ -2771,13 +2878,13 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
             else:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1855 *****'))
-                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 1856 *****')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2885 *****'))
+                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 2885 *****')
                 return False
 
-        elif 'in Mark Price % < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Mark Price % <' in str(lines_file_structure_market_cost_trigger):
             value_in_mark_price_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[5])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN Mark Price % < *** \n')
             list_monitor_log.append('*** Mark Price selected: Strategy MARKET Price will be <' +
                                     str(value_in_mark_price_list_lines_file_structure_market_cost_trigger) +
@@ -2806,15 +2913,15 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
             else:
-                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 1890 *****'))
-                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 1891 *****')
+                connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2920 *****'))
+                list_monitor_log.append('***** ERROR in structure_market_cost_trigger() Error Code:: 2920 *****')
                 return False
 
-        elif 'in USD > ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in USD >' in str(lines_file_structure_market_cost_trigger):
             # args fixes
             instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
             value_in_usd_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN USD > ' +
                                     str(value_in_usd_list_lines_file_structure_market_cost_trigger) + ' ***')
 
@@ -2831,11 +2938,11 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in USD < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in USD <' in str(lines_file_structure_market_cost_trigger):
             # args fixes
             instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
             value_in_usd_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER IN USD < ' +
                                     str(value_in_usd_list_lines_file_structure_market_cost_trigger) + ' ***')
 
@@ -2852,10 +2959,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Vega > ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Vega >' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_vega = float(Quote().structure_mark_greek_cost()['vega'])
             value_in_vega_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN VEGA > ' +
                                     str(value_in_vega_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_vega > value_in_vega_list_lines_file_structure_market_cost_trigger:
@@ -2865,10 +2972,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Vega < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Vega <' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_vega = float(Quote().structure_mark_greek_cost()['vega'])
             value_in_vega_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN VEGA < ' +
                                     str(value_in_vega_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_vega < value_in_vega_list_lines_file_structure_market_cost_trigger:
@@ -2878,10 +2985,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Delta > ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Delta >' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_delta = float(Quote().structure_mark_greek_cost()['delta'])
             value_in_delta_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN DELTA > ' +
                                     str(value_in_delta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_delta > value_in_delta_list_lines_file_structure_market_cost_trigger:
@@ -2891,10 +2998,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Delta < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Delta <' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_delta = float(Quote().structure_mark_greek_cost()['delta'])
             value_in_delta_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN DELTA < ' +
                                     str(value_in_delta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_delta < value_in_delta_list_lines_file_structure_market_cost_trigger:
@@ -2904,10 +3011,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Theta > ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Theta >' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_theta = float(Quote().structure_mark_greek_cost()['theta'])
             value_in_theta_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN THETA > ' +
                                     str(value_in_theta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_theta > value_in_theta_list_lines_file_structure_market_cost_trigger:
@@ -2917,10 +3024,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Theta < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Theta <' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_theta = float(Quote().structure_mark_greek_cost()['theta'])
             value_in_theta_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN THETA < ' +
                                     str(value_in_theta_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_theta < value_in_theta_list_lines_file_structure_market_cost_trigger:
@@ -2930,10 +3037,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Gamma > ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Gamma >' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_gamma = float(Quote().structure_mark_greek_cost()['gamma'])
             value_in_gamma_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN GAMMA > ' +
                                     str(value_in_gamma_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_gamma > value_in_gamma_list_lines_file_structure_market_cost_trigger:
@@ -2943,10 +3050,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Gamma < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Gamma <' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_gamma = float(Quote().structure_mark_greek_cost()['gamma'])
             value_in_gamma_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN GAMMA < ' +
                                     str(value_in_gamma_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_gamma < value_in_gamma_list_lines_file_structure_market_cost_trigger:
@@ -2956,10 +3063,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Rho > ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Rho >' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_rho = float(Quote().structure_mark_greek_cost()['rho'])
             value_in_rho_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN RHO > ' +
                                     str(value_in_rho_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_rho > value_in_rho_list_lines_file_structure_market_cost_trigger:
@@ -2969,10 +3076,10 @@ class ConditionsCheck:
                 list_monitor_log.append('*** WAITING STRATEGY COST TRIGGER ***')
                 return False
 
-        elif 'in Rho < ' in str(lines_file_structure_market_cost_trigger):
+        elif 'in Rho <' in str(lines_file_structure_market_cost_trigger):
             structure_option_market_cost_rho = float(Quote().structure_mark_greek_cost()['rho'])
             value_in_rho_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
             list_monitor_log.append('*** STRATEGY COST TRIGGER SELECTED IN RHO < ' +
                                     str(value_in_rho_list_lines_file_structure_market_cost_trigger) + ' ***')
             if structure_option_market_cost_rho < value_in_rho_list_lines_file_structure_market_cost_trigger:
@@ -2984,7 +3091,7 @@ class ConditionsCheck:
 
         elif 'in Vol >' in str(lines_file_structure_market_cost_trigger):
             value_in_btc_vol_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
 
             currency_exchange_rate_for_upper_and_lower_for_btc_vol = str(
                 ConfigSaved().currency_exchange_rate_for_upper_and_lower())
@@ -3031,7 +3138,7 @@ class ConditionsCheck:
 
         elif 'in Vol <' in str(lines_file_structure_market_cost_trigger):
             value_in_btc_vol_list_lines_file_structure_market_cost_trigger = float(
-                list_lines_file_structure_market_cost_trigger[3])
+                str(targets_setup['trigger_value']))
 
             currency_exchange_rate_for_upper_and_lower_for_btc_vol = str(
                 ConfigSaved().currency_exchange_rate_for_upper_and_lower())
@@ -3076,9 +3183,9 @@ class ConditionsCheck:
                 return False
 
         else:
-            connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 2162 *****'))
+            connect.logwriter(str('***** ERROR in structure_market_cost_trigger() Error Code:: 3190 *****'))
             list_monitor_log.append(
-                '*** ERROR IN STRATEGY COST TRIGGER - Error Code:: 2164 ***')
+                '*** ERROR IN STRATEGY COST TRIGGER - Error Code:: 3190 ***')
             return False
 
     def position_option_smaller_max_position_instrument(self, instrument_number=None):
@@ -3253,10 +3360,7 @@ class ConditionsCheck:
         try:
             from connection_spread import connect
             if 'BTC' not in read_file_vgi:
-                with open('targets_spread.txt', 'r') as ft:
-                    lines_ft = ft.readlines()  # file targets_spread.txt ==> lines
-                    list_line_target_cost_structure_in = lines_ft[3].split()
-                    target_cost_structure_in = float(list_line_target_cost_structure_in[6])
+                target_cost_structure_in = float(str(targets_setup['amount_value_given_in']))
 
                 if 'Mark' in read_file_vgi:
                     list_monitor_log.append('*** STRATEGY COST SETTED:  MARK PRICE % ***')
@@ -3402,10 +3506,7 @@ class ConditionsCheck:
                     list_monitor_log.append('********* ERRORR - value_give_in_achieved Error Code:: 2481 ***********')
 
             elif 'BTC' in read_file_vgi:
-                with open('targets_spread.txt', 'r') as ft:
-                    lines_ft = ft.readlines()  # file targets_spread.txt ==> lines
-                    list_line_target_cost_structure_in = lines_ft[3].split()
-                    target_cost_structure_in = float(list_line_target_cost_structure_in[6])
+                target_cost_structure_in = float(str(targets_setup['amount_value_given_in']))
 
                 list_monitor_log.append('*** STRATEGY COST SETTED:  BTC ***')
                 buy_or_sell_structure = ConfigSaved().buy_or_sell_structure()
@@ -3454,7 +3555,7 @@ class ConditionsCheck:
                 list_monitor_log.append('********** ERROR in def value_give_in_achieved Error Code:: 2535 **********')
                 return False
         except Exception as er:
-            list_monitor_log.append('target_cost_structure_in_btc Error Code:: 2539' + str(er))
+            list_monitor_log.append('target_cost_structure_in_btc Error Code:: 3558' + str(er))
             return False
         finally:
             pass
@@ -8627,70 +8728,7 @@ def config(ui):
                 pass
 
     def target_saved_check_signal_receive():
-        setup = ConfigParser(
-            allow_no_value=True,
-            inline_comment_prefixes='#',
-            strict=False,
-            interpolation=None
-        )
-        setup.read('setup.ini')
-        targets_setup = setup['targets']
-        f6 = str(targets_setup['value_given_in'])
-
-        if 'BTC' in f6:
-            text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
-            text_to_textedit_targets_saved_if_btc_1 = str.replace(
-                text_to_textedit_targets_saved_if_btc,
-                'Set the cost of the Options Structure as '
-                'trigger (optional)',
-                'Set Option Strategy Cost as TRIGGER (optional)')
-            text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
-                                                                  'buy or sell the structure',
-                                                                  'Buy or sell strategy')
-            text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
-                                                                  'Structure cost should be',
-                                                                  'Strategy costshould be')
-            ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
-        elif 'USD' in f6:
-            with open('targets_spread.txt', 'r') as f4:
-                f4l = f4.readlines()
-                f4s1 = str(f4l[0])
-                f4s2 = str(f4l[1])
-                f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
-                f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
-                f4s5 = str(f4l[4])
-                f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
-                                   'Set Option Strategy Cost as TRIGGER (optional)')
-                f5 = str.replace(f4s4, 'BTC', 'USD')
-                f6 = str.replace(f4s5, 'for target setting', 'for conditions')
-                ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
-        elif 'Mark Price %' in f6:
-            with open('targets_spread.txt', 'r') as f4:
-                f4l = f4.readlines()
-                f4s1 = str(f4l[0])
-                f4s2 = str(f4l[1])
-                f4s3 = str.replace(str(f4l[2]), 'buy or sell the structure', 'Buy or sell strategy')
-                f4s4 = str.replace(str(f4l[3]), 'Structure cost should be', 'Strategy cost should be')
-                f4s5 = str(f4l[4])
-                f4s6 = str.replace(f4l[5], 'Set the cost of the Options Structure as trigger (optional)',
-                                   'Set Option Strategy Cost as TRIGGER (optional)')
-                f5 = str.replace(f4s4, 'BTC', '% of the Mark Price')
-                f6 = str.replace(f4s5, 'for target setting', 'for conditions')
-                ui.textEdit_targets_saved.setText(f4s1 + f4s2 + f4s3 + f5 + f6 + f4s6)
-        else:
-            text_to_textedit_targets_saved_if_btc = ConfigSaved().targets_saved()
-            text_to_textedit_targets_saved_if_btc_1 = str.replace(
-                text_to_textedit_targets_saved_if_btc,
-                'Set the cost of the Options Structure as '
-                'trigger (optional)',
-                'Set Option Strategy Cost as TRIGGER (optional)')
-            text_to_textedit_targets_saved_if_btc_2 = str.replace(text_to_textedit_targets_saved_if_btc_1,
-                                                                  'buy or sell the structure',
-                                                                  'Buy or sell strategy')
-            text_to_textedit_targets_saved_if_btc_3 = str.replace(text_to_textedit_targets_saved_if_btc_2,
-                                                                  'Structure cost should be',
-                                                                  'Strategy cost should be')
-            ui.textEdit_targets_saved.setText(text_to_textedit_targets_saved_if_btc_3)
+        ui.textEdit_targets_saved.setText(ConfigSaved().targets_saved())
 
     def date_time_signal(info):
         text_date_time_start = info['text_date_time_start']
