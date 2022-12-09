@@ -2121,6 +2121,11 @@ class Config:
         reduce_only['instrument4'] = 'False'
         reduce_only['infinite_loop'] = 'False'
 
+        setup['mark_price'] = {}
+        mark_price = setup['mark_price']
+        mark_price['mark_price_orders'] = 'False'
+        mark_price['value_mark_price_orders'] = '0'
+
         setup['amount'] = {}
         amount = setup['amount']
         amount['instrument1_amount'] = 'Unassigned'
@@ -3566,8 +3571,25 @@ class ConditionsCheck:
         # a3 = round(number - number % 0.1, 1)  # Creio que seria somente round.
         return round(number, 1)
 
+    def number_multiple_0_0_0_0_5_and_round_4_digits(self, number=None):
+        self.number = number
+
+        n1 = number % 0.0005
+        if n1 >= 0.000299999:
+            n2 = number + (0.0005 - n1)
+            n3 = round(n2 - n2 % 0.0005, 4)
+        else:
+            n3 = round(number - n1, 4)
+
+        if n3 == 0:
+            n3 = 0.0005
+        else:
+            pass
+
+        return n3
+
     @staticmethod
-    def send_options_orders_like_first_time():
+    def send_options_orders_like_first_time_without_mark_price():
         from lists import list_monitor_log
         try:
             from connection_spread import connect
@@ -4038,13 +4060,562 @@ class ConditionsCheck:
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent3))
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent4))
 
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent1))
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent2))
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent3))
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent4))
+
             time.sleep(10)
             connect.cancel_all()
 
         except Exception as er:
-            list_monitor_log.append('ERROR in send_options_orders_like_first_time(). Error Code 3885 ' + str(er))
+            list_monitor_log.append('ERROR in send_options_orders_like_first_time(). Error Code 4055 ' + str(er))
         finally:
             pass
+
+    @staticmethod
+    def send_options_orders_like_first_time_with_mark_price():
+        from lists import list_monitor_log
+        try:
+            from connection_spread import connect
+            # ABAIXO PRIMEIRAS ORDENS ENVIADAS SE ACIMA NÃO HOUVER AJUSTES
+            # Args fixes
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False,
+                interpolation=None
+            )
+            setup.read('setup.ini')
+            mark_price_setup = setup['mark_price']
+            value_mark_price_orders = float(str(mark_price_setup['value_mark_price_orders']))
+
+            instrument1_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=1)
+            instrument2_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=2)
+            instrument3_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=3)
+            instrument4_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=4)
+
+            instrument1_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+            instrument2_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+            instrument3_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+            instrument4_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
+
+            instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
+            instrument2_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
+            instrument3_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=3)
+            instrument4_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=4)
+
+            instrument1_max_position_return = Config().max_position_from_position_saved_and_instrument_amount(
+                instrument_number=1)
+            if type(instrument1_max_position_return) is float or type(instrument1_max_position_return) is int:
+                instrument1_max_position = float(instrument1_max_position_return)
+            else:
+                instrument1_max_position = 0
+            instrument2_max_position_return = Config().max_position_from_position_saved_and_instrument_amount(
+                instrument_number=2)
+            if type(instrument2_max_position_return) is float or type(instrument2_max_position_return) is int:
+                instrument2_max_position = float(instrument2_max_position_return)
+            else:
+                instrument2_max_position = 0
+            instrument3_max_position_return = Config().max_position_from_position_saved_and_instrument_amount(
+                instrument_number=3)
+            if type(instrument3_max_position_return) is float or type(instrument3_max_position_return) is int:
+                instrument3_max_position = float(instrument3_max_position_return)
+            else:
+                instrument3_max_position = 0
+            instrument4_max_position_return = Config().max_position_from_position_saved_and_instrument_amount(
+                instrument_number=4)
+            if type(instrument4_max_position_return) is float or type(instrument4_max_position_return) is int:
+                instrument4_max_position = float(instrument4_max_position_return)
+            else:
+                instrument4_max_position = 0
+
+            instrument1_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                instrument_number=1)
+            instrument2_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                instrument_number=2)
+            instrument3_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                instrument_number=3)
+            instrument4_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                instrument_number=4)
+
+            # Args modify
+            position_option_smaller_max_position_instrument1 = \
+                ConditionsCheck().position_option_smaller_max_position_instrument(instrument_number=1)
+            position_option_smaller_max_position_instrument2 = \
+                ConditionsCheck().position_option_smaller_max_position_instrument(instrument_number=2)
+            position_option_smaller_max_position_instrument3 = \
+                ConditionsCheck().position_option_smaller_max_position_instrument(instrument_number=3)
+            position_option_smaller_max_position_instrument4 = \
+                ConditionsCheck().position_option_smaller_max_position_instrument(instrument_number=4)
+
+            instrument1_position = 0
+            instrument2_position = 0
+            instrument3_position = 0
+            instrument4_position = 0
+            if instrument1_amount != 'Unassigned' and instrument1_kind == 'option':
+                instrument1_position = float(connect.get_position_size(instrument_name=instrument1_name))
+            if instrument2_amount != 'Unassigned' and instrument2_kind == 'option':
+                instrument2_position = float(connect.get_position_size(instrument_name=instrument2_name))
+            if instrument3_amount != 'Unassigned' and instrument3_kind == 'option':
+                instrument3_position = float(connect.get_position_size(instrument_name=instrument3_name))
+            if instrument4_amount != 'Unassigned' and instrument4_kind == 'option':
+                instrument4_position = float(connect.get_position_size(instrument_name=instrument4_name))
+
+            # old def smaller_bid_ask_amount_book
+            smaller_bid_ask_amount_book_dict = dict()
+            smaller_bid_ask_amount_book_dict.clear()
+
+            xx1 = float  # o que falta negociar
+            xx2 = float
+            xx3 = float
+            xx4 = float
+
+            yy1 = float
+            yy2 = float
+            yy3 = float
+            yy4 = float
+
+            if instrument1_direction == 'buy' and instrument1_kind == 'option':
+                instrument_position = float(instrument1_position)
+                y1 = connect.best_ask_amount(instrument_name=instrument1_name)
+                yy1 = connect.mark_price(instrument_name=instrument1_name)
+
+                x1 = float(instrument1_max_position)
+                xx1a = float(x1) - float(instrument_position)
+                xx1 = round(xx1a, 1)
+                if xx1a == 0:
+                    smaller_bid_ask_amount_book_dict[1] = 1
+                else:
+                    yy = float(y1) / xx1a
+                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+            elif instrument1_direction == 'sell' and instrument1_kind == 'option':
+                instrument_position = float(instrument1_position)
+                y1 = connect.best_bid_amount(instrument_name=instrument1_name)
+                yy1 = connect.mark_price(instrument_name=instrument1_name)
+
+                x1 = float(instrument1_max_position)
+                xx1a = float(x1) - float(instrument_position)  # É o que falta negociar
+                xx1 = round(xx1a, 1)
+                if xx1a == 0:
+                    smaller_bid_ask_amount_book_dict[1] = 1
+                else:
+                    yy = float(y1) / xx1a
+                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+            else:
+                pass
+
+            if instrument2_direction == 'buy' and instrument2_kind == 'option':
+                instrument_position = float(instrument2_position)
+                y2 = connect.best_ask_amount(instrument_name=instrument2_name)
+                yy2 = connect.mark_price(instrument_name=instrument2_name)
+
+                x2 = float(instrument2_max_position)
+                xx2a = float(x2) - float(instrument_position)
+                xx2 = round(xx2a, 1)
+                if xx2a == 0:
+                    smaller_bid_ask_amount_book_dict[2] = 1
+                else:
+                    yy = float(y2) / xx2a
+                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+            elif instrument2_direction == 'sell' and instrument2_kind == 'option':
+                instrument_position = float(instrument2_position)
+                y2 = connect.best_bid_amount(instrument_name=instrument2_name)
+                yy2 = connect.mark_price(instrument_name=instrument2_name)
+
+                x2 = float(instrument2_max_position)
+                xx2a = float(x2) - float(instrument_position)
+                xx2 = round(xx2a, 1)
+                if xx2a == 0:
+                    smaller_bid_ask_amount_book_dict[2] = 1
+                else:
+                    yy = float(y2) / xx2a
+                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+            else:
+                pass
+
+            if instrument3_direction == 'buy' and instrument3_kind == 'option':
+                instrument_position = float(instrument3_position)
+                y3 = connect.best_ask_amount(instrument_name=instrument3_name)
+                yy3 = connect.mark_price(instrument_name=instrument3_name)
+
+                x3 = float(instrument3_max_position)
+                xx3a = float(x3) - float(instrument_position)
+                xx3 = round(xx3a, 1)
+                if xx3a == 0:
+                    smaller_bid_ask_amount_book_dict[3] = 1
+                else:
+                    yy = float(y3) / xx3a
+                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+            elif instrument3_direction == 'sell' and instrument3_kind == 'option':
+                instrument_position = float(instrument3_position)
+                y3 = connect.best_bid_amount(instrument_name=instrument3_name)
+                yy3 = connect.mark_price(instrument_name=instrument3_name)
+
+                x3 = float(instrument3_max_position)
+                xx3a = float(x3) - float(instrument_position)
+                xx3 = round(xx3a, 1)
+                if xx3a == 0:
+                    smaller_bid_ask_amount_book_dict[3] = 1
+                else:
+                    yy = float(y3) / xx3a
+                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+            else:
+                pass
+
+            if instrument4_direction == 'buy' and instrument4_kind == 'option':
+                instrument_position = float(instrument4_position)
+                y4 = connect.best_ask_amount(instrument_name=instrument4_name)
+                yy4 = connect.mark_price(instrument_name=instrument4_name)
+
+                x4 = float(instrument4_max_position)
+                xx4a = float(x4) - float(instrument_position)
+                xx4 = round(xx4a, 1)
+                if xx4a == 0:
+                    smaller_bid_ask_amount_book_dict[4] = 1
+                else:
+                    yy = float(y4) / xx4a
+                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+            elif instrument4_direction == 'sell' and instrument4_kind == 'option':
+                instrument_position = float(instrument4_position)
+                y4 = connect.best_bid_amount(instrument_name=instrument4_name)
+                yy4 = connect.mark_price(instrument_name=instrument4_name)
+
+                x4 = float(instrument4_max_position)
+                xx4a = float(x4) - float(instrument_position)
+                xx4 = round(xx4a, 1)
+                if xx4a == 0:
+                    smaller_bid_ask_amount_book_dict[4] = 1
+                else:
+                    yy = float(y4) / xx4a
+                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+            else:
+                pass
+
+            if len(smaller_bid_ask_amount_book_dict) > 0:
+                smaller_bid_ask_amount_book_instrument_number = min(
+                    smaller_bid_ask_amount_book_dict, key=smaller_bid_ask_amount_book_dict.get)  # instrument number
+                smaller_bid_ask_amount_book_ratio = abs(smaller_bid_ask_amount_book_dict.get(
+                    smaller_bid_ask_amount_book_instrument_number, 0))  # Valor
+            else:
+                smaller_bid_ask_amount_book_ratio = 0  # valor
+
+            # ********************************************************************************
+            # Send Orders:
+            # Para criar a variável para depois informar no list_monitor_log_append após informar 'ORDERS SENT'
+            list_monitor_log_append_for_msg_after_orders_sent1 = 'Instrument 1: NO ORDER SENT'
+            list_monitor_log_append_for_msg_after_orders_sent2 = 'Instrument 2: NO ORDER SENT'
+            list_monitor_log_append_for_msg_after_orders_sent3 = 'Instrument 3: NO ORDER SENT'
+            list_monitor_log_append_for_msg_after_orders_sent4 = 'Instrument 4: NO ORDER SENT'
+
+            # instrument1:
+            if instrument1_amount != 'Unassigned' and instrument1_kind == 'option' and \
+                    position_option_smaller_max_position_instrument1 == 'instrument_run_trade_ok':
+
+                instrument1_price = yy1  # mark price
+                # xx1 é o que falta comprar
+                if 0 < smaller_bid_ask_amount_book_ratio < 1:
+                    b = xx1 * smaller_bid_ask_amount_book_ratio
+                    order_amount_instrument1 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
+                        number=b)
+                    if instrument1_direction == 'buy':
+                        if float(instrument1_position) + abs(float(order_amount_instrument1)) > float(
+                                instrument1_max_position):
+                            order_amount_instrument1 = abs(float(xx1))
+                        else:
+                            pass
+                        instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument1_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
+                                          price=instrument1_price)
+                        list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
+                                                                                  ': ' + str(instrument1_direction) +
+                                                                                  ' ' + str(order_amount_instrument1) +
+                                                                                  ' at ' + str(instrument1_price)))
+                    elif instrument1_direction == 'sell':
+                        if float(instrument1_position) - abs(float(order_amount_instrument1)) < float(
+                                instrument1_max_position):
+                            order_amount_instrument1 = abs(float(xx1))
+                        else:
+                            pass
+                        instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument1_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
+                                           price=instrument1_price)
+                        list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
+                                                                                  ': ' + str(instrument1_direction) +
+                                                                                  ' ' + str(order_amount_instrument1) +
+                                                                                  ' at ' + str(instrument1_price)))
+                    else:
+                        pass
+                elif smaller_bid_ask_amount_book_ratio >= 1:
+                    a = abs(xx1)
+                    order_amount_instrument1 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
+                    if instrument1_direction == 'buy':
+                        instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument1_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
+                                          price=instrument1_price)
+                        list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
+                                                                                  ': ' + str(instrument1_direction) +
+                                                                                  ' ' + str(order_amount_instrument1) +
+                                                                                  ' at ' + str(instrument1_price)))
+                    elif instrument1_direction == 'sell':
+                        instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument1_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
+                                           price=instrument1_price)
+                        list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
+                                                                                  ': ' + str(instrument1_direction) +
+                                                                                  ' ' + str(order_amount_instrument1) +
+                                                                                  ' at ' + str(instrument1_price)))
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+
+            # instrument2:
+            if instrument2_amount != 'Unassigned' and instrument2_kind == 'option' and \
+                    position_option_smaller_max_position_instrument2 == 'instrument_run_trade_ok':
+
+                instrument2_price = yy2
+                if 0 < smaller_bid_ask_amount_book_ratio < 1:
+                    b = xx2 * smaller_bid_ask_amount_book_ratio
+                    order_amount_instrument2 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
+                        number=b)
+                    if instrument2_direction == 'buy':
+                        if float(instrument2_position) + abs(float(order_amount_instrument2)) > float(
+                                instrument2_max_position):
+                            order_amount_instrument2 = abs(float(xx2))
+                        else:
+                            pass
+                        instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument2_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
+                                          price=instrument2_price)
+                        list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
+                                                                                  ': ' + str(instrument2_direction) +
+                                                                                  ' ' + str(order_amount_instrument2) +
+                                                                                  ' at ' + str(instrument2_price)))
+                    elif instrument2_direction == 'sell':
+                        if float(instrument2_position) - abs(float(order_amount_instrument2)) < float(
+                                instrument2_max_position):
+                            order_amount_instrument2 = abs(float(xx2))
+                        else:
+                            pass
+                        instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument2_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
+                                           price=instrument2_price)
+                        list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
+                                                                                  ': ' + str(instrument2_direction) +
+                                                                                  ' ' + str(order_amount_instrument2) +
+                                                                                  ' at ' + str(instrument2_price)))
+                    else:
+                        pass
+                elif smaller_bid_ask_amount_book_ratio >= 1:
+                    a = abs(xx2)
+                    order_amount_instrument2 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
+                    if instrument2_direction == 'buy':
+                        instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument2_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
+                                          price=instrument2_price)
+                        list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
+                                                                                  ': ' + str(instrument2_direction) +
+                                                                                  ' ' + str(order_amount_instrument2) +
+                                                                                  ' at ' + str(instrument2_price)))
+                    elif instrument2_direction == 'sell':
+                        instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument2_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
+                                           price=instrument2_price)
+                        list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
+                                                                                  ': ' + str(instrument2_direction) +
+                                                                                  ' ' + str(order_amount_instrument2) +
+                                                                                  ' at ' + str(instrument2_price)))
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+
+            # instrument3:
+            if instrument3_amount != 'Unassigned' and instrument3_kind == 'option' and \
+                    position_option_smaller_max_position_instrument3 == 'instrument_run_trade_ok':
+
+                instrument3_price = yy3  # market price
+
+                if 0 < smaller_bid_ask_amount_book_ratio < 1:
+                    b = xx3 * smaller_bid_ask_amount_book_ratio
+                    order_amount_instrument3 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
+                        number=b)
+                    if instrument3_direction == 'buy':
+                        if float(instrument3_position) + abs(float(order_amount_instrument3)) > float(
+                                instrument3_max_position):
+                            order_amount_instrument3 = abs(float(xx3))
+                        else:
+                            pass
+                        instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument3_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
+                                          price=instrument3_price)
+                        list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
+                                                                                  ': ' + str(instrument3_direction) +
+                                                                                  ' ' + str(order_amount_instrument3) +
+                                                                                  ' at ' + str(instrument3_price)))
+                    elif instrument3_direction == 'sell':
+                        if float(instrument3_position) - abs(float(order_amount_instrument3)) < float(
+                                instrument3_max_position):
+                            order_amount_instrument3 = abs(float(xx3))
+                        else:
+                            pass
+                        instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument3_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
+                                           price=instrument3_price)
+                        list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
+                                                                                  ': ' + str(instrument3_direction) +
+                                                                                  ' ' + str(order_amount_instrument3) +
+                                                                                  ' at ' + str(instrument3_price)))
+                    else:
+                        pass
+                elif smaller_bid_ask_amount_book_ratio >= 1:
+                    a = abs(xx3)
+                    order_amount_instrument3 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
+                    if instrument3_direction == 'buy':
+                        instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument3_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
+                                          price=instrument3_price)
+                        list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
+                                                                                  ': ' + str(instrument3_direction) +
+                                                                                  ' ' + str(order_amount_instrument3) +
+                                                                                  ' at ' + str(instrument3_price)))
+                    elif instrument3_direction == 'sell':
+                        instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument3_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
+                                           price=instrument3_price)
+                        list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
+                                                                                  ': ' + str(instrument3_direction) +
+                                                                                  ' ' + str(order_amount_instrument3) +
+                                                                                  ' at ' + str(instrument3_price)))
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+
+            # instrument4:
+            if instrument4_amount != 'Unassigned' and instrument4_kind == 'option' and \
+                    position_option_smaller_max_position_instrument4 == 'instrument_run_trade_ok':
+
+                instrument4_price = yy4  # market price
+
+                if 0 < smaller_bid_ask_amount_book_ratio < 1:
+                    b = xx4 * smaller_bid_ask_amount_book_ratio
+                    order_amount_instrument4 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
+                        number=b)
+                    if instrument4_direction == 'buy':
+                        if float(instrument4_position) + abs(float(order_amount_instrument4)) > float(
+                                instrument4_max_position):
+                            order_amount_instrument4 = abs(float(xx4))
+                        else:
+                            pass
+                        instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument4_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
+                                          price=instrument4_price)
+                        list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
+                                                                                  ': ' + str(instrument4_direction) +
+                                                                                  ' ' + str(order_amount_instrument4) +
+                                                                                  ' at ' + str(instrument4_price)))
+                    elif instrument4_direction == 'sell':
+                        if float(instrument4_position) - abs(float(order_amount_instrument4)) < float(
+                                instrument4_max_position):
+                            order_amount_instrument4 = abs(float(xx4))
+                        else:
+                            pass
+                        instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument4_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
+                                           price=instrument4_price)
+                        list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
+                                                                                  ': ' + str(instrument4_direction) +
+                                                                                  ' ' + str(order_amount_instrument4) +
+                                                                                  ' at ' + str(instrument4_price)))
+                    else:
+                        pass
+                elif smaller_bid_ask_amount_book_ratio >= 1:
+                    a = abs(xx4)
+                    order_amount_instrument4 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
+                    if instrument4_direction == 'buy':
+                        instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument4_price - value_mark_price_orders)
+                        connect.buy_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
+                                          price=instrument4_price)
+                        list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
+                                                                                  ': ' + str(instrument4_direction) +
+                                                                                  ' ' + str(order_amount_instrument4) +
+                                                                                  ' at ' + str(instrument4_price)))
+                    elif instrument4_direction == 'sell':
+                        instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
+                            number=instrument4_price + value_mark_price_orders)
+                        connect.sell_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
+                                           price=instrument4_price)
+                        list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
+                                                                                  ': ' + str(instrument4_direction) +
+                                                                                  ' ' + str(order_amount_instrument4) +
+                                                                                  ' at ' + str(instrument4_price)))
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+
+            list_monitor_log.append('********** SENT ORDERS AFTER ADJUSTMENTS **********')
+            connect.logwriter('********** SENT ORDERS AFTER ADJUSTMENTS **********')
+            # Para informar quais ordens foram enviadas
+            list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent1))
+            list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent2))
+            list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent3))
+            list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent4))
+
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent1))
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent2))
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent3))
+            connect.logwriter(str(list_monitor_log_append_for_msg_after_orders_sent4))
+
+            time.sleep(10)
+            connect.cancel_all()
+
+        except Exception as er:
+            list_monitor_log.append('ERROR in send_options_orders_like_first_time(). Error Code 4540 ' + str(er))
+        finally:
+            pass
+
+    @staticmethod
+    def send_options_orders_like_first_time():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+        mark_price_setup = setup['mark_price']
+        mark_price_orders = mark_price_setup.getboolean('mark_price_orders')
+
+        if mark_price_orders is True:
+            ConditionsCheck().send_options_orders_like_first_time_with_mark_price()
+        else:
+            ConditionsCheck().send_options_orders_like_first_time_without_mark_price()
 
     @staticmethod
     def send_options_orders():
