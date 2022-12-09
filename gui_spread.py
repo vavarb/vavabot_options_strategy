@@ -943,7 +943,7 @@ class Ui_MainWindow(object):
         # date time start and end - start
         self.date_time_start = QtWidgets.QDateTimeEdit(self.frame_4_targets)
         self.date_time_start.setGeometry(QtCore.QRect(554, 138, 112, 17))
-        self.date_time_start.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.date_time_start.setStyleSheet("")
         self.date_time_start.setCalendarPopup(True)
         font = QtGui.QFont()
         font.setPointSize(8)
@@ -952,7 +952,7 @@ class Ui_MainWindow(object):
 
         self.date_time_end = QtWidgets.QDateTimeEdit(self.frame_4_targets)
         self.date_time_end.setGeometry(QtCore.QRect(554, 158, 112, 17))
-        self.date_time_end.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.date_time_end.setStyleSheet("")
         self.date_time_end.setCalendarPopup(True)
         self.date_time_end.setFont(font)
         self.date_time_end.setObjectName("date_time_end")
