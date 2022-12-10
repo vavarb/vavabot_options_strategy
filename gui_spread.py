@@ -584,7 +584,7 @@ class Ui_MainWindow(object):
         self.label_strategy_name.setFont(font)
         self.label_strategy_name.setObjectName("label_strategy_name")
         self.line_edit_strategy_name = QtWidgets.QLineEdit(self.frame_2)
-        self.line_edit_strategy_name.setGeometry(QtCore.QRect(95, 4, 200, 16))
+        self.line_edit_strategy_name.setGeometry(QtCore.QRect(95, 4, 170, 16))
         self.line_edit_strategy_name.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.line_edit_strategy_name.setClearButtonEnabled(False)
         self.line_edit_strategy_name.setObjectName("line_edit_strategy_name")

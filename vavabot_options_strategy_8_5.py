@@ -72,6 +72,7 @@ class Sinais(QtCore.QObject):
     enable_disable_strike_and_c_or_p_and_maturity_signal = QtCore.pyqtSignal()
     dont_stop_trading_and_update_amount_adjusted_set_enable_signal = QtCore.pyqtSignal(bool)
     instruments_save_msg_box_signal = QtCore.pyqtSignal(dict)
+    mark_price_set_enabled_signal = QtCore.pyqtSignal(bool)
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -2805,6 +2806,7 @@ class ConditionsCheck:
         self.number = None
         self.index = None
         self.greeks = None
+        self.up_or_down = None
 
     @staticmethod
     def structure_market_cost_trigger():  # E´de configuração opcional
@@ -3571,17 +3573,18 @@ class ConditionsCheck:
         # a3 = round(number - number % 0.1, 1)  # Creio que seria somente round.
         return round(number, 1)
 
-    def number_multiple_0_0_0_0_5_and_round_4_digits(self, number=None):
+    def number_multiple_0_0_0_0_5_and_round_4_digits(self, number=None, up_or_down=None):
         self.number = number
+        self.up_or_down = up_or_down
 
         n1 = number % 0.0005
-        if n1 >= 0.000299999:
-            n2 = number + (0.0005 - n1)
+        if n1 >= 0.000299999 and up_or_down == 'up':
+            n2 = number + (0.00059 - n1)
             n3 = round(n2 - n2 % 0.0005, 4)
         else:
             n3 = round(number - n1, 4)
 
-        if n3 == 0:
+        if n3 <= 0.0005:
             n3 = 0.0005
         else:
             pass
@@ -4325,7 +4328,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument1_price - value_mark_price_orders)
+                            number=instrument1_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
                                           price=instrument1_price)
                         list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
@@ -4339,7 +4342,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument1_price + value_mark_price_orders)
+                            number=instrument1_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
                                            price=instrument1_price)
                         list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
@@ -4353,7 +4356,7 @@ class ConditionsCheck:
                     order_amount_instrument1 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
                     if instrument1_direction == 'buy':
                         instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument1_price - value_mark_price_orders)
+                            number=instrument1_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
                                           price=instrument1_price)
                         list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
@@ -4362,7 +4365,7 @@ class ConditionsCheck:
                                                                                   ' at ' + str(instrument1_price)))
                     elif instrument1_direction == 'sell':
                         instrument1_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument1_price + value_mark_price_orders)
+                            number=instrument1_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument1_name, amount=abs(order_amount_instrument1),
                                            price=instrument1_price)
                         list_monitor_log_append_for_msg_after_orders_sent1 = str((str(instrument1_name) +
@@ -4392,7 +4395,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument2_price - value_mark_price_orders)
+                            number=instrument2_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
                                           price=instrument2_price)
                         list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
@@ -4406,7 +4409,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument2_price + value_mark_price_orders)
+                            number=instrument2_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
                                            price=instrument2_price)
                         list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
@@ -4420,7 +4423,7 @@ class ConditionsCheck:
                     order_amount_instrument2 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
                     if instrument2_direction == 'buy':
                         instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument2_price - value_mark_price_orders)
+                            number=instrument2_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
                                           price=instrument2_price)
                         list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
@@ -4429,7 +4432,7 @@ class ConditionsCheck:
                                                                                   ' at ' + str(instrument2_price)))
                     elif instrument2_direction == 'sell':
                         instrument2_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument2_price + value_mark_price_orders)
+                            number=instrument2_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument2_name, amount=abs(order_amount_instrument2),
                                            price=instrument2_price)
                         list_monitor_log_append_for_msg_after_orders_sent2 = str((str(instrument2_name) +
@@ -4460,7 +4463,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument3_price - value_mark_price_orders)
+                            number=instrument3_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
                                           price=instrument3_price)
                         list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
@@ -4474,7 +4477,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument3_price + value_mark_price_orders)
+                            number=instrument3_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
                                            price=instrument3_price)
                         list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
@@ -4488,7 +4491,7 @@ class ConditionsCheck:
                     order_amount_instrument3 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
                     if instrument3_direction == 'buy':
                         instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument3_price - value_mark_price_orders)
+                            number=instrument3_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
                                           price=instrument3_price)
                         list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
@@ -4497,7 +4500,7 @@ class ConditionsCheck:
                                                                                   ' at ' + str(instrument3_price)))
                     elif instrument3_direction == 'sell':
                         instrument3_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument3_price + value_mark_price_orders)
+                            number=instrument3_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument3_name, amount=abs(order_amount_instrument3),
                                            price=instrument3_price)
                         list_monitor_log_append_for_msg_after_orders_sent3 = str((str(instrument3_name) +
@@ -4528,7 +4531,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument4_price - value_mark_price_orders)
+                            number=instrument4_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
                                           price=instrument4_price)
                         list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
@@ -4542,7 +4545,7 @@ class ConditionsCheck:
                         else:
                             pass
                         instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument4_price + value_mark_price_orders)
+                            number=instrument4_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
                                            price=instrument4_price)
                         list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
@@ -4556,7 +4559,7 @@ class ConditionsCheck:
                     order_amount_instrument4 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(number=a)
                     if instrument4_direction == 'buy':
                         instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument4_price - value_mark_price_orders)
+                            number=instrument4_price - value_mark_price_orders, up_or_down='down')
                         connect.buy_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
                                           price=instrument4_price)
                         list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
@@ -4565,7 +4568,7 @@ class ConditionsCheck:
                                                                                   ' at ' + str(instrument4_price)))
                     elif instrument4_direction == 'sell':
                         instrument4_price = ConditionsCheck().number_multiple_0_0_0_0_5_and_round_4_digits(
-                            number=instrument4_price + value_mark_price_orders)
+                            number=instrument4_price + value_mark_price_orders, up_or_down='up')
                         connect.sell_limit(currency=instrument4_name, amount=abs(order_amount_instrument4),
                                            price=instrument4_price)
                         list_monitor_log_append_for_msg_after_orders_sent4 = str((str(instrument4_name) +
@@ -10806,6 +10809,7 @@ def run(ui):
         sinal.start_thread_trade_signal.emit()
 
         sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.emit(False)
+        sinal.mark_price_set_enabled_signal.emit(False)
 
         start_thread_trade_clicked = threading.Thread(daemon=True, target=start)
         start_thread_trade_clicked.start()
@@ -10890,6 +10894,7 @@ def run(ui):
             send_future_orders_while = False
             dont_stop_trading_and_update_amount_adjusted = False
             sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.emit(True)
+            sinal.mark_price_set_enabled_signal.emit(True)
         else:
             pass  # cancel clicke
 
@@ -10990,6 +10995,10 @@ def add_widgets(ui):
     # ADD infinite_loop
     infinite_loop = QtWidgets.QCheckBox(ui.frame_2)
 
+    # ADD mark_price
+    check_box_mark_price = QtWidgets.QCheckBox(ui.frame_2)
+    line_edit_mark_price = QtWidgets.QLineEdit(ui.frame_2)
+
     def set_infinite_loop():
         infinite_loop.setGeometry(QtCore.QRect(510, 0, 140, 40))
         font = QtGui.QFont()
@@ -11001,7 +11010,6 @@ def add_widgets(ui):
         infinite_loop.setText('Infinite Loop of\nPosition Update')
 
     def dont_stop_trading_and_update_amount_adjusted_save():
-        from connection_spread import connect
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -11023,10 +11031,19 @@ def add_widgets(ui):
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
-        connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+
+        try:
+            from connection_spread import connect
+            connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+        except Exception as er:
+            from lists import list_monitor_log
+            list_monitor_log.append(
+                '***  Infinite Loop of Position Update set enabled true or false Saved Error '
+                '*** Error code: 11043 - ' + str(er))
+        finally:
+            pass
 
     def infinite_loop_set_check_when_open_app():
-        from connection_spread import connect
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -11050,14 +11067,34 @@ def add_widgets(ui):
                 reduce_only_setup['infinite_loop'] = 'False'
                 with open('setup.ini', 'w') as configfile:
                     setup.write(configfile)
-                connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+
+                try:
+                    from connection_spread import connect
+                    connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+                except Exception as er:
+                    from lists import list_monitor_log
+                    list_monitor_log.append(
+                        '***  Infinite Loop of Position Update set enabled true or false Saved Error '
+                        '*** Error code: 11069 - ' + str(er))
+                finally:
+                    pass
         else:
             infinite_loop.setChecked(False)
             infinite_loop.setEnabled(False)
             reduce_only_setup['infinite_loop'] = 'False'
             with open('setup.ini', 'w') as configfile:
                 setup.write(configfile)
-            connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+
+            try:
+                from connection_spread import connect
+                connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+            except Exception as er:
+                from lists import list_monitor_log
+                list_monitor_log.append(
+                    '***  Infinite Loop of Position Update set enabled true or false Saved Error '
+                    '*** Error code: 11075 - ' + str(er))
+            finally:
+                pass
 
     def infinite_loop_set_enabled():
         if ui.pushButton_stop_arbitrage.isEnabled() is False:
@@ -11089,9 +11126,80 @@ def add_widgets(ui):
         else:
             infinite_loop.setEnabled(False)
 
+    def set_mark_price():
+        # check box
+        check_box_mark_price.setGeometry(QtCore.QRect(0, 22, 80, 20))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        font.setPointSize(8)
+        check_box_mark_price.setFont(font)
+        check_box_mark_price.setObjectName("check_box_mark_price")
+        check_box_mark_price.setText('Mark Price: ')
+
+        # line edit
+        line_edit_mark_price.setGeometry(QtCore.QRect(95, 25, 50, 15))
+        line_edit_mark_price.setStyleSheet("background-color: rgb(255, 255, 255);")
+        line_edit_mark_price.setClearButtonEnabled(False)
+        line_edit_mark_price.setObjectName("line_edit_mark_price")
+
+    def set_mark_price_save():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        mark_price_setup = setup['mark_price']
+
+        mark_price_setup['mark_price_orders'] = str(check_box_mark_price.isChecked())
+        mark_price_setup['value_mark_price_orders'] = str.replace(str(line_edit_mark_price.text()), ',', '.')
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+
+        mark_price_saved()
+
+    def mark_price_saved():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        mark_price_setup = setup['mark_price']
+
+        check_box_mark_price.setChecked(mark_price_setup.getboolean('mark_price_orders'))
+        line_edit_mark_price.setText(str(mark_price_setup['value_mark_price_orders']))
+
+        try:
+            from connection_spread import connect
+            connect.logwriter(
+                '***  Mark Price Saved *** ' + str(mark_price_setup.getboolean('mark_price_orders')) + ' ' +
+                str(mark_price_setup['value_mark_price_orders'])
+            )
+        except Exception as er:
+            from lists import list_monitor_log
+            list_monitor_log.append('***  Mark Price Saved Error *** Error code: 11173 - ' + str(er))
+        finally:
+            pass
+
+    def mark_price_set_enabled_signal(info):
+        mark_price_saved()
+        if info is True:
+            check_box_mark_price.setEnabled(True)
+            line_edit_mark_price.setEnabled(True)
+        else:
+            check_box_mark_price.setEnabled(False)
+            line_edit_mark_price.setEnabled(False)
+
     set_infinite_loop()
     infinite_loop_set_check_when_open_app()
+    set_mark_price()
+    mark_price_set_enabled_signal(True)
     infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    check_box_mark_price.stateChanged.connect(set_mark_price_save)
+    line_edit_mark_price.editingFinished.connect(set_mark_price_save)
     ui.check_box_reduce_only_1.stateChanged.connect(infinite_loop_set_enabled)
     ui.check_box_reduce_only_2.stateChanged.connect(infinite_loop_set_enabled)
     ui.check_box_reduce_only_3.stateChanged.connect(infinite_loop_set_enabled)
@@ -11101,8 +11209,10 @@ def add_widgets(ui):
     ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.pushButton_submit_new_instruments.clicked.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    ui.pushButton_submit_new_instruments.clicked.connect(set_mark_price_save)
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
+    sinal.mark_price_set_enabled_signal.connect(mark_price_set_enabled_signal)
 
 
 if __name__ == "__main__":
