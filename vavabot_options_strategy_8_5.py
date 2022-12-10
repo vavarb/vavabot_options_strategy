@@ -11128,17 +11128,17 @@ def add_widgets(ui):
 
     def set_mark_price():
         # check box
-        check_box_mark_price.setGeometry(QtCore.QRect(0, 22, 80, 20))
+        check_box_mark_price.setGeometry(QtCore.QRect(0, 25, 110, 20))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
         font.setPointSize(8)
         check_box_mark_price.setFont(font)
         check_box_mark_price.setObjectName("check_box_mark_price")
-        check_box_mark_price.setText('Mark Price: ')
+        check_box_mark_price.setText('Mark Price: +/- ')
 
         # line edit
-        line_edit_mark_price.setGeometry(QtCore.QRect(95, 25, 50, 15))
+        line_edit_mark_price.setGeometry(QtCore.QRect(110, 27, 50, 15))
         line_edit_mark_price.setStyleSheet("background-color: rgb(255, 255, 255);")
         line_edit_mark_price.setClearButtonEnabled(False)
         line_edit_mark_price.setObjectName("line_edit_mark_price")
