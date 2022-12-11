@@ -4621,7 +4621,7 @@ class ConditionsCheck:
 
     @staticmethod
     def send_options_orders_like_first_time():
-            ConditionsCheck().send_options_orders_like_first_time_without_mark_price()
+        ConditionsCheck().send_options_orders_like_first_time_without_mark_price()
 
     @staticmethod
     def send_options_orders():
