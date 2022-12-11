@@ -4621,19 +4621,6 @@ class ConditionsCheck:
 
     @staticmethod
     def send_options_orders_like_first_time():
-        setup = ConfigParser(
-            allow_no_value=True,
-            inline_comment_prefixes='#',
-            strict=False,
-            interpolation=None
-        )
-        setup.read('setup.ini')
-        mark_price_setup = setup['mark_price']
-        mark_price_orders = mark_price_setup.getboolean('mark_price_orders')
-
-        if mark_price_orders is True:
-            ConditionsCheck().send_options_orders_like_first_time_with_mark_price()
-        else:
             ConditionsCheck().send_options_orders_like_first_time_without_mark_price()
 
     @staticmethod
@@ -5468,7 +5455,9 @@ class ConditionsCheck:
                 mark_price_setup = setup['mark_price']
                 mark_price_orders = mark_price_setup.getboolean('mark_price_orders')
 
-                if mark_price_orders is True:
+                if mark_price_orders is True and (
+                    sent_options_adjusts_instrument1 is False and sent_options_adjusts_instrument2 is False and
+                        sent_options_adjusts_instrument3 is False and sent_options_adjusts_instrument4 is False):
                     ConditionsCheck().send_options_orders_like_first_time_with_mark_price()
                 else:
                     # Para criar a variável para depois informar no list_monitor_log_append após informar 'ORDERS SENT'
