@@ -7,7 +7,7 @@ future==0.18.2
 kiwisolver==1.4.3
 matplotlib==3.5.2
 numpy==1.23.0
-packaging==21.3
+packaging==22.0
 pefile==2022.5.30
 Pillow==9.2.0
 pip==22.2.2
