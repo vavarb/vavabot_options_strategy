@@ -889,7 +889,7 @@ class InstrumentsSaved:
                 return str(round(float(instrument_amount_saved) * rate_amount, 1))
             else:
                 return str(
-                    ConditionsCheck().number_multiple_0_1_and_round_1_digits(
+                    ConditionsCheck().number_multiple_10_and_round_0_digits(
                         number=float(instrument_amount_saved) * rate_amount
                     )
                 )
@@ -4598,8 +4598,8 @@ class ConditionsCheck:
             else:
                 pass
 
-            list_monitor_log.append('********** SENT ORDERS AFTER ADJUSTMENTS **********')
-            connect.logwriter('********** SENT ORDERS AFTER ADJUSTMENTS **********')
+            list_monitor_log.append('********** SENT ORDERS AFTER ADJUSTMENTS - Mark Price **********')
+            connect.logwriter('********** SENT ORDERS AFTER ADJUSTMENTS - Mark Price **********')
             # Para informar quais ordens foram enviadas
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent1))
             list_monitor_log.append(str(list_monitor_log_append_for_msg_after_orders_sent2))
@@ -4629,16 +4629,6 @@ class ConditionsCheck:
         try:
             from connection_spread import connect
             # Args fixes
-            instrument1_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=1)
-            instrument2_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=2)
-            instrument3_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=3)
-            instrument4_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=4)
-
-            instrument1_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
-            instrument2_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
-            instrument3_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
-            instrument4_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
-
             instrument1_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
                 instrument_number=1)
             instrument2_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
@@ -4648,14 +4638,21 @@ class ConditionsCheck:
             instrument4_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
                 instrument_number=4)
 
-            instrument_amount1_for_bigger_rate_options_now = InstrumentsSaved().instrument_amount_saved(
-                instrument_number=1)
-            instrument_amount2_for_bigger_rate_options_now = InstrumentsSaved().instrument_amount_saved(
-                instrument_number=2)
-            instrument_amount3_for_bigger_rate_options_now = InstrumentsSaved().instrument_amount_saved(
-                instrument_number=3)
-            instrument_amount4_for_bigger_rate_options_now = InstrumentsSaved().instrument_amount_saved(
-                instrument_number=4)
+            instrument1_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+            instrument2_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+            instrument3_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+            instrument4_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
+
+            instrument1_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=1)
+            instrument2_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=2)
+            instrument3_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=3)
+            instrument4_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=4)
+
+            instrument_amount1_for_bigger_rate_options_now = instrument1_amount
+            instrument_amount2_for_bigger_rate_options_now = instrument2_amount
+            instrument_amount3_for_bigger_rate_options_now = instrument3_amount
+            instrument_amount4_for_bigger_rate_options_now = instrument4_amount
+
             if instrument1_direction == 'sell' and instrument1_kind == 'option' and \
                     instrument_amount1_for_bigger_rate_options_now != 0:
                 instrument_amount1_for_bigger_rate_options_now = float(
@@ -4984,10 +4981,10 @@ class ConditionsCheck:
                 order_amount_instrument1 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
                     number=b)
                 if order_amount_instrument1 >= 0.1:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[1]: abs(float(y1) / float(
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['1'] = abs(float(y1) / float(
                         order_amount_instrument1))
                 else:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[1]: float(0)
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['1'] = float(0)
             else:
                 pass
             #           Instrument 2
@@ -4999,10 +4996,10 @@ class ConditionsCheck:
                 order_amount_instrument2 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
                     number=b)
                 if order_amount_instrument2 >= 0.1:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[2]: abs(float(y2) / float(
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['2'] = abs(float(y2) / float(
                         order_amount_instrument2))
                 else:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[2]: float(0)
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['2'] = float(0)
             else:
                 pass
             #           Instrument 3
@@ -5014,10 +5011,10 @@ class ConditionsCheck:
                 order_amount_instrument3 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
                     number=b)
                 if order_amount_instrument3 >= 0.1:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[3]: abs(float(y3) / float(
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['3'] = abs(float(y3) / float(
                         order_amount_instrument3))
                 else:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[3]: float(0)
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['3'] = float(0)
             else:
                 pass
             #           Instrument 4
@@ -5029,10 +5026,10 @@ class ConditionsCheck:
                 order_amount_instrument4 = ConditionsCheck().number_multiple_0_1_and_round_1_digits(
                     number=b)
                 if order_amount_instrument4 >= 0.1:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[4]: abs(float(y4) / float(
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['4'] = abs(float(y4) / float(
                         order_amount_instrument4))
                 else:
-                    smaller_bid_ask_amount_adjust_book_ratio_now_dict[4]: float(0)
+                    smaller_bid_ask_amount_adjust_book_ratio_now_dict['4'] = float(0)
             else:
                 pass
             if len(smaller_bid_ask_amount_adjust_book_ratio_now_dict) == 0:
@@ -5457,7 +5454,8 @@ class ConditionsCheck:
 
                 if mark_price_orders is True and (
                     sent_options_adjusts_instrument1 is False and sent_options_adjusts_instrument2 is False and
-                        sent_options_adjusts_instrument3 is False and sent_options_adjusts_instrument4 is False):
+                    sent_options_adjusts_instrument3 is False and sent_options_adjusts_instrument4 is False) and \
+                        float(bigger_rate_option_now) == 0:
                     ConditionsCheck().send_options_orders_like_first_time_with_mark_price()
                 else:
                     # Para criar a variável para depois informar no list_monitor_log_append após informar 'ORDERS SENT'
