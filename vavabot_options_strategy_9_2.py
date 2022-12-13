@@ -3693,10 +3693,10 @@ class ConditionsCheck:
                 xx1a = float(x1) - float(instrument_position)
                 xx1 = round(xx1a, 1)
                 if xx1a == 0:
-                    smaller_bid_ask_amount_book_dict[1] = 1
+                    smaller_bid_ask_amount_book_dict['1'] = 1
                 else:
                     yy = float(y1) / xx1a
-                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['1'] = abs(yy)
             elif instrument1_direction == 'sell' and instrument1_kind == 'option':
                 instrument_position = float(instrument1_position)
                 y1 = connect.best_bid_amount(instrument_name=instrument1_name)
@@ -3706,10 +3706,10 @@ class ConditionsCheck:
                 xx1a = float(x1) - float(instrument_position)  # É o que falta negociar
                 xx1 = round(xx1a, 1)
                 if xx1a == 0:
-                    smaller_bid_ask_amount_book_dict[1] = 1
+                    smaller_bid_ask_amount_book_dict['1'] = 1
                 else:
                     yy = float(y1) / xx1a
-                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['1'] = abs(yy)
             else:
                 pass
 
@@ -3722,10 +3722,10 @@ class ConditionsCheck:
                 xx2a = float(x2) - float(instrument_position)
                 xx2 = round(xx2a, 1)
                 if xx2a == 0:
-                    smaller_bid_ask_amount_book_dict[2] = 1
+                    smaller_bid_ask_amount_book_dict['2'] = 1
                 else:
                     yy = float(y2) / xx2a
-                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['2'] = abs(yy)
             elif instrument2_direction == 'sell' and instrument2_kind == 'option':
                 instrument_position = float(instrument2_position)
                 y2 = connect.best_bid_amount(instrument_name=instrument2_name)
@@ -3735,10 +3735,10 @@ class ConditionsCheck:
                 xx2a = float(x2) - float(instrument_position)
                 xx2 = round(xx2a, 1)
                 if xx2a == 0:
-                    smaller_bid_ask_amount_book_dict[2] = 1
+                    smaller_bid_ask_amount_book_dict['2'] = 1
                 else:
                     yy = float(y2) / xx2a
-                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['2'] = abs(yy)
             else:
                 pass
 
@@ -3751,10 +3751,10 @@ class ConditionsCheck:
                 xx3a = float(x3) - float(instrument_position)
                 xx3 = round(xx3a, 1)
                 if xx3a == 0:
-                    smaller_bid_ask_amount_book_dict[3] = 1
+                    smaller_bid_ask_amount_book_dict['3'] = 1
                 else:
                     yy = float(y3) / xx3a
-                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['3'] = abs(yy)
             elif instrument3_direction == 'sell' and instrument3_kind == 'option':
                 instrument_position = float(instrument3_position)
                 y3 = connect.best_bid_amount(instrument_name=instrument3_name)
@@ -3764,10 +3764,10 @@ class ConditionsCheck:
                 xx3a = float(x3) - float(instrument_position)
                 xx3 = round(xx3a, 1)
                 if xx3a == 0:
-                    smaller_bid_ask_amount_book_dict[3] = 1
+                    smaller_bid_ask_amount_book_dict['3'] = 1
                 else:
                     yy = float(y3) / xx3a
-                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['3'] = abs(yy)
             else:
                 pass
 
@@ -3780,10 +3780,10 @@ class ConditionsCheck:
                 xx4a = float(x4) - float(instrument_position)
                 xx4 = round(xx4a, 1)
                 if xx4a == 0:
-                    smaller_bid_ask_amount_book_dict[4] = 1
+                    smaller_bid_ask_amount_book_dict['4'] = 1
                 else:
                     yy = float(y4) / xx4a
-                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['4'] = abs(yy)
             elif instrument4_direction == 'sell' and instrument4_kind == 'option':
                 instrument_position = float(instrument4_position)
                 y4 = connect.best_bid_amount(instrument_name=instrument4_name)
@@ -3793,10 +3793,10 @@ class ConditionsCheck:
                 xx4a = float(x4) - float(instrument_position)
                 xx4 = round(xx4a, 1)
                 if xx4a == 0:
-                    smaller_bid_ask_amount_book_dict[4] = 1
+                    smaller_bid_ask_amount_book_dict['4'] = 1
                 else:
                     yy = float(y4) / xx4a
-                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['4'] = abs(yy)
             else:
                 pass
 
@@ -4188,10 +4188,10 @@ class ConditionsCheck:
                 xx1a = float(x1) - float(instrument_position)
                 xx1 = round(xx1a, 1)
                 if xx1a == 0:
-                    smaller_bid_ask_amount_book_dict[1] = 1
+                    smaller_bid_ask_amount_book_dict['1'] = 1
                 else:
                     yy = float(y1) / xx1a
-                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['1'] = abs(yy)
             elif instrument1_direction == 'sell' and instrument1_kind == 'option':
                 instrument_position = float(instrument1_position)
                 y1 = connect.best_bid_amount(instrument_name=instrument1_name)
@@ -4201,10 +4201,10 @@ class ConditionsCheck:
                 xx1a = float(x1) - float(instrument_position)  # É o que falta negociar
                 xx1 = round(xx1a, 1)
                 if xx1a == 0:
-                    smaller_bid_ask_amount_book_dict[1] = 1
+                    smaller_bid_ask_amount_book_dict['1'] = 1
                 else:
                     yy = float(y1) / xx1a
-                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['1'] = abs(yy)
             else:
                 pass
 
@@ -4217,10 +4217,10 @@ class ConditionsCheck:
                 xx2a = float(x2) - float(instrument_position)
                 xx2 = round(xx2a, 1)
                 if xx2a == 0:
-                    smaller_bid_ask_amount_book_dict[2] = 1
+                    smaller_bid_ask_amount_book_dict['2'] = 1
                 else:
                     yy = float(y2) / xx2a
-                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['2'] = abs(yy)
             elif instrument2_direction == 'sell' and instrument2_kind == 'option':
                 instrument_position = float(instrument2_position)
                 y2 = connect.best_bid_amount(instrument_name=instrument2_name)
@@ -4230,10 +4230,10 @@ class ConditionsCheck:
                 xx2a = float(x2) - float(instrument_position)
                 xx2 = round(xx2a, 1)
                 if xx2a == 0:
-                    smaller_bid_ask_amount_book_dict[2] = 1
+                    smaller_bid_ask_amount_book_dict['2'] = 1
                 else:
                     yy = float(y2) / xx2a
-                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['2'] = abs(yy)
             else:
                 pass
 
@@ -4246,10 +4246,10 @@ class ConditionsCheck:
                 xx3a = float(x3) - float(instrument_position)
                 xx3 = round(xx3a, 1)
                 if xx3a == 0:
-                    smaller_bid_ask_amount_book_dict[3] = 1
+                    smaller_bid_ask_amount_book_dict['3'] = 1
                 else:
                     yy = float(y3) / xx3a
-                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['3'] = abs(yy)
             elif instrument3_direction == 'sell' and instrument3_kind == 'option':
                 instrument_position = float(instrument3_position)
                 y3 = connect.best_bid_amount(instrument_name=instrument3_name)
@@ -4259,10 +4259,10 @@ class ConditionsCheck:
                 xx3a = float(x3) - float(instrument_position)
                 xx3 = round(xx3a, 1)
                 if xx3a == 0:
-                    smaller_bid_ask_amount_book_dict[3] = 1
+                    smaller_bid_ask_amount_book_dict['3'] = 1
                 else:
                     yy = float(y3) / xx3a
-                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['3'] = abs(yy)
             else:
                 pass
 
@@ -4275,10 +4275,10 @@ class ConditionsCheck:
                 xx4a = float(x4) - float(instrument_position)
                 xx4 = round(xx4a, 1)
                 if xx4a == 0:
-                    smaller_bid_ask_amount_book_dict[4] = 1
+                    smaller_bid_ask_amount_book_dict['4'] = 1
                 else:
                     yy = float(y4) / xx4a
-                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['4'] = abs(yy)
             elif instrument4_direction == 'sell' and instrument4_kind == 'option':
                 instrument_position = float(instrument4_position)
                 y4 = connect.best_bid_amount(instrument_name=instrument4_name)
@@ -4288,10 +4288,10 @@ class ConditionsCheck:
                 xx4a = float(x4) - float(instrument_position)
                 xx4 = round(xx4a, 1)
                 if xx4a == 0:
-                    smaller_bid_ask_amount_book_dict[4] = 1
+                    smaller_bid_ask_amount_book_dict['4'] = 1
                 else:
                     yy = float(y4) / xx4a
-                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['4'] = abs(yy)
             else:
                 pass
 
@@ -4840,10 +4840,10 @@ class ConditionsCheck:
                 xx1a = float(x1) - float(instrument_position)
                 xx1 = round(xx1a, 1)
                 if xx1a == 0:
-                    smaller_bid_ask_amount_book_dict[1] = 1
+                    smaller_bid_ask_amount_book_dict['1'] = 1
                 else:
                     yy = float(y1) / xx1a
-                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['1'] = abs(yy)
             elif instrument1_direction == 'sell' and instrument1_kind == 'option':
                 instrument_position = float(instrument1_position)
                 y1 = connect.best_bid_amount(instrument_name=instrument1_name)
@@ -4853,10 +4853,10 @@ class ConditionsCheck:
                 xx1a = float(x1) - float(instrument_position)
                 xx1 = round(xx1a, 1)
                 if xx1a == 0:
-                    smaller_bid_ask_amount_book_dict[1] = 1
+                    smaller_bid_ask_amount_book_dict['1'] = 1
                 else:
                     yy = float(y1) / xx1a
-                    smaller_bid_ask_amount_book_dict[1] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['1'] = abs(yy)
             else:
                 pass
 
@@ -4869,10 +4869,10 @@ class ConditionsCheck:
                 xx2a = float(x2) - float(instrument_position)
                 xx2 = round(xx2a, 1)
                 if xx2a == 0:
-                    smaller_bid_ask_amount_book_dict[2] = 1
+                    smaller_bid_ask_amount_book_dict['2'] = 1
                 else:
                     yy = float(y2) / xx2a
-                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['2'] = abs(yy)
             elif instrument2_direction == 'sell' and instrument2_kind == 'option':
                 instrument_position = float(instrument2_position)
                 y2 = connect.best_bid_amount(instrument_name=instrument2_name)
@@ -4882,10 +4882,10 @@ class ConditionsCheck:
                 xx2a = float(x2) - float(instrument_position)
                 xx2 = round(xx2a, 1)
                 if xx2a == 0:
-                    smaller_bid_ask_amount_book_dict[2] = 1
+                    smaller_bid_ask_amount_book_dict['2'] = 1
                 else:
                     yy = float(y2) / xx2a
-                    smaller_bid_ask_amount_book_dict[2] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['2'] = abs(yy)
             else:
                 pass
 
@@ -4898,10 +4898,10 @@ class ConditionsCheck:
                 xx3a = float(x3) - float(instrument_position)
                 xx3 = round(xx3a, 1)
                 if xx3a == 0:
-                    smaller_bid_ask_amount_book_dict[3] = 1
+                    smaller_bid_ask_amount_book_dict['3'] = 1
                 else:
                     yy = float(y3) / xx3a
-                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['3'] = abs(yy)
             elif instrument3_direction == 'sell' and instrument3_kind == 'option':
                 instrument_position = float(instrument3_position)
                 y3 = connect.best_bid_amount(instrument_name=instrument3_name)
@@ -4911,10 +4911,10 @@ class ConditionsCheck:
                 xx3a = float(x3) - float(instrument_position)
                 xx3 = round(xx3a, 1)
                 if xx3a == 0:
-                    smaller_bid_ask_amount_book_dict[3] = 1
+                    smaller_bid_ask_amount_book_dict['3'] = 1
                 else:
                     yy = float(y3) / xx3a
-                    smaller_bid_ask_amount_book_dict[3] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['3'] = abs(yy)
             else:
                 pass
 
@@ -4927,10 +4927,10 @@ class ConditionsCheck:
                 xx4a = float(x4) - float(instrument_position)
                 xx4 = round(xx4a, 1)
                 if xx4a == 0:
-                    smaller_bid_ask_amount_book_dict[4] = 1
+                    smaller_bid_ask_amount_book_dict['4'] = 1
                 else:
                     yy = float(y4) / xx4a
-                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['4'] = abs(yy)
             elif instrument4_direction == 'sell' and instrument4_kind == 'option':
                 instrument_position = float(instrument4_position)
                 y4 = connect.best_bid_amount(instrument_name=instrument4_name)
@@ -4940,10 +4940,10 @@ class ConditionsCheck:
                 xx4a = float(x4) - float(instrument_position)
                 xx4 = round(xx4a, 1)
                 if xx4a == 0:
-                    smaller_bid_ask_amount_book_dict[4] = 1
+                    smaller_bid_ask_amount_book_dict['4'] = 1
                 else:
                     yy = float(y4) / xx4a
-                    smaller_bid_ask_amount_book_dict[4] = abs(yy)
+                    smaller_bid_ask_amount_book_dict['4'] = abs(yy)
             else:
                 pass
 
