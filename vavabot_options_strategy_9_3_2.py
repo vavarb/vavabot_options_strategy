@@ -11254,11 +11254,28 @@ def add_widgets(ui):
         finally:
             pass
 
+    def mark_price_set_enabled_to_push_button():
+        check_box_mark_price.setEnabled(True)
+        line_edit_mark_price.setEnabled(True)
+
     def mark_price_set_enabled_signal(info):
         mark_price_saved()
+
         if info is True:
-            check_box_mark_price.setEnabled(True)
-            line_edit_mark_price.setEnabled(True)
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False
+            )
+            setup.read('setup.ini')
+            date_time_setup = setup['date_time']
+
+            if date_time_setup.getboolean('date_time_enabled') is False:
+                check_box_mark_price.setEnabled(False)
+                line_edit_mark_price.setEnabled(False)
+            else:
+                check_box_mark_price.setEnabled(True)
+                line_edit_mark_price.setEnabled(True)
         else:
             check_box_mark_price.setEnabled(False)
             line_edit_mark_price.setEnabled(False)
@@ -11279,6 +11296,7 @@ def add_widgets(ui):
     ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.pushButton_submit_new_instruments.clicked.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    ui.pushButton_submit_new_instruments.clicked.connect(mark_price_set_enabled_to_push_button)
     ui.pushButton_submit_new_instruments.clicked.connect(set_mark_price_save)
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
