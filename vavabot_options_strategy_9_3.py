@@ -643,7 +643,7 @@ class CredentialsSaved:
         credentials_setup = setup['credentials']
         api_key_now = credentials_setup['api_key']
 
-        if '<Type your Deribit Key>' in str(api_key_now):
+        if '<Type your Deribit Key ONLY in the App>' in str(api_key_now):
             file_read = str('<Type your Deribit Key>')
         else:
             file_read = 'True'
@@ -694,7 +694,7 @@ class CredentialsSaved:
         credentials_setup = setup['credentials']
         secret_key_now = credentials_setup['secret_key']
 
-        if '<Type your Deribit Secret Key>' in str(secret_key_now):
+        if '<Type your Deribit Secret Key ONLY in the App>' in str(secret_key_now):
             file_read = str('<Type your Deribit Secret Key>')
         else:
             file_read = 'True'
@@ -2071,8 +2071,8 @@ class Config:
                 trigger_value = str(targets_setup['trigger_value'])
             else:
                 test_net_now = 'True'
-                api_key_now = '<Type your Deribit Key>'
-                secret_key_now = '<Type your Deribit Secret Key>'
+                api_key_now = '<Type your Deribit Key ONLY in the App>'
+                secret_key_now = '<Type your Deribit Secret Key ONLY in the App>'
                 value_given_in = 'BTC'
                 upper = '1'
                 lower = '2'
@@ -2083,8 +2083,8 @@ class Config:
                 trigger_value = ''
         except Exception as er:
             test_net_now = 'True'
-            api_key_now = '<Type your Deribit Key>'
-            secret_key_now = '<Type your Deribit Secret Key>'
+            api_key_now = '<Type your Deribit Key ONLY in the App>'
+            secret_key_now = '<Type your Deribit Secret Key ONLY in the App>'
             value_given_in = 'BTC'
             upper = '1'
             lower = '2'
@@ -6641,8 +6641,8 @@ def credentials(ui):
         setup.read('setup.ini')
 
         credentials_setup = setup['credentials']
-        credentials_setup['api_key'] = '<Type your Deribit Key>'
-        credentials_setup['secret_key'] = '<Type your Deribit Secret Key>'
+        credentials_setup['api_key'] = '<Type your Deribit Key ONLY in the App>'
+        credentials_setup['secret_key'] = '<Type your Deribit Secret Key ONLY in the App>'
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
 
@@ -6672,7 +6672,8 @@ def credentials(ui):
         a_s_saved = credentials_setup['api_key']
         sks = credentials_setup['secret_key']
 
-        if '<Type your Deribit Key>' in str(a_s_saved) or '<Type your Deribit Secret Key>' in str(sks):
+        if '<Type your Deribit Key ONLY in the App>' in str(a_s_saved) or \
+                '<Type your Deribit Secret Key ONLY in the App>' in str(sks):
             connection1()
             api_key_saved_print()
             secret_key_saved_print()
