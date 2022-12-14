@@ -11047,10 +11047,24 @@ def add_widgets(ui):
                 ui.check_box_reduce_only_3.isChecked() is True or \
                     ui.check_box_reduce_only_4.isChecked() is True:
                 reduce_only_setup['infinite_loop'] = 'True'
+                if check_box_mark_price.isChecked() is True:
+                    check_box_mark_price.setEnabled(True)
+                    check_box_mark_price.setChecked(False)
+                    check_box_mark_price.setEnabled(False)
+                    mark_price_setup = setup['mark_price']
+                    mark_price_setup['mark_price_orders'] = 'False'
+                else:
+                    check_box_mark_price.setEnabled(True)
+                    mark_price_saved()
             else:
                 reduce_only_setup['infinite_loop'] = 'False'
+                check_box_mark_price.setEnabled(True)
+                mark_price_saved()
+
         else:
             reduce_only_setup['infinite_loop'] = 'False'
+            check_box_mark_price.setEnabled(True)
+            mark_price_saved()
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
@@ -11076,32 +11090,11 @@ def add_widgets(ui):
         reduce_only_setup = setup['reduce_only']
         dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
             'infinite_loop')
+        mark_price_setup = setup['mark_price']
+        mark_price_orders_saved = mark_price_setup.getboolean('mark_price_orders')
 
-        if reduce_only_setup.getboolean('instrument1') is True or \
-            reduce_only_setup.getboolean('instrument2') is True or \
-            reduce_only_setup.getboolean('instrument3') is True or \
-                reduce_only_setup.getboolean('instrument4') is True:
+        if mark_price_orders_saved is True:
             infinite_loop.setEnabled(True)
-            if dont_stop_trading_and_update_amount_adjusted_saved is True:
-                infinite_loop.setChecked(True)
-            else:
-                infinite_loop.setChecked(False)
-                infinite_loop.setEnabled(False)
-                reduce_only_setup['infinite_loop'] = 'False'
-                with open('setup.ini', 'w') as configfile:
-                    setup.write(configfile)
-
-                try:
-                    from connection_spread import connect
-                    connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
-                except Exception as er:
-                    from lists import list_monitor_log
-                    list_monitor_log.append(
-                        '***  Infinite Loop of Position Update set enabled true or false Saved Error '
-                        '*** Error code: 11069 - ' + str(er))
-                finally:
-                    pass
-        else:
             infinite_loop.setChecked(False)
             infinite_loop.setEnabled(False)
             reduce_only_setup['infinite_loop'] = 'False'
@@ -11118,6 +11111,48 @@ def add_widgets(ui):
                     '*** Error code: 11075 - ' + str(er))
             finally:
                 pass
+        else:
+            if reduce_only_setup.getboolean('instrument1') is True or \
+                reduce_only_setup.getboolean('instrument2') is True or \
+                reduce_only_setup.getboolean('instrument3') is True or \
+                    reduce_only_setup.getboolean('instrument4') is True:
+                infinite_loop.setEnabled(True)
+                if dont_stop_trading_and_update_amount_adjusted_saved is True:
+                    infinite_loop.setChecked(True)
+                else:
+                    infinite_loop.setChecked(False)
+                    infinite_loop.setEnabled(False)
+                    reduce_only_setup['infinite_loop'] = 'False'
+                    with open('setup.ini', 'w') as configfile:
+                        setup.write(configfile)
+
+                    try:
+                        from connection_spread import connect
+                        connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+                    except Exception as er:
+                        from lists import list_monitor_log
+                        list_monitor_log.append(
+                            '***  Infinite Loop of Position Update set enabled true or false Saved Error '
+                            '*** Error code: 11069 - ' + str(er))
+                    finally:
+                        pass
+            else:
+                infinite_loop.setChecked(False)
+                infinite_loop.setEnabled(False)
+                reduce_only_setup['infinite_loop'] = 'False'
+                with open('setup.ini', 'w') as configfile:
+                    setup.write(configfile)
+
+                try:
+                    from connection_spread import connect
+                    connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
+                except Exception as er:
+                    from lists import list_monitor_log
+                    list_monitor_log.append(
+                        '***  Infinite Loop of Position Update set enabled true or false Saved Error '
+                        '*** Error code: 11075 - ' + str(er))
+                finally:
+                    pass
 
     def infinite_loop_set_enabled():
         if ui.pushButton_stop_arbitrage.isEnabled() is False:
@@ -11177,6 +11212,18 @@ def add_widgets(ui):
 
         mark_price_setup['mark_price_orders'] = str(check_box_mark_price.isChecked())
         mark_price_setup['value_mark_price_orders'] = str.replace(str(line_edit_mark_price.text()), ',', '.')
+
+        reduce_only_setup = setup['reduce_only']
+        infinite_loop_saved = reduce_only_setup.getboolean('infinite_loop')
+        infinite_loop_now = infinite_loop.isChecked()
+
+        if check_box_mark_price.isChecked() is True and (infinite_loop_saved is True or infinite_loop_now is True):
+            infinite_loop.setEnabled(True)
+            reduce_only_setup['infinite_loop'] = 'False'
+            infinite_loop.setChecked(False)
+            infinite_loop.setEnabled(False)
+        else:
+            infinite_loop_set_enabled()
 
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
