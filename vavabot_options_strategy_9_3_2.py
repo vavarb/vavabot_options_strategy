@@ -11055,15 +11055,18 @@ def add_widgets(ui):
                     mark_price_setup['mark_price_orders'] = 'False'
                 else:
                     check_box_mark_price.setEnabled(True)
+                    line_edit_mark_price.setEnabled(True)
                     mark_price_saved()
             else:
                 reduce_only_setup['infinite_loop'] = 'False'
                 check_box_mark_price.setEnabled(True)
+                line_edit_mark_price.setEnabled(True)
                 mark_price_saved()
 
         else:
             reduce_only_setup['infinite_loop'] = 'False'
             check_box_mark_price.setEnabled(True)
+            line_edit_mark_price.setEnabled(True)
             mark_price_saved()
 
         with open('setup.ini', 'w') as configfile:
