@@ -1771,59 +1771,80 @@ class Config:
                 setup.read('setup.ini')
                 targets_setup = setup['targets']
 
-                if buy_or_sell_structure1 == 'buy':
-                    spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
-                    mark_price_percentage_yes_or_no = ui.comboBox_value_given.currentText()
-                    mppyon = mark_price_percentage_yes_or_no
+                instrument_kind_1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+                instrument_kind_2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+                instrument_kind_3 = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+                instrument_kind_4 = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
 
-                    if spread_structure1_adjusted != ' ':
-                        if 'Mark Price %' in mppyon:
-                            pass
-                        elif 'USD' in mppyon or 'BTC' in mppyon:
-                            spread_structure1_adjusted = str(abs(float(spread_structure1_adjusted)) * -1)
+                if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                        instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+                    if buy_or_sell_structure1 == 'buy':
+                        spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
+                        mark_price_percentage_yes_or_no = ui.comboBox_value_given.currentText()
+                        mppyon = mark_price_percentage_yes_or_no
+
+                        if spread_structure1_adjusted != ' ':
+                            if 'Mark Price %' in mppyon:
+                                pass
+                            elif 'USD' in mppyon or 'BTC' in mppyon:
+                                spread_structure1_adjusted = str(abs(float(spread_structure1_adjusted)) * -1)
+                            else:
+                                connect.logwriter("Code Error 1711")
+                                list_monitor_log.append("Code Error 1711")
                         else:
-                            connect.logwriter("Code Error 1711")
-                            list_monitor_log.append("Code Error 1711")
+                            pass
+
+                        targets_setup['buy_or_sell_structure'] = str(buy_or_sell_structure1)
+                        targets_setup['upper'] = str(currency_exchange_rate_upper1)
+                        targets_setup['lower'] = str(currency_exchange_rate_lower1)
+                        targets_setup['amount_value_given_in'] = str(spread_structure1_adjusted)
+                        targets_setup['instrument_targets'] = str(
+                            currency_exchange_rate_for_upper_and_lower1.upper())
+
+                    elif buy_or_sell_structure1 == 'sell':
+                        spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
+
+                        targets_setup['buy_or_sell_structure'] = str(buy_or_sell_structure1)
+                        targets_setup['upper'] = str(currency_exchange_rate_upper1)
+                        targets_setup['lower'] = str(currency_exchange_rate_lower1)
+                        targets_setup['amount_value_given_in'] = str(spread_structure1_adjusted)
+                        targets_setup['instrument_targets'] = str(
+                            currency_exchange_rate_for_upper_and_lower1.upper())
+
                     else:
+                        instruments_save_info_msg = {
+                            'title': '***** ERROR *****',
+                            'msg_text': 'Set Strategy BUY or SELL'
+                        }
+                        sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                         pass
-
-                    targets_setup['buy_or_sell_structure'] = str(buy_or_sell_structure1)
+                else:
+                    targets_setup['buy_or_sell_structure'] = 'buy_or_sell_structure'
                     targets_setup['upper'] = str(currency_exchange_rate_upper1)
                     targets_setup['lower'] = str(currency_exchange_rate_lower1)
-                    targets_setup['amount_value_given_in'] = str(spread_structure1_adjusted)
+                    targets_setup['amount_value_given_in'] = ' '
                     targets_setup['instrument_targets'] = str(
                         currency_exchange_rate_for_upper_and_lower1.upper())
-
-                elif buy_or_sell_structure1 == 'sell':
-                    spread_structure1_adjusted = str.replace(spread_structure1, ',', '.')
-
-                    targets_setup['buy_or_sell_structure'] = str(buy_or_sell_structure1)
-                    targets_setup['upper'] = str(currency_exchange_rate_upper1)
-                    targets_setup['lower'] = str(currency_exchange_rate_lower1)
-                    targets_setup['amount_value_given_in'] = str(spread_structure1_adjusted)
-                    targets_setup['instrument_targets'] = str(
-                        currency_exchange_rate_for_upper_and_lower1.upper())
-
-                else:
-                    instruments_save_info_msg = {
-                        'title': '***** ERROR *****',
-                        'msg_text': 'Set Strategy BUY or SELL'
-                    }
-                    sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
-                    pass
-
-                if str(ui.comboBox_value_given_2.currentText()) != 'Set Option Strategy Cost as TRIGGER (optional)':
-                    lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
-                    lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
-
-                    targets_setup['trigger_kind'] = str(ui.comboBox_value_given_2.currentText())
-                    targets_setup['trigger_value'] = str(lcerl1_2_adjusted_dot)
-
-                else:
                     targets_setup['trigger_kind'] = 'Set Option Strategy Cost as TRIGGER (optional)'
                     targets_setup['trigger_value'] = ''
+                    targets_setup['value_given_in'] = 'value_given_in'
 
-                targets_setup['value_given_in'] = ui.comboBox_value_given.currentText()
+                if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                        instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+                    if str(ui.comboBox_value_given_2.currentText()) != 'Set Option Strategy Cost as TRIGGER (optional)':
+                        lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
+                        lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
+
+                        targets_setup['trigger_kind'] = str(ui.comboBox_value_given_2.currentText())
+                        targets_setup['trigger_value'] = str(lcerl1_2_adjusted_dot)
+
+                    else:
+                        targets_setup['trigger_kind'] = 'Set Option Strategy Cost as TRIGGER (optional)'
+                        targets_setup['trigger_value'] = ''
+
+                    targets_setup['value_given_in'] = ui.comboBox_value_given.currentText()
+                else:
+                    pass
 
                 with open('setup.ini', 'w') as setupfile:
                     setup.write(setupfile)
@@ -2187,7 +2208,7 @@ class Config:
         from lists import list_monitor_log
         try:
             from connection_spread import connect
-            connect.logwriter('*** Date and time saved - connect ***')
+            connect.logwriter('*** Date and time saved ***')
         except ImportError:
             pass
 
@@ -5906,6 +5927,27 @@ class ConditionsCheck:
         global send_future_orders_while
         from connection_spread import connect
 
+        instrument_kind_1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+        instrument_kind_2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+        instrument_kind_3 = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+        instrument_kind_4 = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
+
+        if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+            mark_price_orders = False
+            value_mark_price_orders = 0
+        else:
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False,
+                interpolation=None
+            )
+            setup.read('setup.ini')
+            mark_price_setup = setup['mark_price']
+            value_mark_price_orders = float(str(mark_price_setup['value_mark_price_orders']))
+            mark_price_orders = mark_price_setup.getboolean('mark_price_orders')
+
         send_future_orders_while = True
         while send_future_orders_while is True:
             from lists import list_monitor_log
@@ -5936,8 +5978,16 @@ class ConditionsCheck:
                             instrument_number=instrument_number)
                         instrument_position = float(connect.get_position_size(instrument_name=instrument_name))
                         if instrument_direction == 'buy':
-                            y = connect.ask_price(instrument_name=instrument_name)
-                            instrument_price = float(y)
+                            if mark_price_orders is True:
+                                y = connect.mark_price(instrument_name=instrument_name)
+                                instrument_price = ConditionsCheck().number_multiple_10_and_round_0_digits(
+                                    number=float(y) - (
+                                        value_mark_price_orders * float(y) / 100)
+                                )
+                            else:
+                                y = connect.ask_price(instrument_name=instrument_name)
+                                instrument_price = float(y)
+
                             x = float(instrument_max_position)
                             xx = float(ConditionsCheck().number_multiple_10_and_round_0_digits(
                                 number=(x - instrument_position)))
@@ -5989,10 +6039,10 @@ class ConditionsCheck:
                                     break
                                     pass
                             else:
-                                if InstrumentsSaved().instrument_kind_saved(instrument_number=1) != 'option' and \
-                                        InstrumentsSaved().instrument_kind_saved(instrument_number=2) != 'option' and \
-                                        InstrumentsSaved().instrument_kind_saved(instrument_number=3) != 'option' and \
-                                        InstrumentsSaved().instrument_kind_saved(instrument_number=4) != 'option':
+                                if instrument_kind_1 != 'option' and \
+                                        instrument_kind_2 != 'option' and \
+                                        instrument_kind_3 != 'option' and \
+                                        instrument_kind_4 != 'option':
                                     order_amount_instrument = abs(xx)
                                     if order_amount_instrument >= 10:
                                         connect.buy_limit(currency=instrument_name, amount=abs(
@@ -6013,8 +6063,17 @@ class ConditionsCheck:
                                     pass
                         elif instrument_direction == 'sell':
                             instrument_amount = float(instrument_amount) * 1
-                            y = connect.bid_price(instrument_name=instrument_name)
-                            instrument_price = abs(float(y))
+
+                            if mark_price_orders is True:
+                                y = connect.mark_price(instrument_name=instrument_name)
+                                instrument_price = ConditionsCheck().number_multiple_10_and_round_0_digits(
+                                    number=float(y) + (
+                                        value_mark_price_orders * float(y) / 100)
+                                )
+                            else:
+                                y = connect.bid_price(instrument_name=instrument_name)
+                                instrument_price = abs(float(y))
+
                             x = float(instrument_max_position)
                             xx = abs(float(ConditionsCheck().number_multiple_10_and_round_0_digits(
                                 number=(x - instrument_position))))
@@ -6066,10 +6125,10 @@ class ConditionsCheck:
                                     break
                                     pass
                             else:
-                                if InstrumentsSaved().instrument_kind_saved(instrument_number=1) != 'option' and \
-                                        InstrumentsSaved().instrument_kind_saved(instrument_number=2) != 'option' and \
-                                        InstrumentsSaved().instrument_kind_saved(instrument_number=3) != 'option' and \
-                                        InstrumentsSaved().instrument_kind_saved(instrument_number=4) != 'option':
+                                if instrument_kind_1 != 'option' and \
+                                    instrument_kind_2 != 'option' and \
+                                        instrument_kind_3 != 'option' and \
+                                    instrument_kind_4 != 'option':
                                     order_amount_instrument = abs(xx)
                                     if order_amount_instrument >= 10:
                                         connect.sell_limit(currency=instrument_name, amount=abs(
@@ -6091,15 +6150,15 @@ class ConditionsCheck:
 
                         else:
                             connect.logwriter('********** ERROR in def send_future_orders in vavabot_spread.py '
-                                              'Error Code:: 4493 **********')
+                                              'Error Code:: 6153 **********')
                             list_monitor_log.append('********** ERROR in def send_future_orders in vavabot_spread.py '
-                                                    'Error Code:: 4495 **********')
+                                                    'Error Code:: 6153 **********')
                             time.sleep(3)
                             pass
                     else:
                         break
             except Exception as er:
-                list_monitor_log.append(str(er) + ' Error Code:: 4502')
+                list_monitor_log.append(str(er) + ' Error Code:: 6161')
                 time.sleep(10)
                 pass
             finally:
@@ -6109,6 +6168,83 @@ class ConditionsCheck:
         time.sleep(3)
         list_monitor_log.append('There are NOT Future Orders to Send')
         connect.logwriter('There are NOT Future Orders to Send')
+
+    @staticmethod
+    def targets_achieved_if_only_future():
+        from lists import list_monitor_log
+        from connection_spread import led_color
+        import time
+        global run_target_on_off
+        global trading_on_off_for_msg
+
+        # Args Fixes
+        instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
+        exchange_rate_lower_then = float(ConfigSaved().exchange_rate_lower_then())
+        exchange_rate_upper_then = float(ConfigSaved().exchange_rate_upper_then())
+
+        try:
+            from connection_spread import connect
+            if led_color() == 'red':
+                list_monitor_log.append('********** Connection Offline - '
+                                        'Waiting connection online for check '
+                                        'if Conditions are Filled **********')
+                time.sleep(3)
+                pass
+            else:
+                if run_target_on_off == 'on':
+                    list_monitor_log.append('*** Checking if Targets are filled ***')
+
+                    # Args modify
+                    currency_exchange_rate_mark_price = float(connect.get_book_summary_by_instrument(
+                        instrument_name=instrument_name_currency_exchange_rate)[0]['mark_price'])
+
+                    # Targets check
+                    if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_then):
+                        list_monitor_log.append('*** Mark Price < ' + str(
+                            exchange_rate_lower_then) + 'USD - ''LOWER then Condition Filled ***')
+                        if float(currency_exchange_rate_mark_price) > float(exchange_rate_upper_then):
+                            list_monitor_log.append('*** Mark Price > ' + str(
+                                exchange_rate_upper_then) + 'USD - '' UPPER then Condition Filled ***')
+                            run_target_on_off = 'off'
+                            list_monitor_log.append('*** ALL CONDITIONS FILLED ***')
+
+                        else:
+                            run_target_on_off = 'on'
+                            list_monitor_log.append('Waiting Mark Price  > ' +
+                                                    str(exchange_rate_upper_then) +
+                                                    ' - UPPER then Condition')
+                    else:
+                        run_target_on_off = 'on'
+                        list_monitor_log.append('Waiting Mark Price < ' +
+                                                str(exchange_rate_lower_then) +
+                                                ' - LOWER then Condition')
+                        pass
+                elif trading_on_off_for_msg == 'off':
+                    run_target_on_off = 'off'
+                    pass
+                else:
+                    list_monitor_log.append('****** ERROR targets_achieved_if_only_future Error Code:: 6167 *****')
+                    connect.logwriter(msg='****** ERROR targets_achieved_if_only_future Error Code:: 6167 *****')
+                    pass
+        except Exception as er:
+            from connection_spread import connect
+            connect.logwriter(str(er) + 'targets_achieved_if_only_future - Error Code:: 6172')
+            list_monitor_log.append(str(er) + 'targets_achieved_if_only_future - Error Code:: 6172')
+        finally:
+            pass
+
+        if trading_on_off_for_msg == 'off':
+            return 'trading_on_off_off'
+        elif run_target_on_off == 'on':
+            return 'targets_no'
+        elif run_target_on_off == 'off':
+            return 'targets_ok'
+        else:
+            from connection_spread import connect
+            connect.logwriter('*********** Error Error Code:: 6185 - targets_achieved_if_only_future ************')
+            list_monitor_log.append(
+                '*********** Error Error Code:: 6185 - targets_achieved_if_only_future ************')
+            return 'targets_no'
 
     @staticmethod
     def targets_achieved():
@@ -9204,106 +9340,191 @@ def config(ui):
         date_time_end_datetime = datetime.strptime(date_time_end_str, "%d/%m/%Y %H:%M")
         date_time_end_stamp = date_time_end_datetime.timestamp()
 
-        if ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text() == '' or \
-                ui.lineEdit_currency_exchange_rate_lower1.text() == '' or \
-                ui.lineEdit_buy_or_sell_structure1.currentText() == 'Set buy or sell' or \
-                ui.comboBox_value_given.currentText() == \
-                'Set option strategy cost' or \
-                ui.lineEdit_spread_structure1.text() == '':
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('All fields are required')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-            pass
-        elif date_time_start_stamp >= date_time_end_stamp:
-            from connection_spread import connect
-            setup = ConfigParser(
-                allow_no_value=True,
-                inline_comment_prefixes='#',
-                strict=False
-            )
-            setup.read('setup.ini')
-            date_time_setup = setup['date_time']
+        instrument_kind_1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+        instrument_kind_2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+        instrument_kind_3 = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+        instrument_kind_4 = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
 
-            if ui.checkbox_date_time_start.isChecked() is True:
-                date_time_setup['start_ischecked'] = 'True'
-            else:
-                date_time_setup['start_ischecked'] = 'False'
+        if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+            if ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text() == '' or \
+                    ui.lineEdit_currency_exchange_rate_lower1.text() == '' or \
+                    ui.lineEdit_buy_or_sell_structure1.currentText() == 'Set buy or sell' or \
+                    ui.comboBox_value_given.currentText() == \
+                    'Set option strategy cost' or \
+                    ui.lineEdit_spread_structure1.text() == '':
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('All fields are required')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+            elif date_time_start_stamp >= date_time_end_stamp:
+                from connection_spread import connect
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False
+                )
+                setup.read('setup.ini')
+                date_time_setup = setup['date_time']
 
-            if ui.checkbox_date_time_end.isChecked() is True:
-                date_time_setup['end_ischecked'] = 'True'
-            else:
-                date_time_setup['end_ischecked'] = 'False'
-
-            now = datetime.now()
-            now10 = now + timedelta(days=10)
-            now_10_text = now10.strftime('%d/%m/%Y %H:%M')
-            now_text = now.strftime('%d/%m/%Y %H:%M')
-
-            date_time_setup['start'] = now_text
-            date_time_setup['end'] = now_10_text
-
-            with open('setup.ini', 'w') as configfile:
-                setup.write(configfile)
-            connect.logwriter('*** Date and time saved ***')
-
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText('Date and time start < end\nis NOT accepted')
-            msg.setWindowTitle('***** ERROR *****')
-            msg.exec_()
-            pass
-            Config().date_time_saved()
-        else:
-            try:
-                if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) == 0 or \
-                         float(str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')) == 0 or \
-                         float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')) == 0:
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Information)
-                    msg.setText('Zero is NOT accepted')
-                    msg.setWindowTitle('***** ERROR *****')
-                    msg.exec_()
+                if ui.checkbox_date_time_start.isChecked() is True:
+                    date_time_setup['start_ischecked'] = 'True'
                 else:
-                    if str(ui.comboBox_value_given_2.currentText()) != \
-                            'Set Option Strategy Cost as TRIGGER (optional)':
-                        lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
-                        lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
-                        if str(lcerl1_2_adjusted_dot) == '':
-                            msg = QtWidgets.QMessageBox()
-                            msg.setIcon(QtWidgets.QMessageBox.Information)
-                            msg.setText('Set Option Strategy Cost as TRIGGER is Required')
-                            msg.setWindowTitle('***** ERROR *****')
-                            msg.exec_()
-                            pass
-                        else:
-                            try:
-                                if float(lcerl1_2_adjusted_dot) == 0:
-                                    msg = QtWidgets.QMessageBox()
-                                    msg.setIcon(QtWidgets.QMessageBox.Information)
-                                    msg.setText('Set Option Strategy Cost as TRIGGER is Required\nZero is NOT accepted')
-                                    msg.setWindowTitle('***** ERROR *****')
-                                    msg.exec_()
-                                else:
-                                    lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
-                                    Config().save_targets(
-                                        currency_exchange_rate_for_upper_and_lower1=lcerfual,
-                                        currency_exchange_rate_upper1=str.replace(
-                                            ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.'),
-                                        currency_exchange_rate_lower1=str.replace(
-                                            ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.'),
-                                        buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
-                                        spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
-                                    )
-                                    date_time_save()
-                            except ValueError:
+                    date_time_setup['start_ischecked'] = 'False'
+
+                if ui.checkbox_date_time_end.isChecked() is True:
+                    date_time_setup['end_ischecked'] = 'True'
+                else:
+                    date_time_setup['end_ischecked'] = 'False'
+
+                now = datetime.now()
+                now10 = now + timedelta(days=10)
+                now_10_text = now10.strftime('%d/%m/%Y %H:%M')
+                now_text = now.strftime('%d/%m/%Y %H:%M')
+
+                date_time_setup['start'] = now_text
+                date_time_setup['end'] = now_10_text
+
+                with open('setup.ini', 'w') as configfile:
+                    setup.write(configfile)
+                connect.logwriter('*** Date and time saved ***')
+
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Date and time start < end\nis NOT accepted')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+                Config().date_time_saved()
+            else:
+                try:
+                    if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) == 0 or \
+                             float(str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')) == 0 or \
+                             float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')) == 0:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Zero is NOT accepted')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
+                    else:
+                        if str(ui.comboBox_value_given_2.currentText()) != \
+                                'Set Option Strategy Cost as TRIGGER (optional)':
+                            lcerl1_2 = str(ui.lineEdit_currency_exchange_rate_lower1_2.text())
+                            lcerl1_2_adjusted_dot = str.replace(lcerl1_2, ',', '.')
+                            if str(lcerl1_2_adjusted_dot) == '':
                                 msg = QtWidgets.QMessageBox()
                                 msg.setIcon(QtWidgets.QMessageBox.Information)
-                                msg.setText('Only numbers are accepted')
+                                msg.setText('Set Option Strategy Cost as TRIGGER is Required')
                                 msg.setWindowTitle('***** ERROR *****')
                                 msg.exec_()
                                 pass
+                            else:
+                                try:
+                                    if float(lcerl1_2_adjusted_dot) == 0:
+                                        msg = QtWidgets.QMessageBox()
+                                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                                        msg.setText(
+                                            'Set Option Strategy Cost as TRIGGER is Required\nZero is NOT accepted')
+                                        msg.setWindowTitle('***** ERROR *****')
+                                        msg.exec_()
+                                    else:
+                                        lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
+                                        Config().save_targets(
+                                            currency_exchange_rate_for_upper_and_lower1=lcerfual,
+                                            currency_exchange_rate_upper1=str.replace(
+                                                ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.'),
+                                            currency_exchange_rate_lower1=str.replace(
+                                                ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.'),
+                                            buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
+                                            spread_structure1=str.replace(
+                                                ui.lineEdit_spread_structure1.text(), ',', '.')
+                                        )
+                                        date_time_save()
+                                except ValueError:
+                                    msg = QtWidgets.QMessageBox()
+                                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                                    msg.setText('Only numbers are accepted')
+                                    msg.setWindowTitle('***** ERROR *****')
+                                    msg.exec_()
+                                    pass
+                        else:
+                            lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
+                            Config().save_targets(
+                                currency_exchange_rate_for_upper_and_lower1=lcerfual,
+                                currency_exchange_rate_upper1=str.replace(
+                                    ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.'),
+                                currency_exchange_rate_lower1=str.replace(
+                                    ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.'),
+                                buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
+                                spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
+                            )
+                            date_time_save()
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                    msg.setText('Only numbers are accepted')
+                    msg.setWindowTitle('***** ERROR *****')
+                    msg.exec_()
+                    pass
+        else:
+            if ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text() == '' or \
+                    ui.lineEdit_currency_exchange_rate_lower1.text() == '':
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('All fields are required')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+            elif date_time_start_stamp >= date_time_end_stamp:
+                from connection_spread import connect
+                setup = ConfigParser(
+                    allow_no_value=True,
+                    inline_comment_prefixes='#',
+                    strict=False
+                )
+                setup.read('setup.ini')
+                date_time_setup = setup['date_time']
+
+                if ui.checkbox_date_time_start.isChecked() is True:
+                    date_time_setup['start_ischecked'] = 'True'
+                else:
+                    date_time_setup['start_ischecked'] = 'False'
+
+                if ui.checkbox_date_time_end.isChecked() is True:
+                    date_time_setup['end_ischecked'] = 'True'
+                else:
+                    date_time_setup['end_ischecked'] = 'False'
+
+                now = datetime.now()
+                now10 = now + timedelta(days=10)
+                now_10_text = now10.strftime('%d/%m/%Y %H:%M')
+                now_text = now.strftime('%d/%m/%Y %H:%M')
+
+                date_time_setup['start'] = now_text
+                date_time_setup['end'] = now_10_text
+
+                with open('setup.ini', 'w') as configfile:
+                    setup.write(configfile)
+                connect.logwriter('*** Date and time saved ***')
+
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Date and time start < end\nis NOT accepted')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+                Config().date_time_saved()
+            else:
+                try:
+                    if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) == 0 or \
+                             float(str.replace(ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.')) == 0:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setText('Zero is NOT accepted')
+                        msg.setWindowTitle('***** ERROR *****')
+                        msg.exec_()
                     else:
                         lcerfual = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
                         Config().save_targets(
@@ -9312,17 +9533,16 @@ def config(ui):
                                 ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.'),
                             currency_exchange_rate_lower1=str.replace(
                                 ui.lineEdit_currency_exchange_rate_lower1.text(), ',', '.'),
-                            buy_or_sell_structure1=ui.lineEdit_buy_or_sell_structure1.currentText(),
-                            spread_structure1=str.replace(ui.lineEdit_spread_structure1.text(), ',', '.')
-                        )
+                            buy_or_sell_structure1='buy_or_sell_structure',
+                            spread_structure1='amount_value_given_in')
                         date_time_save()
-            except ValueError:
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Information)
-                msg.setText('Only numbers are accepted')
-                msg.setWindowTitle('***** ERROR *****')
-                msg.exec_()
-                pass
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                    msg.setText('Only numbers are accepted')
+                    msg.setWindowTitle('***** ERROR *****')
+                    msg.exec_()
+                    pass
 
     def target_saved_check_signal_receive():
         ui.textEdit_targets_saved.setText(ConfigSaved().targets_saved())
@@ -10410,6 +10630,11 @@ def run(ui):
         run_target_on_off = 'on'
         send_future_orders_while = True
 
+        instrument_kind_1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+        instrument_kind_2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+        instrument_kind_3 = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+        instrument_kind_4 = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
+
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -10628,39 +10853,132 @@ def run(ui):
                                 pass
 
                             # Posição tem que ser menor que a quantidade que se quer negociar.
-                            aa = ConditionsCheck().position_option_smaller_max_position_instruments_()
+                            if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                                    instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+                                aa = ConditionsCheck().position_option_smaller_max_position_instruments_()
+                            else:
+                                aa = 'position_option_smaller_max_position_instruments_no'
+
                             if aa == 'position_option_smaller_max_position_instruments_no':
                                 if dont_stop_trading_and_update_amount_adjusted is True:
-                                    list_monitor_log.append(
-                                        '*********** Option Position Greater than or Equal to Maximum Position '
-                                        '***********')
-                                    list_monitor_log.append(
-                                        '*********** Infinite Loop of Position Update Eanbled ***********')
-                                    connect.logwriter(
-                                        '*********** Option Position Greater than or Equal to Maximum Position '
-                                        '***********')
-                                    connect.logwriter(
-                                        '*********** Infinite Loop of Position Update Eanbled ***********')
-                                    run_trade_future()
-                                    trading_on_off = 'on'
-                                    run_trade_option_on_off = 'on'
-                                    run_trade_future_on_off = 'on'
-                                    trading_on_off_for_msg = 'on'
-                                    run_target_on_off = 'on'
-                                    send_future_orders_while = True
-                                    pass
-                                else:
-                                    list_monitor_log.append(
-                                        '*********** Option Position Greater than or Equal to Maximum Position '
-                                        '***********')
-                                    connect.logwriter(
-                                        '*********** Option Position Greater than or Equal to Maximum Position '
-                                        '***********')
-                                    if run_trade_future_on_off == 'on':
+                                    if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                                            instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+                                        list_monitor_log.append(
+                                            '*********** Option Position Greater than or Equal to Maximum Position '
+                                            '***********')
+                                        list_monitor_log.append(
+                                            '*********** Infinite Loop of Position Update Eanbled ***********')
+                                        connect.logwriter(
+                                            '*********** Option Position Greater than or Equal to Maximum Position '
+                                            '***********')
+                                        connect.logwriter(
+                                            '*********** Infinite Loop of Position Update Eanbled ***********')
                                         run_trade_future()
+                                        trading_on_off = 'on'
+                                        run_trade_option_on_off = 'on'
+                                        run_trade_future_on_off = 'on'
+                                        trading_on_off_for_msg = 'on'
+                                        run_target_on_off = 'on'
+                                        send_future_orders_while = True
+                                        pass
+                                    elif instrument_kind_1 == 'future' or instrument_kind_2 == 'future' or \
+                                            instrument_kind_3 == 'future' or instrument_kind_4 == 'future':
+                                        if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
+                                            list_monitor_log.append(
+                                                '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                '***********')
+                                            list_monitor_log.append(
+                                                '*********** Infinite Loop of Position Update Eanbled ***********')
+                                            connect.logwriter(
+                                                '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                '***********')
+                                            connect.logwriter(
+                                                '*********** Infinite Loop of Position Update Eanbled ***********')
+                                            run_trade_future()
+                                            trading_on_off = 'on'
+                                            run_trade_option_on_off = 'on'
+                                            run_trade_future_on_off = 'on'
+                                            trading_on_off_for_msg = 'on'
+                                            run_target_on_off = 'on'
+                                            send_future_orders_while = True
+                                            pass
+                                        else:
+                                            list_monitor_log.append(
+                                                '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                '***********')
+                                            connect.logwriter(
+                                                '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                '***********')
+                                            if run_trade_future_on_off == 'on':
+                                                list_monitor_log.append(
+                                                    '*********** Waiting future targets achieved '
+                                                    '***********')
+                                            else:
+                                                run_trade_option_on_off = 'off'
+                                                break
                                     else:
-                                        run_trade_option_on_off = 'off'
+                                        connect.logwriter(
+                                            '********** ERROR IN vavabot_spread.py - ALLS INSTRUMENT ARE Unassigneds - '
+                                            'Error Code:: 10775 **********')
+                                        list_monitor_log.append(
+                                            '********** ERROR IN vavabot_spread.py - ALLS INSTRUMENT ARE Unassigneds - '
+                                            'Error Code:: 10775 **********')
                                         break
+                                else:
+                                    if instrument_kind_1 == 'option' or instrument_kind_2 == 'option' or \
+                                            instrument_kind_3 == 'option' or instrument_kind_4 == 'option':
+                                        list_monitor_log.append(
+                                            '*********** Option Position Greater than or Equal to Maximum Position '
+                                            '***********')
+                                        connect.logwriter(
+                                            '*********** Option Position Greater than or Equal to Maximum Position '
+                                            '***********')
+                                        if run_trade_future_on_off == 'on':
+                                            run_trade_future()
+                                        else:
+                                            run_trade_option_on_off = 'off'
+                                            break
+                                    elif instrument_kind_1 == 'future' or instrument_kind_2 == 'future' or \
+                                            instrument_kind_3 == 'future' or instrument_kind_4 == 'future':
+                                        list_monitor_log.append(
+                                            '*********** THERE ARE ONLY FUTURE ORDERS '
+                                            '***********')
+                                        connect.logwriter(
+                                            '*********** THERE ARE ONLY FUTURE ORDERS '
+                                            '***********')
+                                        if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
+                                            list_monitor_log.append(
+                                                '*********** Targets future filed '
+                                                '***********')
+                                            connect.logwriter(
+                                                '*********** Targets future filed '
+                                                '***********')
+                                            if run_trade_future_on_off == 'on':
+                                                run_trade_future()
+                                            else:
+                                                run_trade_option_on_off = 'off'
+                                                break
+                                        else:
+                                            if run_trade_future_on_off == 'on':
+                                                list_monitor_log.append(
+                                                    '*********** Waiting future targets achieved '
+                                                    '***********')
+                                                connect.logwriter(
+                                                    '*********** Waiting future target achieved '
+                                                    '***********')
+                                            else:
+                                                run_trade_option_on_off = 'off'
+                                                break
+
+                                    else:
+                                        connect.logwriter(
+                                            '********** ERROR IN vavabot_spread.py - ALLS INSTRUMENT ARE Unassigneds - '
+                                            'Error Code:: 10813 **********')
+                                        list_monitor_log.append(
+                                            '********** ERROR IN vavabot_spread.py - ALLS INSTRUMENT ARE Unassigneds - '
+                                            'Error Code:: 10813 **********')
+                                        break
+
                             elif aa == 'position_option_smaller_max_position_instruments_ok':
                                 list_monitor_log.append('*** Option Position Smaller Max Position ***')
                                 run_target_on_off = 'on'  # para poder executar o targets_achieved() se ainda há options
