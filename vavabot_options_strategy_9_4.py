@@ -6128,7 +6128,7 @@ class ConditionsCheck:
                                 if instrument_kind_1 != 'option' and \
                                     instrument_kind_2 != 'option' and \
                                         instrument_kind_3 != 'option' and \
-                                    instrument_kind_4 != 'option':
+                                        instrument_kind_4 != 'option':
                                     order_amount_instrument = abs(xx)
                                     if order_amount_instrument >= 10:
                                         connect.sell_limit(currency=instrument_name, amount=abs(
@@ -10883,39 +10883,43 @@ def run(ui):
                                         pass
                                     elif instrument_kind_1 == 'future' or instrument_kind_2 == 'future' or \
                                             instrument_kind_3 == 'future' or instrument_kind_4 == 'future':
-                                        if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
-                                            list_monitor_log.append(
-                                                '*********** THERE ARE ONLY FUTURE ORDERS '
-                                                '***********')
-                                            list_monitor_log.append(
-                                                '*********** Infinite Loop of Position Update Eanbled ***********')
-                                            connect.logwriter(
-                                                '*********** THERE ARE ONLY FUTURE ORDERS '
-                                                '***********')
-                                            connect.logwriter(
-                                                '*********** Infinite Loop of Position Update Eanbled ***********')
-                                            run_trade_future()
-                                            trading_on_off = 'on'
-                                            run_trade_option_on_off = 'on'
-                                            run_trade_future_on_off = 'on'
-                                            trading_on_off_for_msg = 'on'
-                                            run_target_on_off = 'on'
-                                            send_future_orders_while = True
-                                            pass
-                                        else:
-                                            list_monitor_log.append(
-                                                '*********** THERE ARE ONLY FUTURE ORDERS '
-                                                '***********')
-                                            connect.logwriter(
-                                                '*********** THERE ARE ONLY FUTURE ORDERS '
-                                                '***********')
-                                            if run_trade_future_on_off == 'on':
+                                        if run_trade_future_on_off == 'on':
+                                            if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
                                                 list_monitor_log.append(
-                                                    '*********** Waiting future targets achieved '
+                                                    '*********** THERE ARE ONLY FUTURE ORDERS '
                                                     '***********')
+                                                list_monitor_log.append(
+                                                    '*********** Infinite Loop of Position Update Eanbled ***********')
+                                                connect.logwriter(
+                                                    '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                    '***********')
+                                                connect.logwriter(
+                                                    '*********** Infinite Loop of Position Update Eanbled ***********')
+                                                run_trade_future()
+                                                trading_on_off = 'on'
+                                                run_trade_option_on_off = 'on'
+                                                run_trade_future_on_off = 'on'
+                                                trading_on_off_for_msg = 'on'
+                                                run_target_on_off = 'on'
+                                                send_future_orders_while = True
+                                                pass
                                             else:
-                                                run_trade_option_on_off = 'off'
-                                                break
+                                                list_monitor_log.append(
+                                                    '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                    '***********')
+                                                connect.logwriter(
+                                                    '*********** THERE ARE ONLY FUTURE ORDERS '
+                                                    '***********')
+                                                if run_trade_future_on_off == 'on':
+                                                    list_monitor_log.append(
+                                                        '*********** Waiting future targets achieved '
+                                                        '***********')
+                                                else:
+                                                    run_trade_option_on_off = 'off'
+                                                    break
+                                        else:
+                                            run_trade_option_on_off = 'off'
+                                            break
                                     else:
                                         connect.logwriter(
                                             '********** ERROR IN vavabot_spread.py - ALLS INSTRUMENT ARE Unassigneds - '
@@ -10946,29 +10950,33 @@ def run(ui):
                                         connect.logwriter(
                                             '*********** THERE ARE ONLY FUTURE ORDERS '
                                             '***********')
-                                        if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
-                                            list_monitor_log.append(
-                                                '*********** Targets future filed '
-                                                '***********')
-                                            connect.logwriter(
-                                                '*********** Targets future filed '
-                                                '***********')
-                                            if run_trade_future_on_off == 'on':
-                                                run_trade_future()
-                                            else:
-                                                run_trade_option_on_off = 'off'
-                                                break
-                                        else:
-                                            if run_trade_future_on_off == 'on':
+                                        if run_trade_future_on_off == 'on':
+                                            if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
                                                 list_monitor_log.append(
-                                                    '*********** Waiting future targets achieved '
+                                                    '*********** Targets future filed '
                                                     '***********')
                                                 connect.logwriter(
-                                                    '*********** Waiting future target achieved '
+                                                    '*********** Targets future filed '
                                                     '***********')
+                                                if run_trade_future_on_off == 'on':
+                                                    run_trade_future()
+                                                else:
+                                                    run_trade_option_on_off = 'off'
+                                                    break
                                             else:
-                                                run_trade_option_on_off = 'off'
-                                                break
+                                                if run_trade_future_on_off == 'on':
+                                                    list_monitor_log.append(
+                                                        '*********** Waiting future targets achieved '
+                                                        '***********')
+                                                    connect.logwriter(
+                                                        '*********** Waiting future target achieved '
+                                                        '***********')
+                                                else:
+                                                    run_trade_option_on_off = 'off'
+                                                    break
+                                        else:
+                                            run_trade_option_on_off = 'off'
+                                            break
 
                                     else:
                                         connect.logwriter(
