@@ -10883,6 +10883,22 @@ def run(ui):
                                         pass
                                     elif instrument_kind_1 == 'future' or instrument_kind_2 == 'future' or \
                                             instrument_kind_3 == 'future' or instrument_kind_4 == 'future':
+                                        if true_or_false_end_ischecked is True:
+                                            if date_time_end_stamp < datetime.now().timestamp():
+                                                trading_on_off = 'off'
+                                                run_trade_future_on_off = 'off'
+                                                run_trade_option_on_off = 'off'
+                                                run_target_on_off = 'off'
+                                                trading_on_off_for_msg = 'off'
+                                                send_future_orders_while = False
+
+                                                list_monitor_log.append('*** Trading Stopped by Timeout ***')
+                                                connect.logwriter('*** Trading Stopped by Timeout ***')
+                                            else:
+                                                list_monitor_log.append('*** Trading time is NOT over ***')
+                                        else:
+                                            pass
+
                                         if run_trade_future_on_off == 'on':
                                             if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
                                                 list_monitor_log.append(
@@ -10950,6 +10966,23 @@ def run(ui):
                                         connect.logwriter(
                                             '*********** THERE ARE ONLY FUTURE ORDERS '
                                             '***********')
+
+                                        if true_or_false_end_ischecked is True:
+                                            if date_time_end_stamp < datetime.now().timestamp():
+                                                trading_on_off = 'off'
+                                                run_trade_future_on_off = 'off'
+                                                run_trade_option_on_off = 'off'
+                                                run_target_on_off = 'off'
+                                                trading_on_off_for_msg = 'off'
+                                                send_future_orders_while = False
+
+                                                list_monitor_log.append('*** Trading Stopped by Timeout ***')
+                                                connect.logwriter('*** Trading Stopped by Timeout ***')
+                                            else:
+                                                list_monitor_log.append('*** Trading time is NOT over ***')
+                                        else:
+                                            pass
+
                                         if run_trade_future_on_off == 'on':
                                             if ConditionsCheck().targets_achieved_if_only_future() == 'targets_ok':
                                                 list_monitor_log.append(
