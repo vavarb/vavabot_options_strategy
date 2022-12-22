@@ -1421,11 +1421,16 @@ class Instruments:
 
         reduce_only_setup = setup['reduce_only']
         instrument_reduce_only_setup = reduce_only_setup.getboolean('instrument' + str(instrument_number))
+        instrument_reduce_only_setup_1 = reduce_only_setup.getboolean('instrument1')
+        instrument_reduce_only_setup_2 = reduce_only_setup.getboolean('instrument2')
+        instrument_reduce_only_setup_3 = reduce_only_setup.getboolean('instrument3')
+        instrument_reduce_only_setup_4 = reduce_only_setup.getboolean('instrument4')
+        infinite_loop = reduce_only_setup.getboolean('infinite_loop')
 
         amount_adjusted_setup = setup['amount_adjusted']
 
         instrument_name_construction_from_file = InstrumentsSaved().instrument_name_construction_from_file(
-                instrument_number=instrument_number)
+            instrument_number=instrument_number)
 
         if instrument_name_construction_from_file == 'Unassigned':
             amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = 'Unassigned'
@@ -1485,14 +1490,38 @@ class Instruments:
                     )
                 finally:
                     pass
+        elif instrument_reduce_only_setup_1 is False and instrument_reduce_only_setup_2 is False and \
+            instrument_reduce_only_setup_3 is False and instrument_reduce_only_setup_4 is False and \
+                infinite_loop is True and instrument_name_construction_from_file != 'Unassigned':
+            instrument_direction = str(
+                InstrumentsSaved().instrument_direction_construction_from_instrument_file(
+                    instrument_number=instrument_number))
 
+            amount_setup = setup['amount']
+            instrument_amount_saved = amount_setup[str('instrument' + str(instrument_number) + '_amount')]
+
+            if 'Unassigned' in instrument_amount_saved:
+                instrument_amount_saved = 0
+            else:
+                instrument_amount_saved = float(instrument_amount_saved)
+
+            if instrument_direction == 'sell':
+                instrument_amount_saved = instrument_amount_saved * -1
+            else:
+                pass
+
+            instrument_position_saved_for_max_amount = float(
+                InstrumentsSaved().instrument_position_saved(instrument_number=instrument_number)
+            )
+            amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
+                abs(instrument_amount_saved - instrument_position_saved_for_max_amount))
         else:
             amount_setup = setup['amount']
             instrument_amount_saved = amount_setup[str('instrument' + str(instrument_number) + '_amount')]
 
             amount_adjusted_setup[str('instrument' + str(instrument_number) + '_amount_adjusted')] = str(
                 instrument_amount_saved)
-        
+
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
 
@@ -1514,7 +1543,7 @@ class Instruments:
         except Exception as er:
             from lists import list_monitor_log
             list_monitor_log.append(
-                'Error Code: 1510 - Amount Adjusted Save - error: ' + str(er)
+                'Error Code: 1542 - Amount Adjusted Save - error: ' + str(er)
             )
         finally:
             pass
@@ -2002,7 +2031,7 @@ class Config:
 
         except Exception as er:
             from lists import list_monitor_log
-            list_monitor_log.append(str(er) + ' Error Code:: 1451')
+            list_monitor_log.append(str(er) + ' Error Code:: 2034')
 
             list_for_signal = list()
             list_for_signal.clear()
@@ -2122,7 +2151,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '9.4',
+            'version': '9.5',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
@@ -8142,8 +8171,8 @@ def instruments(ui):
 
         except Exception as er:
             from connection_spread import connect
-            connect.logwriter(str(er) + ' Error Code:: 6026')
-            list_monitor_log.append(str(er) + ' Error Code:: 6027')
+            connect.logwriter(str(er) + ' Error Code:: 8174')
+            list_monitor_log.append(str(er) + ' Error Code:: 8174')
             with open('instruments_spread.txt', 'w') as instruments_save_file:
                 instruments_save_file.write('Instrument 1: Unassigned\n' +
                                             'Instrument 2: Unassigned\n' +
@@ -8209,10 +8238,10 @@ def instruments(ui):
         ui.date_time_end.setEnabled(False)
 
     def amount_and_kind_and_reduce_save_to_setup(
-        amount1=None, instrument1=None, kind1=None,
-        amount2=None, instrument2=None, kind2=None,
-        amount3=None, instrument3=None, kind3=None,
-        amount4=None, instrument4=None, kind4=None
+        amount1=None, instrument1=None, kind1=None, bur_or_sell_1=None,
+        amount2=None, instrument2=None, kind2=None, bur_or_sell_2=None,
+        amount3=None, instrument3=None, kind3=None, bur_or_sell_3=None,
+        amount4=None, instrument4=None, kind4=None, bur_or_sell_4=None
     ):
         if 'Unassigned' in str(instrument1):
             instrument1 = 'Unassigned'
@@ -8248,54 +8277,7 @@ def instruments(ui):
         )
         setup.read('setup.ini')
 
-        amount_setup = setup['amount']
-        
-        if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
-            amount_setup['instrument1_amount'] = str(amount1)
-        else:
-            amount_setup['instrument1_amount'] = 'Unassigned'
-        if instrument2 != 'Unassigned' and amount2 != '' and amount2 != 0 and amount2 != '0':
-            amount_setup['instrument2_amount'] = str(amount2)
-        else:
-            amount_setup['instrument2_amount'] = 'Unassigned'
-        if instrument3 != 'Unassigned' and amount3 != '' and amount3 != 0 and amount3 != '0':
-            amount_setup['instrument3_amount'] = str(amount3)
-        else:
-            amount_setup['instrument3_amount'] = 'Unassigned'
-        if instrument4 != 'Unassigned' and amount4 != '' and amount4 != 0 and amount4 != '0':
-            amount_setup['instrument4_amount'] = str(amount4)
-        else:
-            amount_setup['instrument4_amount'] = 'Unassigned'
-
-        kind_setup = setup['kind']
-
-        if instrument1 != 'Unassigned' and kind1 == 'o':
-            kind_setup['kind_instrument1'] = 'option'
-        elif instrument1 != 'Unassigned' and kind1 == 'f':
-            kind_setup['kind_instrument1'] = 'future'
-        else:
-            kind_setup['kind_instrument1'] = 'Unassigned'
-        if instrument2 != 'Unassigned' and kind2 == 'o':
-            kind_setup['kind_instrument2'] = 'option'
-        elif instrument2 != 'Unassigned' and kind2 == 'f':
-            kind_setup['kind_instrument2'] = 'future'
-        else:
-            kind_setup['kind_instrument2'] = 'Unassigned'
-        if instrument3 != 'Unassigned' and kind3 == 'o':
-            kind_setup['kind_instrument3'] = 'option'
-        elif instrument3 != 'Unassigned' and kind3 == 'f':
-            kind_setup['kind_instrument3'] = 'future'
-        else:
-            kind_setup['kind_instrument3'] = 'Unassigned'
-        if instrument4 != 'Unassigned' and kind4 == 'o':
-            kind_setup['kind_instrument4'] = 'option'
-        elif instrument4 != 'Unassigned' and kind4 == 'f':
-            kind_setup['kind_instrument4'] = 'future'
-        else:
-            kind_setup['kind_instrument4'] = 'Unassigned'
-
         reduce_only_setup = setup['reduce_only']
-        
         if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
             if ui.check_box_reduce_only_1.isChecked() is True:
                 reduce_only_setup['instrument1'] = 'True'
@@ -8324,7 +8306,104 @@ def instruments(ui):
                 reduce_only_setup['instrument4'] = 'False'
         else:
             reduce_only_setup['instrument4'] = 'False'
-        
+
+        amount_setup = setup['amount']
+        instrument_reduce_only_setup_to_new_amount_1 = reduce_only_setup['instrument1']
+        instrument_reduce_only_setup_to_new_amount_2 = reduce_only_setup['instrument2']
+        instrument_reduce_only_setup_to_new_amount_3 = reduce_only_setup['instrument3']
+        instrument_reduce_only_setup_to_new_amount_4 = reduce_only_setup['instrument4']
+        if instrument_reduce_only_setup_to_new_amount_1 == 'False' and \
+            instrument_reduce_only_setup_to_new_amount_2 == 'False' and \
+            instrument_reduce_only_setup_to_new_amount_3 == 'False' and \
+            instrument_reduce_only_setup_to_new_amount_4 == 'False' and \
+                reduce_only_setup.getboolean('infinite_loop') is True:
+            try:
+                from connection_spread import connect
+                if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
+                    position_when_save_instruments1 = float(connect.get_position_size(instrument_name=instrument1))
+                    if bur_or_sell_1 == 'sell':
+                        amount1 = float(amount1) * -1
+                    else:
+                        pass
+                    amount_setup['instrument1_amount'] = str(abs(float(amount1) + position_when_save_instruments1))
+                else:
+                    amount_setup['instrument1_amount'] = 'Unassigned'
+                if instrument2 != 'Unassigned' and amount2 != '' and amount2 != 0 and amount2 != '0':
+                    position_when_save_instruments2 = float(connect.get_position_size(instrument_name=instrument2))
+                    if bur_or_sell_2 == 'sell':
+                        amount2 = float(amount2) * -1
+                    else:
+                        pass
+                    amount_setup['instrument2_amount'] = str(abs(float(amount2) + position_when_save_instruments2))
+                else:
+                    amount_setup['instrument2_amount'] = 'Unassigned'
+                if instrument3 != 'Unassigned' and amount3 != '' and amount3 != 0 and amount3 != '0':
+                    position_when_save_instruments3 = float(connect.get_position_size(instrument_name=instrument3))
+                    if bur_or_sell_3 == 'sell':
+                        amount3 = float(amount3) * -1
+                    else:
+                        pass
+                    amount_setup['instrument3_amount'] = str(abs(float(amount3) + position_when_save_instruments3))
+                else:
+                    amount_setup['instrument3_amount'] = 'Unassigned'
+                if instrument4 != 'Unassigned' and amount4 != '' and amount4 != 0 and amount4 != '0':
+                    position_when_save_instruments4 = float(connect.get_position_size(instrument_name=instrument4))
+                    if bur_or_sell_4 == 'sell':
+                        amount4 = float(amount4) * -1
+                    else:
+                        pass
+                    amount_setup['instrument4_amount'] = str(abs(float(amount4) + position_when_save_instruments4))
+                else:
+                    amount_setup['instrument4_amount'] = 'Unassigned'
+            except Exception as er:
+                from lists import list_monitor_log
+                list_monitor_log.append('Code error 8330 - amount_and_kind_and_reduce_save_to_setup - error:' + str(er))
+            finally:
+                pass
+        else:
+            if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
+                amount_setup['instrument1_amount'] = str(amount1)
+            else:
+                amount_setup['instrument1_amount'] = 'Unassigned'
+            if instrument2 != 'Unassigned' and amount2 != '' and amount2 != 0 and amount2 != '0':
+                amount_setup['instrument2_amount'] = str(amount2)
+            else:
+                amount_setup['instrument2_amount'] = 'Unassigned'
+            if instrument3 != 'Unassigned' and amount3 != '' and amount3 != 0 and amount3 != '0':
+                amount_setup['instrument3_amount'] = str(amount3)
+            else:
+                amount_setup['instrument3_amount'] = 'Unassigned'
+            if instrument4 != 'Unassigned' and amount4 != '' and amount4 != 0 and amount4 != '0':
+                amount_setup['instrument4_amount'] = str(amount4)
+            else:
+                amount_setup['instrument4_amount'] = 'Unassigned'
+
+        kind_setup = setup['kind']
+        if instrument1 != 'Unassigned' and kind1 == 'o':
+            kind_setup['kind_instrument1'] = 'option'
+        elif instrument1 != 'Unassigned' and kind1 == 'f':
+            kind_setup['kind_instrument1'] = 'future'
+        else:
+            kind_setup['kind_instrument1'] = 'Unassigned'
+        if instrument2 != 'Unassigned' and kind2 == 'o':
+            kind_setup['kind_instrument2'] = 'option'
+        elif instrument2 != 'Unassigned' and kind2 == 'f':
+            kind_setup['kind_instrument2'] = 'future'
+        else:
+            kind_setup['kind_instrument2'] = 'Unassigned'
+        if instrument3 != 'Unassigned' and kind3 == 'o':
+            kind_setup['kind_instrument3'] = 'option'
+        elif instrument3 != 'Unassigned' and kind3 == 'f':
+            kind_setup['kind_instrument3'] = 'future'
+        else:
+            kind_setup['kind_instrument3'] = 'Unassigned'
+        if instrument4 != 'Unassigned' and kind4 == 'o':
+            kind_setup['kind_instrument4'] = 'option'
+        elif instrument4 != 'Unassigned' and kind4 == 'f':
+            kind_setup['kind_instrument4'] = 'future'
+        else:
+            kind_setup['kind_instrument4'] = 'Unassigned'
+                
         with open('setup.ini', 'w') as configfile:
             setup.write(configfile)
 
@@ -8770,15 +8849,19 @@ def instruments(ui):
                                     amount1=str.replace(str(
                                         ui.lineEdit_amount_instrumet1.text()), ',', '.'), instrument1=str(
                                         instrument1_to_save), kind1=ui.lineEdit_o_or_f_instrumet1.currentText(),
+                                    bur_or_sell_1=str(ui.lineEdit_buy_or_sell_instrumet1.currentText()),
                                     amount2=str.replace(str(
                                         ui.lineEdit_amount_instrumet2.text()), ',', '.'), instrument2=str(
                                         instrument2_to_save), kind2=ui.lineEdit_o_or_f_instrumet2.currentText(),
+                                    bur_or_sell_2=str(ui.lineEdit_buy_or_sell_instrumet2.currentText()),
                                     amount3=str.replace(str(
                                         ui.lineEdit_amount_instrumet3.text()), ',', '.'), instrument3=str(
                                         instrument3_to_save), kind3=ui.lineEdit_o_or_f_instrumet3.currentText(),
+                                    bur_or_sell_3=str(ui.lineEdit_buy_or_sell_instrumet3.currentText()),
                                     amount4=str.replace(str(
                                         ui.lineEdit_amount_instrumet4.text()), ',', '.'), instrument4=str(
-                                        instrument4_to_save), kind4=ui.lineEdit_o_or_f_instrumet4.currentText()
+                                        instrument4_to_save), kind4=ui.lineEdit_o_or_f_instrumet4.currentText(),
+                                    bur_or_sell_4=str(ui.lineEdit_buy_or_sell_instrumet4.currentText())
                                 )
                                 Config().reduce_only_saved()
                                 Instruments().amount_adjusted_save()
@@ -10149,7 +10232,7 @@ def run(ui):
                                         instrument_number=2)
                                 else:
                                     pass
-                            elif aa1 == 'instrument_run_trade_no':
+                            elif aa2 == 'instrument_run_trade_no':
                                 pass
                             else:
                                 connect.logwriter(
@@ -10170,7 +10253,7 @@ def run(ui):
                                         instrument_number=3)
                                 else:
                                     pass
-                            elif aa1 == 'instrument_run_trade_no':
+                            elif aa3 == 'instrument_run_trade_no':
                                 pass
                             else:
                                 connect.logwriter(
@@ -10191,7 +10274,7 @@ def run(ui):
                                         instrument_number=4)
                                 else:
                                     pass
-                            elif aa1 == 'instrument_run_trade_no':
+                            elif aa4 == 'instrument_run_trade_no':
                                 pass
                             else:
                                 connect.logwriter(
@@ -10599,6 +10682,18 @@ def run(ui):
 
         sinal.print_greeks_by_instrument_signal.emit(print_greeks_by_instrument_dict)
 
+    def update_position_and_amount_adjusted_and_print_gui_without_amount_adjusted_save():
+        # Config().position_before_trade_save()
+        # Instruments().amount_adjusted_save()
+        Instruments().adjust_rate_trade_by_reduce_only_save()
+        print_greeks_by_instrument_2()
+        sinal.textedit_balance_settext_signal.emit(
+            str(ConfigSaved().position_saved()))
+        position_preview_to_gui_2()
+        position_now2()
+        Quote().quote_new_structure_cost_for_print_when_stopped_trading()
+        # sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
+
     def update_position_and_amount_adjusted_and_print_gui():
         Config().position_before_trade_save()
         Instruments().amount_adjusted_save()
@@ -10656,6 +10751,10 @@ def run(ui):
         true_or_false_end_ischecked = date_time_setup.getboolean('end_ischecked')
 
         reduce_only_setup = setup['reduce_only']
+        reduce_only_setup_instrument_1 = reduce_only_setup.getboolean('instrument1')
+        reduce_only_setup_instrument_2 = reduce_only_setup.getboolean('instrument2')
+        reduce_only_setup_instrument_3 = reduce_only_setup.getboolean('instrument3')
+        reduce_only_setup_instrument_4 = reduce_only_setup.getboolean('instrument4')
 
         dont_stop_trading_and_update_amount_adjusted = reduce_only_setup.getboolean(
                 'infinite_loop')
@@ -10835,10 +10934,18 @@ def run(ui):
                                         list_monitor_log.append('*** Trading time is NOT over ***')
                                 else:
                                     pass
-                                update_position_and_amount_adjusted_and_print_gui()
-                                list_monitor_log.append(
-                                    '*********** Updated Position and Amounts Adjusteds '
-                                    '***********')
+                                if reduce_only_setup_instrument_1 is False and \
+                                    reduce_only_setup_instrument_2 is False and \
+                                    reduce_only_setup_instrument_3 is False and \
+                                        reduce_only_setup_instrument_4 is False:
+                                    update_position_and_amount_adjusted_and_print_gui_without_amount_adjusted_save()
+                                    list_monitor_log.append(
+                                        '*********** Updated Position and Amounts Adjusteds '
+                                        '***********')
+                                else:
+                                    update_position_and_amount_adjusted_and_print_gui()
+                                    list_monitor_log.append(
+                                        '*********** Updated Position ***********')
                             else:
                                 pass
 
@@ -11198,7 +11305,6 @@ def run(ui):
 
     def start_trading():
         global index_greeks_print_on_off
-        from connection_spread import connect
 
         setup = ConfigParser(
             allow_no_value=True,
@@ -11209,19 +11315,8 @@ def run(ui):
 
         reduce_only_setup = setup['reduce_only']
 
-        if reduce_only_setup.getboolean('instrument1') is True or \
-            reduce_only_setup.getboolean('instrument2') is True or \
-            reduce_only_setup.getboolean('instrument3') is True or \
-                reduce_only_setup.getboolean('instrument4') is True:
-            dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
-                'infinite_loop')
-        else:
-            dont_stop_trading_and_update_amount_adjusted_saved = False
-            reduce_only_setup[
-                'infinite_loop'] = 'False'
-            with open('setup.ini', 'w') as configfile:
-                setup.write(configfile)
-            connect.logwriter('***  dont_stop_trading updated and saved ***')
+        dont_stop_trading_and_update_amount_adjusted_saved = reduce_only_setup.getboolean(
+            'infinite_loop')
 
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -11382,14 +11477,14 @@ def add_widgets(ui):
     line_edit_mark_price = QtWidgets.QLineEdit(ui.frame_2)
 
     def set_infinite_loop():
-        infinite_loop.setGeometry(QtCore.QRect(510, 0, 140, 40))
+        infinite_loop.setGeometry(QtCore.QRect(450, 0, 140, 40))
         font = QtGui.QFont()
         font.setWeight(75)
         font.setPointSize(8)
         font.setBold(True)
         infinite_loop.setFont(font)
         infinite_loop.setObjectName("infinite_loop")
-        infinite_loop.setText('Infinite Loop of\nPosition Update')
+        infinite_loop.setText('Infinite Loop. Goal:\nPositions After Trade\nor Reduce to Zero')
 
     def dont_stop_trading_and_update_amount_adjusted_save():
         setup = ConfigParser(
@@ -11401,27 +11496,17 @@ def add_widgets(ui):
         reduce_only_setup = setup['reduce_only']
 
         if infinite_loop.isChecked() is True:
-            if ui.check_box_reduce_only_1.isChecked() is True or \
-                ui.check_box_reduce_only_2.isChecked() is True or \
-                ui.check_box_reduce_only_3.isChecked() is True or \
-                    ui.check_box_reduce_only_4.isChecked() is True:
-                reduce_only_setup['infinite_loop'] = 'True'
-                if check_box_mark_price.isChecked() is True:
-                    check_box_mark_price.setEnabled(True)
-                    check_box_mark_price.setChecked(False)
-                    check_box_mark_price.setEnabled(False)
-                    mark_price_setup = setup['mark_price']
-                    mark_price_setup['mark_price_orders'] = 'False'
-                else:
-                    check_box_mark_price.setEnabled(True)
-                    line_edit_mark_price.setEnabled(True)
-                    mark_price_saved()
+            reduce_only_setup['infinite_loop'] = 'True'
+            if check_box_mark_price.isChecked() is True:
+                check_box_mark_price.setEnabled(True)
+                check_box_mark_price.setChecked(False)
+                check_box_mark_price.setEnabled(False)
+                mark_price_setup = setup['mark_price']
+                mark_price_setup['mark_price_orders'] = 'False'
             else:
-                reduce_only_setup['infinite_loop'] = 'False'
                 check_box_mark_price.setEnabled(True)
                 line_edit_mark_price.setEnabled(True)
                 mark_price_saved()
-
         else:
             reduce_only_setup['infinite_loop'] = 'False'
             check_box_mark_price.setEnabled(True)
@@ -11474,30 +11559,9 @@ def add_widgets(ui):
             finally:
                 pass
         else:
-            if reduce_only_setup.getboolean('instrument1') is True or \
-                reduce_only_setup.getboolean('instrument2') is True or \
-                reduce_only_setup.getboolean('instrument3') is True or \
-                    reduce_only_setup.getboolean('instrument4') is True:
-                infinite_loop.setEnabled(True)
-                if dont_stop_trading_and_update_amount_adjusted_saved is True:
-                    infinite_loop.setChecked(True)
-                else:
-                    infinite_loop.setChecked(False)
-                    infinite_loop.setEnabled(False)
-                    reduce_only_setup['infinite_loop'] = 'False'
-                    with open('setup.ini', 'w') as configfile:
-                        setup.write(configfile)
-
-                    try:
-                        from connection_spread import connect
-                        connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
-                    except Exception as er:
-                        from lists import list_monitor_log
-                        list_monitor_log.append(
-                            '***  Infinite Loop of Position Update set enabled true or false Saved Error '
-                            '*** Error code: 11069 - ' + str(er))
-                    finally:
-                        pass
+            infinite_loop.setEnabled(True)
+            if dont_stop_trading_and_update_amount_adjusted_saved is True:
+                infinite_loop.setChecked(True)
             else:
                 infinite_loop.setChecked(False)
                 infinite_loop.setEnabled(False)
@@ -11512,31 +11576,23 @@ def add_widgets(ui):
                     from lists import list_monitor_log
                     list_monitor_log.append(
                         '***  Infinite Loop of Position Update set enabled true or false Saved Error '
-                        '*** Error code: 11075 - ' + str(er))
+                        '*** Error code: 11069 - ' + str(er))
                 finally:
                     pass
 
     def infinite_loop_set_enabled():
         if ui.pushButton_stop_arbitrage.isEnabled() is False:
-            if ui.check_box_reduce_only_1.isChecked() is True or \
-                ui.check_box_reduce_only_2.isChecked() is True or \
-                ui.check_box_reduce_only_3.isChecked() is True or \
-                    ui.check_box_reduce_only_4.isChecked() is True:
-                setup = ConfigParser(
-                    allow_no_value=True,
-                    inline_comment_prefixes='#',
-                    strict=False
-                )
-                setup.read('setup.ini')
-                date_time_setup = setup['date_time']
-                if date_time_setup.getboolean('date_time_enabled') is True:
-                    infinite_loop.setEnabled(True)
-                else:
-                    infinite_loop.setEnabled(False)
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False
+            )
+            setup.read('setup.ini')
+            date_time_setup = setup['date_time']
+            if date_time_setup.getboolean('date_time_enabled') is True:
+                infinite_loop.setEnabled(True)
             else:
-                infinite_loop.setChecked(False)
                 infinite_loop.setEnabled(False)
-                dont_stop_trading_and_update_amount_adjusted_save()
         else:
             infinite_loop.setEnabled(False)
 
@@ -11642,6 +11698,17 @@ def add_widgets(ui):
             check_box_mark_price.setEnabled(False)
             line_edit_mark_price.setEnabled(False)
 
+    def push_button_submit_new_instruments_clicked_to_add_widgets():
+        if ui.lineEdit_o_or_f_instrumet1.currentText() == '' and \
+            ui.lineEdit_o_or_f_instrumet2.currentText() == '' and \
+            ui.lineEdit_o_or_f_instrumet3.currentText() == '' and \
+                ui.lineEdit_o_or_f_instrumet4.currentText() == '':
+            pass
+        else:
+            dont_stop_trading_and_update_amount_adjusted_save()
+            mark_price_set_enabled_to_push_button()
+            set_mark_price_save()
+
     set_infinite_loop()
     infinite_loop_set_check_when_open_app()
     set_mark_price()
@@ -11649,17 +11716,11 @@ def add_widgets(ui):
     infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
     check_box_mark_price.stateChanged.connect(set_mark_price_save)
     line_edit_mark_price.editingFinished.connect(set_mark_price_save)
-    ui.check_box_reduce_only_1.stateChanged.connect(infinite_loop_set_enabled)
-    ui.check_box_reduce_only_2.stateChanged.connect(infinite_loop_set_enabled)
-    ui.check_box_reduce_only_3.stateChanged.connect(infinite_loop_set_enabled)
-    ui.check_box_reduce_only_4.stateChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet1.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet2.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(infinite_loop_set_enabled)
-    ui.pushButton_submit_new_instruments.clicked.connect(dont_stop_trading_and_update_amount_adjusted_save)
-    ui.pushButton_submit_new_instruments.clicked.connect(mark_price_set_enabled_to_push_button)
-    ui.pushButton_submit_new_instruments.clicked.connect(set_mark_price_save)
+    ui.pushButton_submit_new_instruments.clicked.connect(push_button_submit_new_instruments_clicked_to_add_widgets)
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
     sinal.mark_price_set_enabled_signal.connect(mark_price_set_enabled_signal)
