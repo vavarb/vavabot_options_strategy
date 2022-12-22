@@ -73,6 +73,7 @@ class Sinais(QtCore.QObject):
     dont_stop_trading_and_update_amount_adjusted_set_enable_signal = QtCore.pyqtSignal(bool)
     instruments_save_msg_box_signal = QtCore.pyqtSignal(dict)
     mark_price_set_enabled_signal = QtCore.pyqtSignal(bool)
+    infinite_loop_and_reduce_only_set_text_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -2151,7 +2152,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '9.5',
+            'version': '9.5.1',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
@@ -11330,7 +11331,7 @@ def run(ui):
             if dont_stop_trading_and_update_amount_adjusted_saved is True:
                 msg1 = QtWidgets.QMessageBox()
                 msg1.setIcon(QtWidgets.QMessageBox.Information)
-                msg1.setText('Infinite Loop of Position Update is Checked!!!\nStart Trading?')
+                msg1.setText('Infinite Loop is Checked!!!\nStart Trading?')
                 msg1.setWindowTitle('*** WARNING ***')
                 msg1.addButton('Ok', msg1.AcceptRole)
                 msg1.addButton('Cancel', msg1.RejectRole)
@@ -11484,7 +11485,8 @@ def add_widgets(ui):
         font.setBold(True)
         infinite_loop.setFont(font)
         infinite_loop.setObjectName("infinite_loop")
-        infinite_loop.setText('Infinite Loop. Goal:\nPositions After Trade\nor Reduce to Zero')
+
+        sinal.infinite_loop_and_reduce_only_set_text_signal.emit()
 
     def dont_stop_trading_and_update_amount_adjusted_save():
         setup = ConfigParser(
@@ -11580,6 +11582,8 @@ def add_widgets(ui):
                 finally:
                     pass
 
+        sinal.infinite_loop_and_reduce_only_set_text_signal.emit()
+
     def infinite_loop_set_enabled():
         if ui.pushButton_stop_arbitrage.isEnabled() is False:
             setup = ConfigParser(
@@ -11601,6 +11605,30 @@ def add_widgets(ui):
             infinite_loop_set_enabled()
         else:
             infinite_loop.setEnabled(False)
+
+    def infinite_loop_and_reduce_only_set_text():
+        reduce_only_is_checked_instrument_1 = ui.check_box_reduce_only_1.isChecked()
+        reduce_only_is_checked_instrument_2 = ui.check_box_reduce_only_2.isChecked()
+        reduce_only_is_checked_instrument_3 = ui.check_box_reduce_only_3.isChecked()
+        reduce_only_is_checked_instrument_4 = ui.check_box_reduce_only_4.isChecked()
+
+        infinite_loop_is_checked = infinite_loop.isChecked()
+
+        if (
+            reduce_only_is_checked_instrument_1 is True or reduce_only_is_checked_instrument_2 is True or
+            reduce_only_is_checked_instrument_3 is True or reduce_only_is_checked_instrument_4 is True
+        ) and infinite_loop_is_checked is True:
+            infinite_loop.setText('Infinite Loop. Goal:\nReduce to Zero')
+        elif (
+            reduce_only_is_checked_instrument_1 is False and reduce_only_is_checked_instrument_2 is False and
+            reduce_only_is_checked_instrument_3 is False and reduce_only_is_checked_instrument_4 is False
+        ) and infinite_loop_is_checked is True:
+            infinite_loop.setText('Infinite Loop. Goal:\nPositions After Trade')
+        else:
+            infinite_loop.setText('Infinite Loop. Goal:\nPositions After Trade\nor Reduce to Zero')
+
+    def infinite_loop_and_reduce_only_set_text_emit_signal():
+        sinal.infinite_loop_and_reduce_only_set_text_signal.emit()
 
     def set_mark_price():
         # check box
@@ -11709,17 +11737,23 @@ def add_widgets(ui):
             mark_price_set_enabled_to_push_button()
             set_mark_price_save()
 
+    sinal.infinite_loop_and_reduce_only_set_text_signal.connect(infinite_loop_and_reduce_only_set_text)
     set_infinite_loop()
     infinite_loop_set_check_when_open_app()
     set_mark_price()
     mark_price_set_enabled_signal(True)
     infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
+    infinite_loop.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
     check_box_mark_price.stateChanged.connect(set_mark_price_save)
     line_edit_mark_price.editingFinished.connect(set_mark_price_save)
     ui.lineEdit_o_or_f_instrumet1.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet2.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet3.currentTextChanged.connect(infinite_loop_set_enabled)
     ui.lineEdit_o_or_f_instrumet4.currentTextChanged.connect(infinite_loop_set_enabled)
+    ui.check_box_reduce_only_1.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
+    ui.check_box_reduce_only_2.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
+    ui.check_box_reduce_only_3.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
+    ui.check_box_reduce_only_4.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
     ui.pushButton_submit_new_instruments.clicked.connect(push_button_submit_new_instruments_clicked_to_add_widgets)
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
