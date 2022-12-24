@@ -258,18 +258,14 @@ class Deribit:
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
 
-            if str(msg_id_before_counter) == "8" or str(msg_id_before_counter) == "9" or \
-                    str(msg_id_before_counter) == "14":
-                pass
-            else:
-                delay = self._delay(sender_rate_rate_=self.sender_rate(
-                    counter_send_order_for_sender_rate=counter_send_order, time_now=time.time()))
+            delay = self._delay(sender_rate_rate_=self.sender_rate(
+                counter_send_order_for_sender_rate=counter_send_order, time_now=time.time()))
 
-                if delay > 0 and (msg_id_before_counter != 8 and msg_id_before_counter != 9 and
-                                  msg_id_before_counter != 14):
-                    time.sleep(delay)
-                else:
-                    pass
+            if delay > 0 and (msg_id_before_counter != 8 and msg_id_before_counter != 9 and
+                              msg_id_before_counter != 14):
+                time.sleep(delay)
+            else:
+                pass
 
             if 'error' in str(out) or \
                     (msg['id'] != out['id'] and msg_id_before_counter != 1 and led_color() == 'green' and
