@@ -1115,7 +1115,7 @@ class Instruments:
             elif 'future' in instrument_kind_greeks:
                 delta_future_instrument_name = InstrumentsSaved().instrument_name_construction_from_file(
                     instrument_number=instrument_number)
-                last_trade_future = connect.get_last_trades_by_instrument_price(
+                last_trade_future = connect.mark_price(
                     instrument_name=delta_future_instrument_name)
                 delta_future = 1 / last_trade_future
                 return {'vega': 0, 'theta': 0, 'rho': 0, 'gamma': 0, 'delta': delta_future}
@@ -1876,6 +1876,23 @@ class Config:
                 else:
                     pass
 
+                if Instruments().instrument_available_before_save(
+                        instrument_name=str(currency_exchange_rate_for_upper_and_lower1)) == 'instrument NO available':
+                    targets_setup['instrument_targets'] = 'BTC-PERPETUAL'
+                    instruments_save_info_msg = {
+                        'title': '***** ERROR *****',
+                        'msg_text': 'Instrument Syntax ERROR\nBTC-PERPETUAL Saved'
+                    }
+                    sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
+                    pass
+                else:
+                    instruments_save_info_msg = {
+                        'title': '***** INFO *****',
+                        'msg_text': 'Instrument Syntax OK'
+                    }
+                    sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
+                    pass
+
                 with open('setup.ini', 'w') as setupfile:
                     setup.write(setupfile)
 
@@ -2117,7 +2134,7 @@ class Config:
                 lower = str(targets_setup['lower'])
                 buy_or_sell_structure = str(targets_setup['buy_or_sell_structure'])
                 amount_value_given_in = str(targets_setup['amount_value_given_in'])
-                instrument_targets = str(targets_setup['instrument_targets'])
+                instrument_targets = 'BTC-PERPETUAL'
                 trigger_kind = str(targets_setup['trigger_kind'])
                 trigger_value = str(targets_setup['trigger_value'])
             else:
@@ -2466,7 +2483,7 @@ class Quote:
         elif 'future' in instrument_kind_greeks:
             delta_future_instrument_name = InstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=instrument_number)
-            last_trade_future = connect.get_last_trades_by_instrument_price(delta_future_instrument_name)
+            last_trade_future = connect.mark_price(delta_future_instrument_name)
             delta_future = 1 / last_trade_future
             return {'vega': 0, 'theta': 0, 'rho': 0, 'gamma': 0, 'delta': delta_future}
         elif 'Unassigned' in instrument_kind_greeks:
@@ -2624,9 +2641,17 @@ class Quote:
     def last_trade_instrument_conditions_quote():
         from connection_spread import connect
 
-        instrument_conditions_name = ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.text()
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
 
-        last_trade_instrument_conditions_quote_request = connect.get_last_trades_by_instrument_price(
+        instrument_conditions_name = str(setup['targets']['instrument_targets'])
+
+        last_trade_instrument_conditions_quote_request = connect.mark_price(
             instrument_name=instrument_conditions_name)
         last_trade_instrument_conditions_quote_signal_dict = dict()
         last_trade_instrument_conditions_quote_signal_dict.clear()
@@ -2634,7 +2659,7 @@ class Quote:
         last_trade_instrument_conditions_quote_signal_dict['lineEdit_24_btc_index_2'] = str(
             last_trade_instrument_conditions_quote_request)
         last_trade_instrument_conditions_quote_signal_dict['lineEdit_24_btc_index_3'] = str(
-            instrument_conditions_name) + ' (last trade):'
+            instrument_conditions_name) + ' (Mark Price):'
 
         sinal.last_trade_instrument_conditions_quote_signal.emit(last_trade_instrument_conditions_quote_signal_dict)
         # ui.lineEdit_24_btc_index_2.setText(str(last_trade_instrument_conditions_quote_request))
@@ -2714,7 +2739,7 @@ class Quote:
 
                 if Quote().bid_ask_offer() == 'waiting bid/ask offer':
                     f = float(
-                        connect.get_last_trades_by_instrument_price(
+                        connect.mark_price(
                             instrument_name=instrument_name_currency_exchange_rate))
                     a = round(float(Quote().structure_option_mark_price_cost()), 5)
                     a_usd = round(float(a) * f, 2)
@@ -2735,7 +2760,7 @@ class Quote:
                     h = ''
                 else:
                     f = float(
-                        connect.get_last_trades_by_instrument_price(
+                        connect.mark_price(
                             instrument_name=instrument_name_currency_exchange_rate))
 
                     a = round(float(Quote().structure_option_mark_price_cost()), 5)
@@ -2793,7 +2818,7 @@ class Quote:
 
                 if Quote().bid_ask_offer() == 'waiting bid/ask offer':
                     f = float(
-                        connect.get_last_trades_by_instrument_price(
+                        connect.mark_price(
                             instrument_name=instrument_name_currency_exchange_rate))
                     a = round(float(Quote().structure_option_mark_price_cost()), 5)
                     a_usd = round(float(a) * f, 2)
@@ -2814,7 +2839,7 @@ class Quote:
                     h = ''
                 else:
                     f = float(
-                        connect.get_last_trades_by_instrument_price(
+                        connect.mark_price(
                             instrument_name=instrument_name_currency_exchange_rate))
 
                     a = round(float(Quote().structure_option_mark_price_cost()), 5)
@@ -6229,6 +6254,10 @@ class ConditionsCheck:
                         instrument_name=instrument_name_currency_exchange_rate)[0]['mark_price'])
 
                     # Targets check
+                    list_monitor_log.append(
+                        '*** ' + str(instrument_name_currency_exchange_rate) + ' Mark Price: ' +
+                        str(currency_exchange_rate_mark_price) + ' ***'
+                    )
                     if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_then):
                         list_monitor_log.append('*** Mark Price < ' + str(
                             exchange_rate_lower_then) + 'USD - ''LOWER then Condition Filled ***')
@@ -6306,6 +6335,10 @@ class ConditionsCheck:
                         instrument_name=instrument_name_currency_exchange_rate)[0]['mark_price'])
 
                     # Targets check
+                    list_monitor_log.append(
+                        '*** ' + str(instrument_name_currency_exchange_rate) + ' Mark Price: ' +
+                        str(currency_exchange_rate_mark_price) + ' ***'
+                    )
                     if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_then):
                         list_monitor_log.append('*** Mark Price < ' + str(
                             exchange_rate_lower_then) + 'USD - ''LOWER then Condition Filled ***')
@@ -6409,7 +6442,7 @@ class ConditionsCheck:
 
                 if Quote().bid_ask_offer() == 'waiting bid/ask offer':
                     f = float(
-                        connect.get_last_trades_by_instrument_price(
+                        connect.mark_price(
                             instrument_name=instrument_name_currency_exchange_rate))
                     a = round(float(Quote().structure_option_mark_price_cost()), 5)
                     a_usd = round(float(a) * f, 2)
@@ -6430,7 +6463,7 @@ class ConditionsCheck:
                     h = ''
                 else:
                     f = float(
-                        connect.get_last_trades_by_instrument_price(
+                        connect.mark_price(
                             instrument_name=instrument_name_currency_exchange_rate))
 
                     a = round(float(Quote().structure_option_mark_price_cost()), 5)
@@ -7862,7 +7895,7 @@ def instruments(ui):
 
             if Quote().bid_ask_offer() == 'waiting bid/ask offer':
                 f = float(
-                    connect.get_last_trades_by_instrument_price(instrument_name=instrument_name_currency_exchange_rate))
+                    connect.mark_price(instrument_name=instrument_name_currency_exchange_rate))
                 a = round(float(Quote().structure_option_mark_price_cost()), 5)
                 a_usd = round(float(a) * f, 2)
                 a1 = 'None - NO OPTION OPTION BID/ASK OFFER'
@@ -7882,7 +7915,7 @@ def instruments(ui):
                 h = ''
             else:
                 f = float(
-                    connect.get_last_trades_by_instrument_price(instrument_name=instrument_name_currency_exchange_rate))
+                    connect.mark_price(instrument_name=instrument_name_currency_exchange_rate))
 
                 a = round(float(Quote().structure_option_mark_price_cost()), 5)
                 a_usd = round(float(a) * f, 2)
@@ -8076,7 +8109,8 @@ def instruments(ui):
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
-            strict=False
+            strict=False,
+            interpolation=None
         )
         setup.read('setup.ini')
         date_time_setup = setup['date_time']
@@ -8105,11 +8139,14 @@ def instruments(ui):
             instrument_saved_2 = InstrumentsSaved().instrument_available(instrument_number=2)
             instrument_saved_3 = InstrumentsSaved().instrument_available(instrument_number=3)
             instrument_saved_4 = InstrumentsSaved().instrument_available(instrument_number=4)
+            lineedit_currency_exchange_rate_for_upper_and_lower1 = Instruments().instrument_available_before_save(
+                instrument_name=str(setup['targets']['instrument_targets']))
 
             if (instrument_saved_1 == 'instrument NO available') or (
                     instrument_saved_2 == 'instrument NO available') or (
                     instrument_saved_3 == 'instrument NO available') or (
-                    instrument_saved_4 == 'instrument NO available'):
+                    instrument_saved_4 == 'instrument NO available') or (
+                    lineedit_currency_exchange_rate_for_upper_and_lower1 == 'instrument NO available'):
 
                 with open('instruments_spread.txt', 'w') as instruments_save_file:
                     instruments_save_file.write('Instrument 1: Unassigned\n' +
@@ -8130,6 +8167,8 @@ def instruments(ui):
                 instrument_s_for_list = list()
                 instrument_s_for_list.clear()
 
+                if lineedit_currency_exchange_rate_for_upper_and_lower1 == 'instrument NO available':
+                    instrument_s_for_list.append('Currency for targets')
                 if instrument_saved_1 == 'instrument NO available':
                     instrument_s_for_list.append('1')
                 if instrument_saved_2 == 'instrument NO available':
@@ -9629,6 +9668,15 @@ def config(ui):
                     pass
 
     def target_saved_check_signal_receive():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False,
+            interpolation=None
+        )
+        setup.read('setup.ini')
+
+        ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.setText(str(setup['targets']['instrument_targets']))
         ui.textEdit_targets_saved.setText(ConfigSaved().targets_saved())
 
     def date_time_signal(info):
@@ -9805,7 +9853,19 @@ def run(ui):
         pass
 
     def textedit_instruments_saved_settext_signal(info):
-        ui.textEdit_instruments_saved.setText(str(info))
+        if info == 'lineEdit_currency_exchange_rate_for_upper_and_lower1 set text when open app':
+            setup = ConfigParser(
+                allow_no_value=True,
+                inline_comment_prefixes='#',
+                strict=False,
+                interpolation=None
+            )
+            setup.read('setup.ini')
+            ui.lineEdit_currency_exchange_rate_for_upper_and_lower1.setText(
+                str(setup['targets']['instrument_targets'])
+            )
+        else:
+            ui.textEdit_instruments_saved.setText(str(info))
 
     def print_greeks_by_instrument_signal(info):
         # Delta
@@ -11737,11 +11797,16 @@ def add_widgets(ui):
             mark_price_set_enabled_to_push_button()
             set_mark_price_save()
 
+    def lineedit_currency_exchange_rate_for_upper_and_lower1_set_text_when_open_app():
+        sinal.textedit_instruments_saved_settext_signal.emit(
+            'lineEdit_currency_exchange_rate_for_upper_and_lower1 set text when open app')
+
     sinal.infinite_loop_and_reduce_only_set_text_signal.connect(infinite_loop_and_reduce_only_set_text)
     set_infinite_loop()
     infinite_loop_set_check_when_open_app()
     set_mark_price()
     mark_price_set_enabled_signal(True)
+    lineedit_currency_exchange_rate_for_upper_and_lower1_set_text_when_open_app()
     infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
     infinite_loop.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
     check_box_mark_price.stateChanged.connect(set_mark_price_save)
