@@ -179,7 +179,6 @@ class Deribit:
     # noinspection PyMethodMayBeStatic
     def sender_rate(self, counter_send_order_for_sender_rate, counter_send_order_for_sender_rate_with_delay, time_now):
         global sender_rate_dict
-        print('sender rate')
         if float(time_now - sender_rate_dict['time_1']) >= 120:
             delta_counter_send_order = float(
                 counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
@@ -202,13 +201,11 @@ class Deribit:
             sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender'] = round(rate_sender_orders, 2)
             sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender_with_delay'] = round(
                 rate_sender_orders_with_delay, 2)
-            print('sender_rate_with_and_without_dict_to_sender: ' + str(sender_rate_with_and_without_dict_to_sender))
             return sender_rate_with_and_without_dict_to_sender
         else:
             sender_rate_with_and_without_dict_to_sender = dict()
             sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender'] = False
             sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender_with_delay'] = False
-            print('sender_rate_with_and_without_dict_to_sender: ' + str(sender_rate_with_and_without_dict_to_sender))
             return sender_rate_with_and_without_dict_to_sender
 
     def _delay(self, sender_rate_rate_, sender_rate_rate_with_delay_):
@@ -340,25 +337,13 @@ class Deribit:
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
 
-            print('---------------------------------------------')
-            print('priority: ' + str(priority))
-            print('delay: ' + str(delay))
-            print('delay_delay: ' + str(delay_delay))
-            print('delay[p0]: ' + str(delay['p0']))
-            print('delay[p1]: ' + str(delay['p1']))
-            print('delay[p2]: ' + str(delay['p2']))
-            print('____________________________________________')
-
             if priority == 0:
-                print('priority 0: pass')
                 pass
             elif priority == 1:
                 if delay['p1'] > 0 and (msg_id_before_counter != 8 and msg_id_before_counter != 9 and
                                         msg_id_before_counter != 14):
-                    print('priority 1: delay[p1] ' + str(delay['p1']))
                     time.sleep(delay['p1'])
                 else:
-                    print('priority 1: pass')
                     pass
             else:
                 counter_send_order_with_delay = self.counter_send_order_function_with_delay()
@@ -368,7 +353,6 @@ class Deribit:
                     time_now=time.time())
                 if sender_rate_with_and_without_dict['rate_sender_orders_to_sender'] is False or \
                         sender_rate_with_and_without_dict['rate_sender_orders_to_sender_with_delay'] is False:
-                    print('priority ' + str(priority) + ': sender_rate... is False. Passs')
                     pass
                 else:
                     delay = self._delay(
@@ -378,10 +362,9 @@ class Deribit:
 
                 if delay['p2'] > 0 and (msg_id_before_counter != 8 and msg_id_before_counter != 9 and
                                         msg_id_before_counter != 14):
-                    print('priority ' + str(priority) + ': delay[p2] ' + str(delay['p2']))
                     time.sleep(delay['p2'])
                 else:
-                    print('priority ' + str(priority) + ' : pass')
+                    pass
 
             if 'error' in str(out) or \
                     (msg['id'] != out['id'] and msg_id_before_counter != 1 and led_color() == 'green' and
@@ -6023,7 +6006,7 @@ class ConditionsCheck:
         return a3
 
     @staticmethod
-    def rate_options_now():
+    def rate_options_now(priority=2):
         from connection_spread import connect
         instrument_kind1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
         instrument_kind2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
@@ -6066,7 +6049,7 @@ class ConditionsCheck:
         if instrument_amount1 != 'Unassigned' and instrument_kind1 == 'option':
             instrument_name = InstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=1)
-            instrument_position = float(connect.get_position_size(instrument_name=instrument_name))
+            instrument_position = float(connect.get_position_size(instrument_name=instrument_name, priority=priority))
             x = Config().max_position_from_position_saved_and_instrument_amount(
                 instrument_number=1)
             # float(x) - float(instrument_position)) é o que falta negociar
@@ -6080,7 +6063,7 @@ class ConditionsCheck:
         if instrument_amount2 != 'Unassigned' and instrument_kind2 == 'option':
             instrument_name = InstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=2)
-            instrument_position = float(connect.get_position_size(instrument_name=instrument_name))
+            instrument_position = float(connect.get_position_size(instrument_name=instrument_name, priority=priority))
             x = Config().max_position_from_position_saved_and_instrument_amount(
                 instrument_number=2)
             rate_options_now_dict[instrument_name] = abs(
@@ -6092,7 +6075,7 @@ class ConditionsCheck:
         if instrument_amount3 != 'Unassigned' and instrument_kind3 == 'option':
             instrument_name = InstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=3)
-            instrument_position = float(connect.get_position_size(instrument_name=instrument_name))
+            instrument_position = float(connect.get_position_size(instrument_name=instrument_name, priority=priority))
             x = Config().max_position_from_position_saved_and_instrument_amount(
                 instrument_number=3)
             rate_options_now_dict[instrument_name] = abs(
@@ -6104,7 +6087,7 @@ class ConditionsCheck:
         if instrument_amount4 != 'Unassigned' and instrument_kind4 == 'option':
             instrument_name = InstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=4)
-            instrument_position = float(connect.get_position_size(instrument_name=instrument_name))
+            instrument_position = float(connect.get_position_size(instrument_name=instrument_name, priority=priority))
             x = Config().max_position_from_position_saved_and_instrument_amount(
                 instrument_number=4)
             rate_options_now_dict[instrument_name] = abs(
@@ -6196,7 +6179,8 @@ class ConditionsCheck:
                             x = float(instrument_max_position)
                             xx = float(ConditionsCheck().number_multiple_10_and_round_0_digits(
                                 number=(x - instrument_position)))
-                            rate_option_now_for_here = round(float(ConditionsCheck().rate_options_now()), 2)
+                            rate_option_now_for_here = round(float(ConditionsCheck().rate_options_now(
+                                priority=priority)), 2)
                             if 0 < rate_option_now_for_here < 1:
                                 rate_future_for_trade = rate_option_now_for_here
                                 rate_future_now = abs((float(
@@ -6283,7 +6267,8 @@ class ConditionsCheck:
                             x = float(instrument_max_position)
                             xx = abs(float(ConditionsCheck().number_multiple_10_and_round_0_digits(
                                 number=(x - instrument_position))))
-                            rate_option_now_for_here = round(abs(float(ConditionsCheck().rate_options_now())), 2)
+                            rate_option_now_for_here = round(abs(float(ConditionsCheck().rate_options_now(
+                                priority=priority))), 2)
                             if 0 < rate_option_now_for_here < 1:
                                 rate_future_for_trade = rate_option_now_for_here
                                 rate_future_now = abs((float(
