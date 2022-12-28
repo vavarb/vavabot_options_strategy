@@ -179,7 +179,7 @@ class Deribit:
     # noinspection PyMethodMayBeStatic
     def sender_rate(self, counter_send_order_for_sender_rate, counter_send_order_for_sender_rate_with_delay, time_now):
         global sender_rate_dict
-        if float(time_now - sender_rate_dict['time_1']) >= 120:
+        if float(time_now - sender_rate_dict['time_1']) >= 300:
             delta_counter_send_order = float(
                 counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
             delta_counter_send_order_with_delay = float(
@@ -2269,7 +2269,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '9.5.3',
+            'version': '9.5.4',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
