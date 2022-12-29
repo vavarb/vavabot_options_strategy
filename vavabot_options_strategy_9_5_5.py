@@ -187,21 +187,35 @@ class Deribit:
                 sender_rate_dict['counter_send_order_for_sender_rate_with_delay'])
             delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
 
-            rate_sender_orders = float(delta_counter_send_order) / float(delta_time_for_sender_rate)
+            if delta_counter_send_order == 0 or delta_counter_send_order_with_delay == 0:
+                sender_rate_dict['time_1'] = time_now
+                sender_rate_dict['counter_send_order_for_sender_rate'] = float(counter_send_order_for_sender_rate)
+                sender_rate_dict['counter_send_order_for_sender_rate_with_delay'] = float(
+                    counter_send_order_for_sender_rate_with_delay)
 
-            rate_sender_orders_with_delay = float(
-                delta_counter_send_order_with_delay) / float(delta_time_for_sender_rate)
+                sender_rate_with_and_without_dict_to_sender = dict()
+                sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender'] = round(2,
+                                                                                                    2)
+                sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender_with_delay'] = round(
+                    0.31, 2)
+                return sender_rate_with_and_without_dict_to_sender
+            else:
+                rate_sender_orders = float(delta_counter_send_order) / float(delta_time_for_sender_rate)
 
-            sender_rate_dict['time_1'] = time_now
-            sender_rate_dict['counter_send_order_for_sender_rate'] = float(counter_send_order_for_sender_rate)
-            sender_rate_dict['counter_send_order_for_sender_rate_with_delay'] = float(
-                counter_send_order_for_sender_rate_with_delay)
+                rate_sender_orders_with_delay = float(
+                    delta_counter_send_order_with_delay) / float(delta_time_for_sender_rate)
 
-            sender_rate_with_and_without_dict_to_sender = dict()
-            sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender'] = round(rate_sender_orders, 2)
-            sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender_with_delay'] = round(
-                rate_sender_orders_with_delay, 2)
-            return sender_rate_with_and_without_dict_to_sender
+                sender_rate_dict['time_1'] = time_now
+                sender_rate_dict['counter_send_order_for_sender_rate'] = float(counter_send_order_for_sender_rate)
+                sender_rate_dict['counter_send_order_for_sender_rate_with_delay'] = float(
+                    counter_send_order_for_sender_rate_with_delay)
+
+                sender_rate_with_and_without_dict_to_sender = dict()
+                sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender'] = round(
+                    rate_sender_orders, 2)
+                sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender_with_delay'] = round(
+                    rate_sender_orders_with_delay, 2)
+                return sender_rate_with_and_without_dict_to_sender
         else:
             sender_rate_with_and_without_dict_to_sender = dict()
             sender_rate_with_and_without_dict_to_sender['rate_sender_orders_to_sender'] = False
@@ -232,7 +246,10 @@ class Deribit:
                     delay_delay_p1 = float(0)
                     delay_delay_p2 = float(delay_delay)
 
-                if delay_delay == 0:
+                if delay_delay_p1 > 5 or delay_delay_p2 > 30:
+                    delay_delay_p1 = float(0.35)
+                    delay_delay_p2 = float(4.2)
+                elif delay_delay == 0:
                     delay_delay_p2 = float(0)
                     delay_delay_p1 = float(0)
                     self.logwriter('*** Setup Delay to send order Unmodified ***')
@@ -264,6 +281,12 @@ class Deribit:
                         else:
                             delay_delay_p1 = float(0)
                             delay_delay_p2 = float(delay_delay)
+
+                        if delay_delay_p1 > 5 or delay_delay_p2 > 30:
+                            delay_delay_p1 = float(0.35)
+                            delay_delay_p2 = float(4.2)
+                        else:
+                            pass
                     else:
                         delay_delay_p2 = float(0)
                         delay_delay_p1 = float(0)
@@ -2269,7 +2292,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '9.5.4',
+            'version': '9.5.5',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
@@ -10994,7 +11017,7 @@ def run(ui):
                             else:
                                 counter_run_trade_option = counter_run_trade_option - 1
                                 sinal.chronometer_signal.emit(str(counter_run_trade_option))
-                                if counter_run_trade_option == 0:
+                                if counter_run_trade_option <= 0 or counter_run_trade_option > 11:
                                     structure_cost_link()
                                     list_monitor_log.append('***** Update Strategy cost,'
                                                             ' greeks and BTC index for tab Run *****')
@@ -11155,7 +11178,7 @@ def run(ui):
                             else:
                                 pass
 
-                            if counter_run_trade_option == 0:
+                            if counter_run_trade_option <= 0 or counter_run_trade_option > 11:
                                 ConditionsCheck(). \
                                     structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
                                 list_monitor_log.append('***** Update Strategy cost,'
