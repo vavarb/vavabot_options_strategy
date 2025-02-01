@@ -1,7 +1,7 @@
 import PyInstaller.__main__
 
 PyInstaller.__main__.run([
-    'vavabot_options_strategy_9_5_5.py',
+    'vavabot_options_strategy_9_5_6.py',
     '--onefile',
     '--noconsole',
     '--key=karenarthur12345',

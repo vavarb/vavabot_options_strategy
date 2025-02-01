@@ -473,15 +473,17 @@ class Deribit:
                 return out['result']
 
         except Exception as er:
-            from connection_spread import connection_thread, run_thread
+            from connection_spread import connection_thread, run_thread, set_led_red
             import threading
 
             self.logwriter('***** _sender ERROR: ' + str(er) + ' msgSent ID: ' + str(msg['id']) +
                            '_' + str(counter_send_order) + ' *****')
+            set_led_red()
             if run_thread.is_alive() is True:
                 pass
             else:
                 connection_thread()
+            return str(er)
         finally:
             pass
 
@@ -2292,7 +2294,7 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '9.5.5',
+            'version': '9.5.6',
             'date': '2022',
             'strategy_name': 'None',
             'orders_rate': '20.0'
