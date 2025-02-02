@@ -3517,44 +3517,210 @@ class ConditionsCheck:
         instrument4_direction = \
             InstrumentsSaved().instrument_direction_construction_from_instrument_file(instrument_number=4)
 
-        if (b1 == 0 and InstrumentsSaved().instrument_kind_saved(instrument_number=1) == 'option') or \
-                (b2 == 0 and InstrumentsSaved().instrument_kind_saved(instrument_number=2) == 'option') or \
-                (b3 == 0 and InstrumentsSaved().instrument_kind_saved(instrument_number=3) == 'option') or \
-                (b4 == 0 and InstrumentsSaved().instrument_kind_saved(instrument_number=4) == 'option'):
+        i1_ks = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
+        i2_ks = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
+        i3_ks = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
+        i4_ks = InstrumentsSaved().instrument_kind_saved(instrument_number=4)
+
+        if (b1 == 0 and i1_ks == 'option') or \
+                (b2 == 0 and i2_ks == 'option') or \
+                (b3 == 0 and i3_ks == 'option') or \
+                (b4 == 0 and i4_ks == 'option'):
             list_monitor_log.append('*** WAITING FOR BID/ASK OFFER - There are NOT Bid/Ask Offer ***')
             return 'waiting trade'
         elif b1 > (a1 + (30 * a1 / 100)) and instrument1_direction == 'buy':
-            list_monitor_log.append('*** Market price > 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
-            return 'waiting trade'
+            if i1_ks == 'option':
+                try:
+                    instrument1_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=1)
+                    i1 = float(instrument1_amount)
+                    if i1 != 0:
+                        # coloquei < 0.00016 pra tentar evitar erro no arrendondamento (around)
+                        if ((abs(b1) - abs(a1))/abs(i1)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument1_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                return 'waiting trade'
         elif b2 > (a2 + (30 * a2 / 100)) and instrument2_direction == 'buy':
-            list_monitor_log.append('*** Market price > 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
-            return 'waiting trade'
+            if i2_ks == 'option':
+                try:
+                    instrument2_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=2)
+                    i2 = float(instrument2_amount)
+                    if i2 != 0:
+                        if ((abs(b2) - abs(a2))/abs(i2)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument2_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                return 'waiting trade'
         elif b3 > (a3 + (30 * a3 / 100)) and instrument3_direction == 'buy':
-            list_monitor_log.append('*** Market price > 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
-            return 'waiting trade'
+            if i3_ks == 'option':
+                try:
+                    instrument3_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=3)
+                    i3 = float(instrument3_amount)
+                    if i3 != 0:
+                        if ((abs(b3) - abs(a3))/abs(i3)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument3_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                return 'waiting trade'
         elif b4 > (a4 + (30 * a4 / 100)) and instrument4_direction == 'buy':
-            list_monitor_log.append('*** Market price > 30% Mark Price ***')
-            list_monitor_log.append('WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4')
-            return 'waiting trade'
+            if i4_ks == 'option':
+                try:
+                    instrument4_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=4)
+                    i4 = float(instrument4_amount)
+                    if i4 != 0:
+                        if ((abs(b4) - abs(a4))/abs(i4)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument4_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                return 'waiting trade'
         elif b1 < (a1 - (30 * a1 / 100)) and instrument1_direction == 'sell':
-            list_monitor_log.append('*** Market price < 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING INCREASE OPTION MARKET PRICE INSTRUMENT 1 ***')
-            return 'waiting trade'
+            if i1_ks == 'option':
+                try:
+                    instrument1_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=1)
+                    i1 = float(instrument1_amount)
+                    if i1 != 0:
+                        if ((abs(b1) - abs(a1))/abs(i1)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument1_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 1 ***')
+                return 'waiting trade'
         elif b2 < (a2 - (30 * a2 / 100)) and instrument2_direction == 'sell':
-            list_monitor_log.append('*** Market price < 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING INCREASE OPTION MARKET PRICE INSTRUMENT 2 ***')
-            return 'waiting trade'
+            if i2_ks == 'option':
+                try:
+                    instrument2_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=2)
+                    i2 = float(instrument2_amount)
+                    if i2 != 0:
+                        if ((abs(b2) - abs(a2))/abs(i2)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument2_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 2 ***')
+                return 'waiting trade'
         elif b3 < (a3 - (30 * a3 / 100)) and instrument3_direction == 'sell':
-            list_monitor_log.append('*** Market price < 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING INCREASE OPTION MARKET PRICE INSTRUMENT 3 ***')
-            return 'waiting trade'
+            if i3_ks == 'option':
+                try:
+                    instrument3_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=3)
+                    i3 = float(instrument3_amount)
+                    if i3 != 0:
+                        if ((abs(b3) - abs(a3))/abs(i3)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument3_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 3 ***')
+                return 'waiting trade'
         elif b4 < (a4 - (30 * a4 / 100)) and instrument4_direction == 'sell':
-            list_monitor_log.append('*** Market price < 30% Mark Price ***')
-            list_monitor_log.append('*** WAITING INCREASE OPTION MARKET PRICE INSTRUMENT 4 ***')
-            return 'waiting trade'
+            if i4_ks == 'option':
+                try:
+                    instrument4_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=4)
+                    i4 = float(instrument4_amount)
+                    if i4 != 0:
+                        if ((abs(b4) - abs(a4))/abs(i4)) < 0.00016:
+                            return 'ok'
+                        else:
+                            list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                            list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                            return 'waiting trade'
+                    else:
+                        list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                        list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                        return 'waiting trade'
+                except ValueError:
+                    list_monitor_log.append('*** Market price > 30% Mark Price and float(instrument4_amount) error ***')
+                    list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                    return 'waiting trade'
+            else:
+                list_monitor_log.append('*** Market price > 30% Mark Price ***')
+                list_monitor_log.append('*** WAITING REDUCE OPTION MARKET PRICE INSTRUMENT 4 ***')
+                return 'waiting trade'
 
         else:
             return 'ok'
