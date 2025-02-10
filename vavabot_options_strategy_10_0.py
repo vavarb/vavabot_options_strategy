@@ -2262,6 +2262,10 @@ class Config:
                 instrument_targets = 'BTC-PERPETUAL'
                 trigger_kind = str(targets_setup['trigger_kind'])
                 trigger_value = str(targets_setup['trigger_value'])
+                is_stop_if_price_checkbox = str(targets_setup.getboolean('is_stop_if_price_checkbox'))
+                is_stop_if_price_combo_box = str(targets_setup['is_stop_if_price_combo_box'])
+                is_stop_if_price_line_edit = str(targets_setup['is_stop_if_price_line_edit'])
+
             else:
                 test_net_now = 'True'
                 api_key_now = '<Type your Deribit Key ONLY in the App>'
@@ -2274,6 +2278,9 @@ class Config:
                 instrument_targets = 'BTC-PERPETUAL'
                 trigger_kind = 'Set Option Strategy Cost as TRIGGER (optional)'
                 trigger_value = ''
+                is_stop_if_price_checkbox = 'False'
+                is_stop_if_price_combo_box = 'Set > or <'
+                is_stop_if_price_line_edit = ''
         except Exception as er:
             test_net_now = 'True'
             api_key_now = '<Type your Deribit Key ONLY in the App>'
@@ -2286,6 +2293,9 @@ class Config:
             instrument_targets = 'BTC-PERPETUAL'
             trigger_kind = 'Set Option Strategy Cost as TRIGGER (optional)'
             trigger_value = ''
+            is_stop_if_price_checkbox = 'False'
+            is_stop_if_price_combo_box = 'Set > or <'
+            is_stop_if_price_line_edit = ''
             list_monitor_log.append('***** Test Account Saved ***** ' + str(er))
         finally:
             pass
@@ -2367,6 +2377,9 @@ class Config:
         targets['instrument_targets'] = instrument_targets
         targets['trigger_kind'] = trigger_kind
         targets['trigger_value'] = trigger_value
+        targets['is_stop_if_price_checkbox'] = is_stop_if_price_checkbox
+        targets['is_stop_if_price_combo_box'] = is_stop_if_price_combo_box
+        targets['is_stop_if_price_line_edit'] = is_stop_if_price_line_edit
 
         with open('setup.ini', 'w') as setupfile:
             setup.write(setupfile)
@@ -12197,8 +12210,8 @@ def add_widgets(ui):
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
     sinal.mark_price_set_enabled_signal.connect(mark_price_set_enabled_signal)
 
-# TODO: adicionar widegets stop if price < or > than
-# TODO: adicionar no arquivo setup.ini
+# TODO: adicionar widegets stop if price < or > than ==> OK
+# TODO: adicionar no arquivo setup.ini == OK (ainda falta criar e chamar a função -saved-
 # TODO: configuar o que fazer quando abrir o app quanto a texto
 # TODO: configuar o que fazer quando abrir o app quanto a deixar hiden enquato não aceita termos
 # TODO: ler e colocar na telacomo está no setup.ini ao iniciar
@@ -12207,6 +12220,7 @@ def add_widgets(ui):
 # TODO: adionar, se possível, quando aperta a tecla tab, e se preciso
 # TODO: deixar hiden quando run on
 # TODO: deixar aparecendoo quando run off
+# TODO: ver o que fazer quando instruments checkder ruim
 # TODO: implentar na função run
 
 
