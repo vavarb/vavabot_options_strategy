@@ -2294,8 +2294,8 @@ class Config:
 
         dict_setup_default = {
             'name': 'VavaBot - Options Strategy',
-            'version': '9.6',
-            'date': '2022',
+            'version': '10.0',
+            'date': '2025',
             'strategy_name': 'None',
             'orders_rate': '20.0'
         }
@@ -11875,6 +11875,11 @@ def add_widgets(ui):
     check_box_mark_price = QtWidgets.QCheckBox(ui.frame_2)
     line_edit_mark_price = QtWidgets.QLineEdit(ui.frame_2)
 
+    # ADD Stop if Price > or < than
+    is_stop_by_price = QtWidgets.QCheckBox(ui.frame_4_targets)
+    combo_box_is_stop_by_price = QtWidgets.QComboBox(ui.frame_4_targets)
+    line_is_stop_by_price = QtWidgets.QLineEdit(ui.frame_4_targets)
+
     def set_infinite_loop():
         infinite_loop.setGeometry(QtCore.QRect(450, 0, 140, 40))
         font = QtGui.QFont()
@@ -12139,12 +12144,42 @@ def add_widgets(ui):
         sinal.textedit_instruments_saved_settext_signal.emit(
             'lineEdit_currency_exchange_rate_for_upper_and_lower1 set text when open app')
 
+    def set_is_stop_by_price():
+        # Check Box
+        is_stop_by_price.setGeometry(QtCore.QRect(440, 198, 95, 17))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setPointSize(8)
+        font.setBold(True)
+        is_stop_by_price.setFont(font)
+        is_stop_by_price.setObjectName("is_stop_by_price")
+        is_stop_by_price.setText("Stop if Price:")
+
+        # Combo Box
+        combo_box_is_stop_by_price.setGeometry(QtCore.QRect(443, 216, 75, 17))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setPointSize(8)
+        font.setBold(False)
+        combo_box_is_stop_by_price.setFont(font)
+        combo_box_is_stop_by_price.setObjectName("combo_box_is_stop_by_price")
+        combo_box_is_stop_by_price.addItem("Set > or <")
+        combo_box_is_stop_by_price.addItem(">")
+        combo_box_is_stop_by_price.addItem("<")
+
+        # Line Edit
+        line_is_stop_by_price.setGeometry(QtCore.QRect(519, 216, 62, 15))
+        line_is_stop_by_price.setStyleSheet("background-color: rgb(255, 255, 255);")
+        line_is_stop_by_price.setClearButtonEnabled(False)
+        line_is_stop_by_price.setObjectName("line_edit_mark_price")
+
     sinal.infinite_loop_and_reduce_only_set_text_signal.connect(infinite_loop_and_reduce_only_set_text)
     set_infinite_loop()
     infinite_loop_set_check_when_open_app()
     set_mark_price()
     mark_price_set_enabled_signal(True)
     lineedit_currency_exchange_rate_for_upper_and_lower1_set_text_when_open_app()
+    set_is_stop_by_price()
     infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
     infinite_loop.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
     check_box_mark_price.stateChanged.connect(set_mark_price_save)
@@ -12161,6 +12196,18 @@ def add_widgets(ui):
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
     sinal.mark_price_set_enabled_signal.connect(mark_price_set_enabled_signal)
+
+# TODO: adicionar widegets stop if price < or > than
+# TODO: adicionar no arquivo setup.ini
+# TODO: configuar o que fazer quando abrir o app quanto a texto
+# TODO: configuar o que fazer quando abrir o app quanto a deixar hiden enquato não aceita termos
+# TODO: ler e colocar na telacomo está no setup.ini ao iniciar
+# TODO: ler e colocar na tela como está no setup.ini após o click no botão submit new conditions
+# TODO: gravar no arquivo log e mostrar no monitor da tab run
+# TODO: adionar, se possível, quando aperta a tecla tab, e se preciso
+# TODO: deixar hiden quando run on
+# TODO: deixar aparecendoo quando run off
+# TODO: implentar na função run
 
 
 if __name__ == "__main__":
