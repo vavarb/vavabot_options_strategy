@@ -2130,6 +2130,13 @@ class Ui_MainWindow(object):
         self.radioButton_disagree.setText(_translate("MainWindow", "I Disagree"))
         # tab_about 2 the end
 
+        # ADD Stop if Price > or < than - start
+        self.is_stop_by_price = QtWidgets.QCheckBox(self.frame_4_targets)
+        self.is_stop_by_price.setObjectName("is_stop_by_price")
+        self.combo_box_is_stop_by_price = QtWidgets.QComboBox(self.frame_4_targets)
+        self.line_is_stop_by_price = QtWidgets.QLineEdit(self.frame_4_targets)
+        # ADD Stop if Price > or < than - end
+
 
 if __name__ == "__main__":
     import sys

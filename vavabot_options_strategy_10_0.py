@@ -75,6 +75,9 @@ class Sinais(QtCore.QObject):
     instruments_save_msg_box_signal = QtCore.pyqtSignal(dict)
     mark_price_set_enabled_signal = QtCore.pyqtSignal(bool)
     infinite_loop_and_reduce_only_set_text_signal = QtCore.pyqtSignal()
+    is_stop_by_price_set_enabled_signal = QtCore.pyqtSignal(bool)
+    is_stop_by_price_saved_signal = QtCore.pyqtSignal()
+    is_stop_by_price_state_changed_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -1765,8 +1768,8 @@ class ConfigSaved:
         setup.read('setup.ini')
 
         targets_setup = setup['targets']
-        line_0 = str('Trade if exchange rate upper then: > ' + str(targets_setup['upper']) + ' USD')
-        line_1 = str('Trade if exchange rate lower then: < ' + str(targets_setup['lower']) + ' USD')
+        line_0 = str('Trade if exchange rate upper than: > ' + str(targets_setup['upper']) + ' USD')
+        line_1 = str('Trade if exchange rate lower than: < ' + str(targets_setup['lower']) + ' USD')
         line_2 = str('Buy or sell strategy: ' + str(targets_setup['buy_or_sell_structure']))
         if str(targets_setup['buy_or_sell_structure']) == 'buy':
             line_3 = str(
@@ -1784,13 +1787,23 @@ class ConfigSaved:
         else:
             line_5 = str(str(targets_setup['trigger_kind']) + str(targets_setup['trigger_value']))
 
+        if str(targets_setup['is_stop_if_price_checkbox']) == 'True':
+            line_6 = str('Stop if Price (Instrument Consider for Conditions): ' +
+                         str(targets_setup['is_stop_if_price_checkbox']) + ' - ' +
+                         str(targets_setup['is_stop_if_price_combo_box']) + ' ' +
+                         str(targets_setup['is_stop_if_price_line_edit'])
+                         )
+        else:
+            line_6 = str('Stop if Price: ' + str(targets_setup['is_stop_if_price_checkbox']))
+
         return str(
             str(line_0) +
             '\n' + str(line_1) +
             '\n' + str(line_2) +
             '\n' + str(line_3) +
             '\n' + str(line_4) +
-            '\n' + str(line_5)
+            '\n' + str(line_5) +
+            '\n' + str(line_6)
         )
 
     @staticmethod
@@ -1827,7 +1840,7 @@ class ConfigSaved:
         return str(targets_setup['instrument_targets'])
 
     @staticmethod
-    def exchange_rate_lower_then():
+    def exchange_rate_lower_than():
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -1839,7 +1852,7 @@ class ConfigSaved:
         return float(str(targets_setup['lower']))
 
     @staticmethod
-    def exchange_rate_upper_then():
+    def exchange_rate_upper_than():
         setup = ConfigParser(
             allow_no_value=True,
             inline_comment_prefixes='#',
@@ -1895,6 +1908,38 @@ class Config:
         self.spread_structure1 = None
         self.instrument_number = None
 
+    @staticmethod
+    def is_stop_by_price_saved():
+        sinal.is_stop_by_price_saved_signal.emit()
+
+    @staticmethod
+    def is_stop_by_price_save():
+        sinal.is_stop_by_price_set_enabled_signal.emit(True)
+
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        is_stop_by_price_setup = setup['targets']
+
+        if ui.is_stop_by_price.isChecked() is True:
+            is_stop_by_price_setup['is_stop_if_price_checkbox'] = str(ui.is_stop_by_price.isChecked())
+            is_stop_by_price_setup['is_stop_if_price_combo_box'] = str(ui.combo_box_is_stop_by_price.currentText())
+            is_stop_by_price_setup['is_stop_if_price_line_edit'] = str.replace(str(
+                ui.line_is_stop_by_price.text()), ',', '.')
+        else:
+            is_stop_by_price_setup['is_stop_if_price_checkbox'] = 'False'
+            is_stop_by_price_setup['is_stop_if_price_combo_box'] = 'Set > or <'
+            is_stop_by_price_setup['is_stop_if_price_line_edit'] = ''
+
+        with open('setup.ini', 'w') as configfile:
+            setup.write(configfile)
+
+        Config().is_stop_by_price_saved()
+        sinal.is_stop_by_price_state_changed_signal.emit()
+
     def save_targets(self, currency_exchange_rate_for_upper_and_lower1=None, currency_exchange_rate_upper1=None,
                      currency_exchange_rate_lower1=None, buy_or_sell_structure1=None, spread_structure1=None):
         self.currency_exchange_rate_for_upper_and_lower1 = currency_exchange_rate_for_upper_and_lower1
@@ -1912,7 +1957,7 @@ class Config:
                 instruments_save_info_msg = {
                     'title': '***** ERROR *****',
                     'msg_text':
-                        '\'Trade if currency quote UPPER\'\nmust be LOWER then\n\'Trade if currency quote LOWER\''
+                        '\'Trade if currency quote UPPER\'\nmust be LOWER than\n\'Trade if currency quote LOWER\''
                 }
                 sinal.instruments_save_msg_box_signal.emit(instruments_save_info_msg)
                 pass
@@ -2063,6 +2108,7 @@ class Config:
         finally:
             pass
 
+        Config().is_stop_by_price_save()
         ConfigSaved().target_saved_check()
 
     @staticmethod
@@ -6575,8 +6621,8 @@ class ConditionsCheck:
 
         # Args Fixes
         instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
-        exchange_rate_lower_then = float(ConfigSaved().exchange_rate_lower_then())
-        exchange_rate_upper_then = float(ConfigSaved().exchange_rate_upper_then())
+        exchange_rate_lower_than = float(ConfigSaved().exchange_rate_lower_than())
+        exchange_rate_upper_than = float(ConfigSaved().exchange_rate_upper_than())
 
         try:
             from connection_spread import connect
@@ -6599,25 +6645,25 @@ class ConditionsCheck:
                         '*** ' + str(instrument_name_currency_exchange_rate) + ' Mark Price: ' +
                         str(currency_exchange_rate_mark_price) + ' ***'
                     )
-                    if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_then):
+                    if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_than):
                         list_monitor_log.append('*** Mark Price < ' + str(
-                            exchange_rate_lower_then) + 'USD - ''LOWER then Condition Filled ***')
-                        if float(currency_exchange_rate_mark_price) > float(exchange_rate_upper_then):
+                            exchange_rate_lower_than) + 'USD - ''LOWER than Condition Filled ***')
+                        if float(currency_exchange_rate_mark_price) > float(exchange_rate_upper_than):
                             list_monitor_log.append('*** Mark Price > ' + str(
-                                exchange_rate_upper_then) + 'USD - '' UPPER then Condition Filled ***')
+                                exchange_rate_upper_than) + 'USD - '' UPPER than Condition Filled ***')
                             run_target_on_off = 'off'
                             list_monitor_log.append('*** ALL CONDITIONS FILLED ***')
 
                         else:
                             run_target_on_off = 'on'
                             list_monitor_log.append('Waiting Mark Price  > ' +
-                                                    str(exchange_rate_upper_then) +
-                                                    ' - UPPER then Condition')
+                                                    str(exchange_rate_upper_than) +
+                                                    ' - UPPER than Condition')
                     else:
                         run_target_on_off = 'on'
                         list_monitor_log.append('Waiting Mark Price < ' +
-                                                str(exchange_rate_lower_then) +
-                                                ' - LOWER then Condition')
+                                                str(exchange_rate_lower_than) +
+                                                ' - LOWER than Condition')
                         pass
                 elif trading_on_off_for_msg == 'off':
                     run_target_on_off = 'off'
@@ -6656,8 +6702,8 @@ class ConditionsCheck:
 
         # Args Fixes
         instrument_name_currency_exchange_rate = ConfigSaved().currency_exchange_rate_for_upper_and_lower()
-        exchange_rate_lower_then = float(ConfigSaved().exchange_rate_lower_then())
-        exchange_rate_upper_then = float(ConfigSaved().exchange_rate_upper_then())
+        exchange_rate_lower_than = float(ConfigSaved().exchange_rate_lower_than())
+        exchange_rate_upper_than = float(ConfigSaved().exchange_rate_upper_than())
 
         try:
             from connection_spread import connect
@@ -6680,12 +6726,12 @@ class ConditionsCheck:
                         '*** ' + str(instrument_name_currency_exchange_rate) + ' Mark Price: ' +
                         str(currency_exchange_rate_mark_price) + ' ***'
                     )
-                    if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_then):
+                    if float(currency_exchange_rate_mark_price) < float(exchange_rate_lower_than):
                         list_monitor_log.append('*** Mark Price < ' + str(
-                            exchange_rate_lower_then) + 'USD - ''LOWER then Condition Filled ***')
-                        if float(currency_exchange_rate_mark_price) > float(exchange_rate_upper_then):
+                            exchange_rate_lower_than) + 'USD - ''LOWER than Condition Filled ***')
+                        if float(currency_exchange_rate_mark_price) > float(exchange_rate_upper_than):
                             list_monitor_log.append('*** Mark Price > ' + str(
-                                exchange_rate_upper_then) + 'USD - '' UPPER then Condition Filled ***')
+                                exchange_rate_upper_than) + 'USD - '' UPPER than Condition Filled ***')
                             structure_market_cost_trigger_check = ConditionsCheck().structure_market_cost_trigger(
                                 priority=priority)
                             if structure_market_cost_trigger_check is True:  # Opcional a configuração
@@ -6715,13 +6761,13 @@ class ConditionsCheck:
                         else:
                             run_target_on_off = 'on'
                             list_monitor_log.append('Waiting Mark Price  > ' +
-                                                    str(exchange_rate_upper_then) +
-                                                    ' - UPPER then Condition')
+                                                    str(exchange_rate_upper_than) +
+                                                    ' - UPPER than Condition')
                     else:
                         run_target_on_off = 'on'
                         list_monitor_log.append('Waiting Mark Price < ' +
-                                                str(exchange_rate_lower_then) +
-                                                ' - LOWER then Condition')
+                                                str(exchange_rate_lower_than) +
+                                                ' - LOWER than Condition')
                         pass
                 elif trading_on_off_for_msg == 'off':
                     run_target_on_off = 'off'
@@ -9630,6 +9676,13 @@ def instruments(ui):
 
 # noinspection PyShadowingNames
 def config(ui):
+    def set_new_geometry_to_text_edit_targets_saved():
+        ui.textEdit_targets_saved.setGeometry(QtCore.QRect(14, 146, 411, 97))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(45)
+        ui.textEdit_targets_saved.setFont(font)
+
     def save_orders_rate():
         try:
             orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
@@ -10097,6 +10150,7 @@ def config(ui):
     def pushbutton_update_balance_2_clicked_call_position_now():
         sinal.position_now_signal_2.emit()
 
+    set_new_geometry_to_text_edit_targets_saved()
     sinal.set_version_and_icon_and_texts_and_dates_signal.connect(
         set_version_and_icon_and_texts_and_dates_signal_receive)
     set_version_and_icon_and_texts_and_dates()
@@ -11888,10 +11942,10 @@ def add_widgets(ui):
     check_box_mark_price = QtWidgets.QCheckBox(ui.frame_2)
     line_edit_mark_price = QtWidgets.QLineEdit(ui.frame_2)
 
-    # ADD Stop if Price > or < than
-    is_stop_by_price = QtWidgets.QCheckBox(ui.frame_4_targets)
-    combo_box_is_stop_by_price = QtWidgets.QComboBox(ui.frame_4_targets)
-    line_is_stop_by_price = QtWidgets.QLineEdit(ui.frame_4_targets)
+    # ADD objets names to  Stop if Price > or < than
+    is_stop_by_price = ui.is_stop_by_price
+    combo_box_is_stop_by_price = ui.combo_box_is_stop_by_price
+    line_is_stop_by_price = ui.line_is_stop_by_price
 
     def set_infinite_loop():
         infinite_loop.setGeometry(QtCore.QRect(450, 0, 140, 40))
@@ -12157,6 +12211,32 @@ def add_widgets(ui):
         sinal.textedit_instruments_saved_settext_signal.emit(
             'lineEdit_currency_exchange_rate_for_upper_and_lower1 set text when open app')
 
+    def is_stop_by_price_saved_receive_signal():
+        setup = ConfigParser(
+            allow_no_value=True,
+            inline_comment_prefixes='#',
+            strict=False
+        )
+        setup.read('setup.ini')
+        is_stop_by_price_setup = setup['targets']
+
+        is_stop_by_price.setChecked(is_stop_by_price_setup.getboolean('is_stop_if_price_checkbox'))
+        combo_box_is_stop_by_price.setCurrentText(str(is_stop_by_price_setup['is_stop_if_price_combo_box']))
+        line_is_stop_by_price.setText(str(is_stop_by_price_setup['is_stop_if_price_line_edit']))
+
+        try:
+            from connection_spread import connect
+            connect.logwriter(
+                '***  Stop by price Saved *** ' + str(is_stop_by_price_setup.getboolean('is_stop_if_price_checkbox')) +
+                ' ' + str(is_stop_by_price_setup['is_stop_if_price_combo_box']) + ' ' +
+                str(is_stop_by_price_setup['is_stop_if_price_line_edit']) + ' ***'
+            )
+        except Exception as er:
+            from lists import list_monitor_log
+            list_monitor_log.append('***  Stop Price Saved Error *** Error code: 12183 - ' + str(er))
+        finally:
+            pass
+
     def set_is_stop_by_price():
         # Check Box
         is_stop_by_price.setGeometry(QtCore.QRect(440, 198, 95, 17))
@@ -12186,6 +12266,24 @@ def add_widgets(ui):
         line_is_stop_by_price.setClearButtonEnabled(False)
         line_is_stop_by_price.setObjectName("line_edit_mark_price")
 
+    def is_stop_by_price_set_enabled_signal(info):
+        if info is True:
+            is_stop_by_price.setEnabled(True)
+            combo_box_is_stop_by_price.setEnabled(True)
+            line_is_stop_by_price.setEnabled(True)
+        else:
+            is_stop_by_price.setEnabled(False)
+            combo_box_is_stop_by_price.setEnabled(False)
+            line_is_stop_by_price.setEnabled(False)
+
+    def is_stop_by_price_state_changed():
+        if is_stop_by_price.isChecked() is True:
+            combo_box_is_stop_by_price.setEnabled(True)
+            line_is_stop_by_price.setEnabled(True)
+        else:
+            combo_box_is_stop_by_price.setEnabled(False)
+            line_is_stop_by_price.setEnabled(False)
+
     sinal.infinite_loop_and_reduce_only_set_text_signal.connect(infinite_loop_and_reduce_only_set_text)
     set_infinite_loop()
     infinite_loop_set_check_when_open_app()
@@ -12193,6 +12291,9 @@ def add_widgets(ui):
     mark_price_set_enabled_signal(True)
     lineedit_currency_exchange_rate_for_upper_and_lower1_set_text_when_open_app()
     set_is_stop_by_price()
+    is_stop_by_price_set_enabled_signal(True)
+    is_stop_by_price_saved_receive_signal()
+    is_stop_by_price_state_changed()
     infinite_loop.stateChanged.connect(dont_stop_trading_and_update_amount_adjusted_save)
     infinite_loop.stateChanged.connect(infinite_loop_and_reduce_only_set_text_emit_signal)
     check_box_mark_price.stateChanged.connect(set_mark_price_save)
@@ -12209,18 +12310,24 @@ def add_widgets(ui):
     sinal.dont_stop_trading_and_update_amount_adjusted_set_enable_signal.connect(
         dont_stop_trading_and_update_amount_adjusted_set_enable_signal)
     sinal.mark_price_set_enabled_signal.connect(mark_price_set_enabled_signal)
+    sinal.is_stop_by_price_set_enabled_signal.connect(is_stop_by_price_set_enabled_signal)
+    sinal.is_stop_by_price_saved_signal.connect(is_stop_by_price_saved_receive_signal)
+    is_stop_by_price.stateChanged.connect(is_stop_by_price_state_changed)
+    sinal.is_stop_by_price_state_changed_signal.connect(is_stop_by_price_state_changed)
 
 # TODO: adicionar widegets stop if price < or > than ==> OK
 # TODO: adicionar no arquivo setup.ini == OK (ainda falta criar e chamar a função -saved-
 # TODO: configuar o que fazer quando abrir o app quanto a texto
 # TODO: configuar o que fazer quando abrir o app quanto a deixar hiden enquato não aceita termos
-# TODO: ler e colocar na telacomo está no setup.ini ao iniciar
+# TODO: ler e colocar na tela como está no setup.ini ao iniciar
 # TODO: ler e colocar na tela como está no setup.ini após o click no botão submit new conditions
 # TODO: gravar no arquivo log e mostrar no monitor da tab run
+# TODO: preencher somente com numeros, dar aviso tbm se estiver vazia a lineEdit e check box True
 # TODO: adionar, se possível, quando aperta a tecla tab, e se preciso
+# TODO: se iniciar run e o checbox estiver false e o comobox estiver com "Set > or <" ou linebox com '', fazer algo
 # TODO: deixar hiden quando run on
 # TODO: deixar aparecendoo quando run off
-# TODO: ver o que fazer quando instruments checkder ruim
+# TODO: ver o que fazer quando instruments check for ruim
 # TODO: implentar na função run
 
 
