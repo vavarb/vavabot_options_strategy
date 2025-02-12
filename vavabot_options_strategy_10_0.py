@@ -1789,9 +1789,9 @@ class ConfigSaved:
 
         if str(targets_setup['is_stop_if_price_checkbox']) == 'True':
             line_6 = str('Stop if Price (Instrument Consider for Conditions): ' +
-                         str(targets_setup['is_stop_if_price_checkbox']) + ' - ' +
+                         str(targets_setup['is_stop_if_price_checkbox']) + ':  ' +
                          str(targets_setup['is_stop_if_price_combo_box']) + ' ' +
-                         str(targets_setup['is_stop_if_price_line_edit'])
+                         str(targets_setup['is_stop_if_price_line_edit'] + ' USD')
                          )
         else:
             line_6 = str('Stop if Price: ' + str(targets_setup['is_stop_if_price_checkbox']))
@@ -10647,6 +10647,9 @@ def run(ui):
         ui.pushButton_stop_arbitrage.setEnabled(False)
         ui.pushButton_start_trading.setEnabled(True)
 
+        sinal.is_stop_by_price_set_enabled_signal.emit(True)
+        sinal.is_stop_by_price_state_changed_signal.emit()
+
     def btc_index_print_start_thread():
         import threading
         sinal.btc_index_print_start_thread_signal.emit()
@@ -11795,6 +11798,8 @@ def run(ui):
         ui.check_box_reduce_only_3.setEnabled(False)
         ui.check_box_reduce_only_4.setEnabled(False)
 
+        sinal.is_stop_by_price_set_enabled_signal.emit(False)
+
     def start_thread_trade():
         import threading
 
@@ -12352,19 +12357,6 @@ def add_widgets(ui):
     is_stop_by_price.stateChanged.connect(is_stop_by_price_state_changed)
     sinal.is_stop_by_price_state_changed_signal.connect(is_stop_by_price_state_changed)
 
-# TODO: adicionar widegets stop if price < or > than ==> OK
-# TODO: adicionar no arquivo setup.ini == OK (ainda falta criar e chamar a função -saved-
-# TODO: configuar o que fazer quando abrir o app quanto a texto
-# TODO: configuar o que fazer quando abrir o app quanto a deixar hiden enquato não aceita termos
-# TODO: ler e colocar na tela como está no setup.ini ao iniciar
-# TODO: ler e colocar na tela como está no setup.ini após o click no botão submit new conditions
-# TODO: gravar no arquivo log e mostrar no monitor da tab run
-# TODO: preencher somente com numeros, dar aviso tbm se estiver vazia a lineEdit e check box True
-# TODO: adionar, se possível, quando aperta a tecla tab, e se preciso
-# TODO: se iniciar run e o checbox estiver false e o comobox estiver com "Set > or <" ou linebox com '', fazer algo
-# TODO: deixar hiden quando run on
-# TODO: deixar aparecendoo quando run off
-# TODO: ver o que fazer quando instruments check for ruim
 # TODO: implentar na função run
 
 
