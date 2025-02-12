@@ -1925,10 +1925,47 @@ class Config:
         is_stop_by_price_setup = setup['targets']
 
         if ui.is_stop_by_price.isChecked() is True:
-            is_stop_by_price_setup['is_stop_if_price_checkbox'] = str(ui.is_stop_by_price.isChecked())
-            is_stop_by_price_setup['is_stop_if_price_combo_box'] = str(ui.combo_box_is_stop_by_price.currentText())
-            is_stop_by_price_setup['is_stop_if_price_line_edit'] = str.replace(str(
-                ui.line_is_stop_by_price.text()), ',', '.')
+            if str(ui.combo_box_is_stop_by_price.currentText()) == 'Set > or <':
+                is_stop_by_price_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Requires setting < OR <'
+                }
+                sinal.instruments_save_msg_box_signal.emit(is_stop_by_price_info_msg)
+
+                is_stop_by_price_setup['is_stop_if_price_checkbox'] = 'False'
+                is_stop_by_price_setup['is_stop_if_price_combo_box'] = 'Set > or <'
+                is_stop_by_price_setup['is_stop_if_price_line_edit'] = ''
+
+            elif str.replace(str(ui.line_is_stop_by_price.text()), ',', '.') == '':
+                is_stop_by_price_info_msg = {
+                    'title': '***** ERROR *****',
+                    'msg_text': 'Is Stop by Price\nRequires a Value'
+                }
+                sinal.instruments_save_msg_box_signal.emit(is_stop_by_price_info_msg)
+
+                is_stop_by_price_setup['is_stop_if_price_checkbox'] = 'False'
+                is_stop_by_price_setup['is_stop_if_price_combo_box'] = 'Set > or <'
+                is_stop_by_price_setup['is_stop_if_price_line_edit'] = ''
+
+            elif str.replace(str(ui.line_is_stop_by_price.text()), ',', '.') != '':
+                try:
+                    float(str.replace(str(ui.line_is_stop_by_price.text()), ',', '.'))
+                    is_stop_by_price_setup['is_stop_if_price_checkbox'] = str(ui.is_stop_by_price.isChecked())
+                    is_stop_by_price_setup['is_stop_if_price_combo_box'] = str(
+                        ui.combo_box_is_stop_by_price.currentText())
+                    is_stop_by_price_setup['is_stop_if_price_line_edit'] = str.replace(
+                        str(ui.line_is_stop_by_price.text()), ',', '.')
+                except ValueError:
+                    is_stop_by_price_info_msg = {
+                        'title': '***** ERROR *****',
+                        'msg_text': 'ONLY Numbers Are Accepted'
+                    }
+                    sinal.instruments_save_msg_box_signal.emit(is_stop_by_price_info_msg)
+
+                    is_stop_by_price_setup['is_stop_if_price_checkbox'] = 'False'
+                    is_stop_by_price_setup['is_stop_if_price_combo_box'] = 'Set > or <'
+                    is_stop_by_price_setup['is_stop_if_price_line_edit'] = ''
+
         else:
             is_stop_by_price_setup['is_stop_if_price_checkbox'] = 'False'
             is_stop_by_price_setup['is_stop_if_price_combo_box'] = 'Set > or <'
@@ -11942,7 +11979,7 @@ def add_widgets(ui):
     check_box_mark_price = QtWidgets.QCheckBox(ui.frame_2)
     line_edit_mark_price = QtWidgets.QLineEdit(ui.frame_2)
 
-    # ADD objets names to  Stop if Price > or < than
+    # ADD objets names to Stop if Price > or < than
     is_stop_by_price = ui.is_stop_by_price
     combo_box_is_stop_by_price = ui.combo_box_is_stop_by_price
     line_is_stop_by_price = ui.line_is_stop_by_price
