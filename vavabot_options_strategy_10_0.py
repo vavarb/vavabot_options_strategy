@@ -2,8 +2,8 @@
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
 from configparser import ConfigParser
 
-from gui_spread import *
-from connection_spread import *
+from gui_strategy import *
+from connection_strategy import *
 from websocket import create_connection
 from datetime import datetime, timedelta
 import json
@@ -113,7 +113,7 @@ class Deribit:
                 logwriter_file.write(str(out))
 
         except Exception as er:
-            from connection_spread import connect
+            from connection_strategy import connect
             from lists import list_monitor_log
             global counter_send_order_for_function
 
@@ -336,7 +336,7 @@ class Deribit:
 
     def _sender(self, msg, priority=2):
         global delay
-        from connection_spread import led_color
+        from connection_strategy import led_color
 
         counter_send_order = self.counter_send_order_function()
         msg_id_before_counter = msg['id']
@@ -476,7 +476,7 @@ class Deribit:
                 return out['result']
 
         except Exception as er:
-            from connection_spread import connection_thread, run_thread, set_led_red
+            from connection_strategy import connection_thread, run_thread, set_led_red
             import threading
 
             self.logwriter('***** _sender ERROR: ' + str(er) + ' msgSent ID: ' + str(msg['id']) +
@@ -897,18 +897,18 @@ class InstrumentsSaved:
 
     @staticmethod
     def instruments_check():
-        with open('instruments_spread.txt', 'r') as instruments_check_file:
+        with open('instruments_strategy.txt', 'r') as instruments_check_file:
             return str(instruments_check_file.read())
 
     def instrument_name_construction_from_file(self, instrument_number=None):
         self.instrument_number = instrument_number
-        file_open = 'instruments_spread.txt'
+        file_open = 'instruments_strategy.txt'
 
         instrument_number_adjusted_to_list = (int(instrument_number) - 1)
 
         # open file instruments
         with open(file_open, 'r') as file_instruments:
-            lines_file_instruments = file_instruments.readlines()  # file instruments_spread.txt ==> lines
+            lines_file_instruments = file_instruments.readlines()  # file instruments_strategy.txt ==> lines
             # Instrument
             list_line_instrument = lines_file_instruments[instrument_number_adjusted_to_list].split()  # line ==> list
             if 'Unassigned' in list_line_instrument:
@@ -919,7 +919,7 @@ class InstrumentsSaved:
 
     def instrument_available(self, instrument_number=None):
         from lists import list_monitor_log
-        from connection_spread import connect
+        from connection_strategy import connect
 
         self.instrument_number = instrument_number
 
@@ -949,7 +949,7 @@ class InstrumentsSaved:
                 return 'instrument NO available'
 
     def instrument_buy_or_sell(self, instrument_number=None):
-        file_open = 'instruments_spread.txt'
+        file_open = 'instruments_strategy.txt'
         self.instrument_number = instrument_number
         instrument_number_adjusted_to_list = (int(instrument_number) - 1)
         if InstrumentsSaved().instrument_name_construction_from_file(
@@ -1048,7 +1048,7 @@ class InstrumentsSaved:
             return 'option'
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter('*** Instrument ' + str(instrument_number) + ' kind ERROR Error Code:: 746 ***')
                 pass
             except Exception as er:
@@ -1064,13 +1064,13 @@ class InstrumentsSaved:
     def instrument_direction_construction_from_instrument_file(self, instrument_number=None):
         self.instrument_number = instrument_number
 
-        file_open = 'instruments_spread.txt'
+        file_open = 'instruments_strategy.txt'
         instrument_number_adjusted_to_list = (int(instrument_number) - 1)
 
         # open file instruments
 
         with open(file_open, 'r') as file_instruments:
-            lines_file_instruments = file_instruments.readlines()  # file instruments_spread.txt ==> lines
+            lines_file_instruments = file_instruments.readlines()  # file instruments_strategy.txt ==> lines
             # Instrument
             list_line_instrument = lines_file_instruments[instrument_number_adjusted_to_list].split()  # line ==> list
             if 'Unassigned' in list_line_instrument:
@@ -1081,7 +1081,7 @@ class InstrumentsSaved:
                 return 'sell'
             else:
                 try:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     connect.logwriter(str(
                         '*** Instrument ' + str(instrument_number) + ' direction ERROR Error Code:: 949 ***')
                     )
@@ -1114,7 +1114,7 @@ class Instruments:
             return 'Unassigned'
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 currency = str
                 if 'BTC' in instrument_name:
                     currency = 'BTC'
@@ -1153,7 +1153,7 @@ class Instruments:
         self.instrument_name4 = instrument_name4
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             if (Instruments().instrument_available_before_save(instrument_name=instrument_name1) ==
                 'instrument available' or
                 Instruments().instrument_available_before_save(instrument_name=instrument_name1) == 'Unassigned') and \
@@ -1232,7 +1232,7 @@ class Instruments:
     def greeks_by_instruments(self, instrument_number=None, priority=2):
         self.instrument_number = instrument_number
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             instrument_kind_greeks = InstrumentsSaved().instrument_kind_saved(instrument_number=instrument_number)
             if 'option' in instrument_kind_greeks:
                 instrument_name_greeks = InstrumentsSaved().instrument_name_construction_from_file(
@@ -1383,7 +1383,7 @@ class Instruments:
         amount_adjusted_setup = setup['amount_adjusted']
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Rate Trades Saved: ' + str(amount_adjusted_setup['rate_amount']) + ' ***')
         except Exception as er:
             from lists import list_monitor_log
@@ -1521,7 +1521,7 @@ class Instruments:
         amount_adjusted_setup = setup['amount_adjusted']
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Rate Trades Saved: ' + str(amount_adjusted_setup['rate_amount']) + ' ***')
         except Exception as er:
             from lists import list_monitor_log
@@ -1610,7 +1610,7 @@ class Instruments:
                             abs(instrument_position_saved_for_reduce_only))
             else:
                 try:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     connect.logwriter('********** ERROR code 1473 - Amount Adjusted Save error')
                 except Exception as er:
                     from lists import list_monitor_log
@@ -1663,7 +1663,7 @@ class Instruments:
         amount_adjusted_setup = setup['amount_adjusted']
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(
                 '*** Amount Adjusted Saved - ' + 'Instrument ' + str(instrument_number) + ' - ' +
                 str(instrument_name_construction_from_file) + ': ' +
@@ -1713,7 +1713,7 @@ class ConfigSaved:
         ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
         except Exception as er:
             from lists import list_monitor_log
@@ -1986,7 +1986,7 @@ class Config:
         self.spread_structure1 = spread_structure1
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             from lists import list_monitor_log
 
             if float(str.replace(ui.lineEdit_currency_exchange_rate_upper1.text(), ',', '.')) > \
@@ -2161,7 +2161,7 @@ class Config:
         d = instrument4_name
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
 
             setup = ConfigParser(
                 allow_no_value=True,
@@ -2475,7 +2475,7 @@ class Config:
     def date_time_saved():
         from lists import list_monitor_log
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Date and time saved ***')
         except ImportError:
             pass
@@ -2583,7 +2583,7 @@ class Quote:
     def instrument_market_cost(self, instrument_number, priority=2):
         self.instrument_number = instrument_number
 
-        from connection_spread import connect
+        from connection_strategy import connect
 
         instrument_kind = InstrumentsSaved().instrument_kind_saved(
             instrument_number=instrument_number)
@@ -2623,7 +2623,7 @@ class Quote:
     def instrument_mark_price_cost(self, instrument_number, priority=2):
         self.instrument_number = instrument_number
 
-        from connection_spread import connect
+        from connection_strategy import connect
 
         instrument_kind = InstrumentsSaved().instrument_kind_saved(
             instrument_number=instrument_number)
@@ -2695,7 +2695,7 @@ class Quote:
     def instrument_mark_greek_cost(self, instrument_number, priority=2):
         self.instrument_number = instrument_number
 
-        from connection_spread import connect
+        from connection_strategy import connect
 
         instrument_kind_greeks = InstrumentsSaved().instrument_kind_saved(
             instrument_number=instrument_number)
@@ -2864,7 +2864,7 @@ class Quote:
 
     @staticmethod
     def last_trade_instrument_conditions_quote():
-        from connection_spread import connect
+        from connection_strategy import connect
 
         setup = ConfigParser(
             allow_no_value=True,
@@ -2892,7 +2892,7 @@ class Quote:
 
     @staticmethod
     def quote_new():
-        from connection_spread import led_color
+        from connection_strategy import led_color
 
         if led_color() == 'red':
             instruments_save_info_msg = {
@@ -2903,7 +2903,7 @@ class Quote:
             pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 quote_new_when_open_app_signal1_dict = dict()
                 quote_new_when_open_app_signal1_dict.clear()
 
@@ -3022,13 +3022,13 @@ class Quote:
 
     @staticmethod
     def quote_new_structure_cost_for_print_when_stopped_trading(priority=2):
-        from connection_spread import led_color
+        from connection_strategy import led_color
 
         if led_color() == 'red':
             pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
 
                 f13 = str(InstrumentsSaved().instrument_amount_saved(instrument_number=1))
                 f13_k = str(InstrumentsSaved().instrument_kind_saved(instrument_number=1))
@@ -3112,7 +3112,7 @@ class ConditionsCheck:
     @staticmethod
     def structure_market_cost_trigger(priority=2):  # E´de configuração opcional
         from lists import list_monitor_log
-        from connection_spread import connect
+        from connection_strategy import connect
 
         setup = ConfigParser(
             allow_no_value=True,
@@ -3502,7 +3502,7 @@ class ConditionsCheck:
 
     def position_option_smaller_max_position_instrument(self, instrument_number=None, priority=2):
         self.instrument_number = instrument_number
-        from connection_spread import connect
+        from connection_strategy import connect
         from lists import list_monitor_log
 
         # Args fixes
@@ -3559,7 +3559,7 @@ class ConditionsCheck:
     @staticmethod
     def position_option_smaller_max_position_instruments_(priority=2):
         from lists import list_monitor_log
-        from connection_spread import connect
+        from connection_strategy import connect
         # args modify
         position_option_smaller_max_position_instrument1 = \
             ConditionsCheck().position_option_smaller_max_position_instrument(instrument_number=1, priority=priority)
@@ -3836,7 +3836,7 @@ class ConditionsCheck:
         read_file_vgi = str(targets_setup['value_given_in'])
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             if 'BTC' not in read_file_vgi:
                 target_cost_structure_in = float(str(targets_setup['amount_value_given_in']))
 
@@ -4066,7 +4066,7 @@ class ConditionsCheck:
     def send_options_orders_like_first_time_without_mark_price(priority=0):
         from lists import list_monitor_log
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             # ABAIXO PRIMEIRAS ORDENS ENVIADAS SE ACIMA NÃO HOUVER AJUSTES
             # Args fixes
             instrument1_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=1)
@@ -4559,7 +4559,7 @@ class ConditionsCheck:
     def send_options_orders_like_first_time_with_mark_price(priority=0):
         from lists import list_monitor_log
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             # ABAIXO PRIMEIRAS ORDENS ENVIADAS SE ACIMA NÃO HOUVER AJUSTES
             # Args fixes
             setup = ConfigParser(
@@ -5114,7 +5114,7 @@ class ConditionsCheck:
     def send_options_orders(priority=0):
         from lists import list_monitor_log
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             # Args fixes
             instrument1_direction = InstrumentsSaved().instrument_direction_construction_from_instrument_file(
                 instrument_number=1)
@@ -6229,7 +6229,7 @@ class ConditionsCheck:
         from lists import list_monitor_log
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             instrument_max_position = Config().max_position_from_position_saved_and_instrument_amount(
                 instrument_number=instrument_number)
             instrument_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=instrument_number)
@@ -6294,7 +6294,7 @@ class ConditionsCheck:
 
     @staticmethod
     def rate_options_now(priority=2):
-        from connection_spread import connect
+        from connection_strategy import connect
         instrument_kind1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
         instrument_kind2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
         instrument_kind3 = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
@@ -6399,7 +6399,7 @@ class ConditionsCheck:
         self.instrument_number = instrument_number
         from lists import list_monitor_log
         global send_future_orders_while
-        from connection_spread import connect
+        from connection_strategy import connect
 
         instrument_kind_1 = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
         instrument_kind_2 = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
@@ -6427,13 +6427,13 @@ class ConditionsCheck:
             from lists import list_monitor_log
 
             try:
-                from connection_spread import led_color
+                from connection_strategy import led_color
                 if led_color() == 'red':
                     time.sleep(3)
                     pass
 
                 else:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     connect.cancel_all(priority=0)
                     time.sleep(0.3)
                     instrument_amount = InstrumentsSaved().instrument_amount_saved(instrument_number=instrument_number)
@@ -6651,7 +6651,7 @@ class ConditionsCheck:
     @staticmethod
     def targets_achieved_if_only_future(priority=1):
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         import time
         global run_target_on_off
         global trading_on_off_for_msg
@@ -6662,7 +6662,7 @@ class ConditionsCheck:
         exchange_rate_upper_than = float(ConfigSaved().exchange_rate_upper_than())
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             if led_color() == 'red':
                 list_monitor_log.append('********** Connection Offline - '
                                         'Waiting connection online for check '
@@ -6710,7 +6710,7 @@ class ConditionsCheck:
                     connect.logwriter(msg='****** ERROR targets_achieved_if_only_future Error Code:: 6167 *****')
                     pass
         except Exception as er:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(str(er) + 'targets_achieved_if_only_future - Error Code:: 6172')
             list_monitor_log.append(str(er) + 'targets_achieved_if_only_future - Error Code:: 6172')
         finally:
@@ -6723,7 +6723,7 @@ class ConditionsCheck:
         elif run_target_on_off == 'off':
             return 'targets_ok'
         else:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*********** Error Error Code:: 6185 - targets_achieved_if_only_future ************')
             list_monitor_log.append(
                 '*********** Error Error Code:: 6185 - targets_achieved_if_only_future ************')
@@ -6732,7 +6732,7 @@ class ConditionsCheck:
     @staticmethod
     def targets_achieved(priority=1):
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         import time
         global run_target_on_off
         global trading_on_off_for_msg
@@ -6743,7 +6743,7 @@ class ConditionsCheck:
         exchange_rate_upper_than = float(ConfigSaved().exchange_rate_upper_than())
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             if led_color() == 'red':
                 list_monitor_log.append('********** Connection Offline - '
                                         'Waiting connection online for check '
@@ -6814,7 +6814,7 @@ class ConditionsCheck:
                     connect.logwriter(msg='****** ERROR targets_achieved Error Code:: 4594 *****')
                     pass
         except Exception as er:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(str(er) + ' Error Code:: 4598')
             list_monitor_log.append(str(er) + ' Error Code:: 4599')
         finally:
@@ -6827,7 +6827,7 @@ class ConditionsCheck:
         elif run_target_on_off == 'off':
             return 'targets_ok'
         else:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*********** Error Error Code:: 4611 - targets_achieved ************')
             list_monitor_log.append('*********** Error Error Code:: 4612 - targets_achieved ************')
             return 'targets_ok'
@@ -6835,7 +6835,7 @@ class ConditionsCheck:
     @staticmethod
     def structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading():
         import time
-        from connection_spread import led_color
+        from connection_strategy import led_color
         from lists import list_monitor_log
 
         if led_color() == 'red':
@@ -6844,7 +6844,7 @@ class ConditionsCheck:
             pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 sinal.structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading_signal_1.emit()
 
                 a = connect.index_price('btc_usd')
@@ -7283,7 +7283,7 @@ def credentials(ui):
         pass
 
     def message_box_password_input():
-        from connection_spread import connection1
+        from connection_strategy import connection1
         from lists import password_dict
         global password_dict
 
@@ -7388,13 +7388,13 @@ def credentials(ui):
 # noinspection PyShadowingNames
 def instruments(ui):
     def instrument_expiration_construction_from_instrument_file(instrument_number=None):
-        file_open = 'instruments_spread.txt'
+        file_open = 'instruments_strategy.txt'
         instrument_number_adjusted_to_list = int(instrument_number) - 1
 
         # open file instruments
 
         with open(file_open, 'r') as file_instruments:
-            lines_file_instruments = file_instruments.readlines()  # file instruments_spread.txt ==> lines
+            lines_file_instruments = file_instruments.readlines()  # file instruments_strategy.txt ==> lines
             # Instrument
             list_line_instrument = lines_file_instruments[instrument_number_adjusted_to_list].split(
                 '-')  # line ==> list
@@ -7450,7 +7450,7 @@ def instruments(ui):
         import matplotlib.pyplot as plt
         from lists import list_monitor_log
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             instrument1_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
             instrument2_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
             instrument3_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
@@ -8162,7 +8162,7 @@ def instruments(ui):
                 pass
 
         except Exception as er:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(str(er) + ' Error Code:: 6766')
             list_monitor_log.append(str(er) + ' Error Code:: 6766')
 
@@ -8177,7 +8177,7 @@ def instruments(ui):
 
     def position_now_when_open_app():
         global list_thread_when_open_app
-        from connection_spread import connect, led_color
+        from connection_strategy import connect, led_color
         from lists import list_monitor_log
 
         instrument1_name = instrument_name_construction_from_file_when_open_app(instrument_number=1)
@@ -8249,7 +8249,7 @@ def instruments(ui):
         position_now_when_open_app()
 
     def quote_new_when_open_app():
-        from connection_spread import connect, led_color
+        from connection_strategy import connect, led_color
         global list_thread_when_open_app
 
         if led_color() == 'red':
@@ -8439,7 +8439,7 @@ def instruments(ui):
                 pass
 
         except Exception as er:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(str(er) + ' Error Code:: 5857')
             list_monitor_log.append(str(er) + ' Error Code:: 5858')
 
@@ -8512,13 +8512,13 @@ def instruments(ui):
 
     def instrument_name_construction_from_file_when_open_app(instrument_number=None):
 
-        file_open = 'instruments_spread.txt'
+        file_open = 'instruments_strategy.txt'
 
         instrument_number_adjusted_to_list = (int(instrument_number) - 1)
 
         # open file instruments
         with open(file_open, 'r') as file_instruments:
-            lines_file_instruments = file_instruments.readlines()  # file instruments_spread.txt ==> lines
+            lines_file_instruments = file_instruments.readlines()  # file instruments_strategy.txt ==> lines
             # Instrument
             list_line_instrument = lines_file_instruments[instrument_number_adjusted_to_list].split()  # line ==> list
             if 'Unassigned' in list_line_instrument:
@@ -8529,7 +8529,7 @@ def instruments(ui):
 
     def instruments_saved_print_and_check_available_when_open_app():
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         global list_thread_when_open_app
 
         setup = ConfigParser(
@@ -8574,7 +8574,7 @@ def instruments(ui):
                     instrument_saved_4 == 'instrument NO available') or (
                     lineedit_currency_exchange_rate_for_upper_and_lower1 == 'instrument NO available'):
 
-                with open('instruments_spread.txt', 'w') as instruments_save_file:
+                with open('instruments_strategy.txt', 'w') as instruments_save_file:
                     instruments_save_file.write('Instrument 1: Unassigned\n' +
                                                 'Instrument 2: Unassigned\n' +
                                                 'Instrument 3: Unassigned\n' +
@@ -8636,10 +8636,10 @@ def instruments(ui):
                 sinal.enable_disable_strike_and_c_or_p_and_maturity_signal.emit()
 
         except Exception as er:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(str(er) + ' Error Code:: 8174')
             list_monitor_log.append(str(er) + ' Error Code:: 8174')
-            with open('instruments_spread.txt', 'w') as instruments_save_file:
+            with open('instruments_strategy.txt', 'w') as instruments_save_file:
                 instruments_save_file.write('Instrument 1: Unassigned\n' +
                                             'Instrument 2: Unassigned\n' +
                                             'Instrument 3: Unassigned\n' +
@@ -8682,7 +8682,7 @@ def instruments(ui):
             setup.write(configfile)
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Date and time set Enable saved ***')
         except Exception as error2:
             from lists import list_monitor_log
@@ -8784,7 +8784,7 @@ def instruments(ui):
             instrument_reduce_only_setup_to_new_amount_4 == 'False' and \
                 reduce_only_setup.getboolean('infinite_loop') is True:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 if instrument1 != 'Unassigned' and amount1 != '' and amount1 != 0 and amount1 != '0':
                     position_when_save_instruments1 = float(connect.get_position_size(instrument_name=instrument1))
                     if bur_or_sell_1 == 'sell':
@@ -8881,7 +8881,7 @@ def instruments(ui):
         setup.read('setup.ini')
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Amount Saved:')
             connect.logwriter(str(instrument1) + ': ' + str(amount_setup['instrument1_amount']))
             connect.logwriter(str(instrument2) + ': ' + str(amount_setup['instrument2_amount']))
@@ -8907,7 +8907,7 @@ def instruments(ui):
         instruments_save_thread.start()
 
     def instruments_save():  # Já tem signal nas funções que chama. Só usa UI para receber dados, não enviar.
-        from connection_spread import led_color
+        from connection_strategy import led_color
         sinal.mark_price_set_enabled_signal.emit(True)
 
         date_now_instrument = QtCore.QDate.currentDate()
@@ -9299,7 +9299,7 @@ def instruments(ui):
                                     instrument_name3=instrument_name3_before_save,
                                     instrument_name4=instrument_name4_before_save) \
                                     == 'instrument_check_available_before_save_OK':
-                                with open('instruments_spread.txt', 'w') as instruments_save_file:
+                                with open('instruments_strategy.txt', 'w') as instruments_save_file:
                                     instruments_save_file.write(str(instrument1_to_save) + '\n' +
                                                                 str(instrument2_to_save) + '\n' +
                                                                 str(instrument3_to_save) + '\n' +
@@ -9578,7 +9578,7 @@ def instruments(ui):
         MainWindow.setWindowTitle(_translate("MainWindow", main_windows_title))
 
     def strategy_name_save():
-        from connection_spread import connect
+        from connection_strategy import connect
         strategy_name = str(ui.line_edit_strategy_name.text())
         setup = ConfigParser(
             allow_no_value=True,
@@ -9606,7 +9606,7 @@ def instruments(ui):
         ui.check_box_reduce_only_4.setChecked(true_or_false_reduce_only4)
 
     def position_now():
-        from connection_spread import led_color
+        from connection_strategy import led_color
 
         instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
         instrument2_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
@@ -9626,7 +9626,7 @@ def instruments(ui):
             pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 if a != 'Unassigned':
                     a1 = connect.get_position_size(instrument_name=a)
                 else:
@@ -9758,7 +9758,7 @@ def config(ui):
         ui.lineEdit_orders_rate.setText(str(orders_per_second_saved))
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('*** Order/Second Setup: ' + str(orders_per_second_saved) + ' ***')
         except Exception as er:
             from lists import list_monitor_log
@@ -9916,7 +9916,7 @@ def config(ui):
                 msg.exec_()
                 pass
             elif date_time_start_stamp >= date_time_end_stamp:
-                from connection_spread import connect
+                from connection_strategy import connect
                 setup = ConfigParser(
                     allow_no_value=True,
                     inline_comment_prefixes='#',
@@ -10034,7 +10034,7 @@ def config(ui):
                 msg.exec_()
                 pass
             elif date_time_start_stamp >= date_time_end_stamp:
-                from connection_spread import connect
+                from connection_strategy import connect
                 setup = ConfigParser(
                     allow_no_value=True,
                     inline_comment_prefixes='#',
@@ -10127,7 +10127,7 @@ def config(ui):
         ui.checkbox_date_time_end.setChecked(true_or_false_end_ischecked)
 
     def date_time_save():
-        from connection_spread import connect
+        from connection_strategy import connect
 
         date_time_start_str = ui.date_time_start.text()
         date_time_start_datetime = datetime.strptime(date_time_start_str, "%d/%m/%Y %H:%M")
@@ -10231,7 +10231,7 @@ def run(ui):
         info.clear()
 
     def position_now_when_open_app_signal(info):
-        from connection_spread import connection_thread
+        from connection_strategy import connection_thread
         ui.textEdit_balance_2.clear()
         ui.textEdit_balance_2.setText(str(info))
         connection_thread()
@@ -10379,9 +10379,9 @@ def run(ui):
     def lists_monitor():
         import time
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             counter = 0
             led1 = led_color()
 
@@ -10427,7 +10427,7 @@ def run(ui):
                         sinal.led_color_red_signal.emit()
                     else:
                         try:
-                            from connection_spread import connect
+                            from connection_strategy import connect
                         except ImportError:
                             er1_str = str('*** ERROR - lists_monitor() Error Code:: 6994 ***')
                             sinal.error_in_list_monitor_signal.emit(er1_str)
@@ -10448,7 +10448,7 @@ def run(ui):
                 else:
                     pass
             except Exception as er:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter(str(er) + ' Error Code:: 7009')
                 er1 = str('*** ERROR - lists_monitor() Error Code:: 7010: ' + str(er) + ' ***')
                 sinal.error_in_list_monitor_signal.emit(er1)
@@ -10487,7 +10487,7 @@ def run(ui):
 
     def receive_greeks_signal(greeks):
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         c = dict(greeks)
         if led_color() == 'red':
             pass
@@ -10508,7 +10508,7 @@ def run(ui):
                 k = str(c['delta'])
                 ui.lineEdit_24.setText(k)
             except Exception as er:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter(str(er) + ' Error Code:: 7068')
                 list_monitor_log.append(str(er) + ' Error Code:: 7069')
                 list_monitor_log.append('********** index_price_and_greeks ERROR **********')
@@ -10518,7 +10518,7 @@ def run(ui):
 
     def receive_greeks_signal1(greeks):
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         c = dict(greeks)
         if led_color() == 'red':
             pass
@@ -10541,7 +10541,7 @@ def run(ui):
                 ui.lineEdit_53.setText(k)
 
             except Exception as er:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter(str(er) + ' Error Code:: 7100')
                 list_monitor_log.append(str(er) + ' Error Code:: 7101')
                 list_monitor_log.append('********** index_price_and_greeks ERROR **********')
@@ -10600,7 +10600,7 @@ def run(ui):
     def btc_index_print():
         import time
         global index_greeks_print_on_off
-        from connection_spread import led_color
+        from connection_strategy import led_color
 
         index_greeks_print_on_off = 'on'
 
@@ -10612,7 +10612,7 @@ def run(ui):
                     time.sleep(3)
                     pass
                 else:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     Quote().quote_new_structure_cost_for_print_when_stopped_trading()
 
                     a = connect.index_price('btc_usd')
@@ -10668,14 +10668,14 @@ def run(ui):
 
         if run_trade_future_on_off == 'on':
             try:
-                from connection_spread import led_color
+                from connection_strategy import led_color
                 if led_color() == 'red':
                     list_monitor_log.append('********** Connection Offline **********')
                     time.sleep(3)
                     pass
 
                 else:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     instrument1_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=1)
                     instrument2_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=2)
                     instrument3_kind = InstrumentsSaved().instrument_kind_saved(instrument_number=3)
@@ -10788,7 +10788,7 @@ def run(ui):
                             pass
 
             except Exception as error3:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter(str(error3) + ' Error Code:: 7313')
                 list_monitor_log.append('run_trade_future_on_off - Error Code:: 7314 - Error: ' + str(error3))
                 pass
@@ -10801,7 +10801,7 @@ def run(ui):
     # noinspection PyMethodMayBeStatic
     def structure_mark_greek_cost_signal(greeks):
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         c = dict(greeks)
         if led_color() == 'red':
             pass
@@ -10833,7 +10833,7 @@ def run(ui):
 
     def start_signal_1(info):
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             ui.label_58.show()
             if info == 'start':
                 setup = ConfigParser(
@@ -10907,7 +10907,7 @@ def run(ui):
             '*** Trading Stopped at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' ***'
         )
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(
                 '*** Trading Stopped at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' ***'
             )
@@ -10949,7 +10949,7 @@ def run(ui):
 
         sinal.textedit_balance_after_signal.emit(textedit_balance_after_signal_dict)
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             if 'ERROR' in str(max_position_instrument1_for_gui):
                 connect.logwriter('********** ERROR - Instrument 1 Syntax ERROR -  Error Code 9252 - **********')
             else:
@@ -10976,7 +10976,7 @@ def run(ui):
             pass
 
     def position_now2(priority=2):
-        from connection_spread import led_color
+        from connection_strategy import led_color
         from lists import list_monitor_log
 
         instrument1_name = InstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
@@ -10994,7 +10994,7 @@ def run(ui):
             pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 if a != 'Unassigned':
                     a1 = connect.get_position_size(instrument_name=a, priority=priority)
                 else:
@@ -11210,7 +11210,7 @@ def run(ui):
 
     def is_stop_if_price_true_or_false(info):
         from lists import list_monitor_log
-        from connection_spread import connect
+        from connection_strategy import connect
 
         is_stop_if_price_checkbox = info['is_stop_if_price_checkbox']
 
@@ -11270,7 +11270,7 @@ def run(ui):
     def start():
         import time
         from lists import list_monitor_log
-        from connection_spread import led_color
+        from connection_strategy import led_color
         global trading_on_off
         global run_trade_future_on_off
         global run_trade_option_on_off
@@ -11334,7 +11334,7 @@ def run(ui):
 
             while waiting_date_time_start is True and trading_on_off == 'on':
                 try:
-                    from connection_spread import connect
+                    from connection_strategy import connect
 
                     connect.logwriter(
                         '*** Time Start is checked - ' + str(date_time_start_datetime) + ' - ***'
@@ -11349,7 +11349,7 @@ def run(ui):
                         connect.logwriter('*** Waiting for Time Start ***')
                         time.sleep(1)
                         try:
-                            from connection_spread import connect
+                            from connection_strategy import connect
                             if led_color() == 'red':
                                 list_monitor_log.append('********** Connection Offline **********')
                                 time.sleep(3)
@@ -11366,7 +11366,7 @@ def run(ui):
                                 else:
                                     pass
                         except Exception as error2:
-                            from connection_spread import connect
+                            from connection_strategy import connect
                             connect.logwriter(str(error2) + ' Error Code:: 8574')
                             list_monitor_log.append(str(error2) + ' Error Code:: 8574')
                             time.sleep(3)
@@ -11415,7 +11415,7 @@ def run(ui):
                     pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter('*** Time Start is NOT checked ***')
             except Exception as error2:
                 list_monitor_log.append(str(error2) + ' Error Code:: 8590')
@@ -11427,7 +11427,7 @@ def run(ui):
         if true_or_false_end_ischecked is True:
             if date_time_end_stamp < datetime.now().timestamp():
                 try:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
                     connect.logwriter('*** Trading Stopped by Timeout - ' + str(date_time_end_datetime) + ' ***')
                 except Exception as error2:
@@ -11443,7 +11443,7 @@ def run(ui):
                     send_future_orders_while = False
             else:
                 try:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     connect.logwriter('*** Time End is checked - ' + str(date_time_end_datetime) + ' ***')
                 except Exception as error2:
                     list_monitor_log.append(str(error2) + ' Error Code:: 8621')
@@ -11453,7 +11453,7 @@ def run(ui):
                     pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter('*** Time End is NOT checked ***')
             except Exception as error2:
                 list_monitor_log.append(str(error2) + ' Error Code:: 8633')
@@ -11466,7 +11466,7 @@ def run(ui):
 
         while trading_on_off == 'on':
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 # RUN TRADE
                 if trading_on_off != 'on':
                     break
@@ -11480,7 +11480,7 @@ def run(ui):
 
                 while run_trade_option_on_off == 'on':
                     try:
-                        from connection_spread import connect
+                        from connection_strategy import connect
                         if led_color() == 'red':
                             list_monitor_log.append('********** Connection Offline **********')
                             time.sleep(3)
@@ -11867,7 +11867,7 @@ def run(ui):
                                 list_monitor_log.append('******* ERROR IN vavabot_spread.py Error Code:: 7481 *******')
                                 pass
                     except Exception as error2:
-                        from connection_spread import connect
+                        from connection_strategy import connect
                         connect.logwriter(str(error2) + ' Error Code:: 7486')
                         list_monitor_log.append(str(error2) + ' Error Code:: 7487')
                         time.sleep(3)
@@ -11905,7 +11905,7 @@ def run(ui):
                 pass
         if trading_on_off_for_msg == 'off':
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 list_monitor_log.append(
                     '********** TRADING STOPPED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) + ' **********'
                 )
@@ -11924,7 +11924,7 @@ def run(ui):
             pass
         else:
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 list_monitor_log.append(
                     '********** TRADING FINISHED at ' + str(datetime.now().strftime('%d/%m/%Y %H:%M:%S')) +
                     ' **********'
@@ -12118,7 +12118,7 @@ def about(ui):
         ui.tab_run_trading.setDisabled(True)
 
     def disagree_license():
-        from connection_spread import connect
+        from connection_strategy import connect
 
         ui.tab_credentials.setDisabled(True)
         ui.tab_instruments.setDisabled(True)
@@ -12132,7 +12132,7 @@ def about(ui):
         ui.radioButton_disagree.setEnabled(False)
 
     def agree_license():
-        from connection_spread import connect
+        from connection_strategy import connect
 
         ui.tab_credentials.setDisabled(False)
         ui.tab_instruments.setDisabled(False)
@@ -12206,7 +12206,7 @@ def add_widgets(ui):
             setup.write(configfile)
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
         except Exception as er:
             from lists import list_monitor_log
@@ -12238,7 +12238,7 @@ def add_widgets(ui):
                 setup.write(configfile)
 
             try:
-                from connection_spread import connect
+                from connection_strategy import connect
                 connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
             except Exception as er:
                 from lists import list_monitor_log
@@ -12259,7 +12259,7 @@ def add_widgets(ui):
                     setup.write(configfile)
 
                 try:
-                    from connection_spread import connect
+                    from connection_strategy import connect
                     connect.logwriter('***  Infinite Loop of Position Update set enabled true or false saved ***')
                 except Exception as er:
                     from lists import list_monitor_log
@@ -12376,7 +12376,7 @@ def add_widgets(ui):
         line_edit_mark_price.setText(str(mark_price_setup['value_mark_price_orders']))
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(
                 '***  Mark Price Saved *** ' + str(mark_price_setup.getboolean('mark_price_orders')) + ' ' +
                 str(mark_price_setup['value_mark_price_orders'])
@@ -12442,7 +12442,7 @@ def add_widgets(ui):
         line_is_stop_by_price.setText(str(is_stop_by_price_setup['is_stop_if_price_line_edit']))
 
         try:
-            from connection_spread import connect
+            from connection_strategy import connect
             connect.logwriter(
                 '***  Stop by price Saved *** ' + str(is_stop_by_price_setup.getboolean('is_stop_if_price_checkbox')) +
                 ' ' + str(is_stop_by_price_setup['is_stop_if_price_combo_box']) + ' ' +

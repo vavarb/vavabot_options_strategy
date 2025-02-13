@@ -1,8 +1,9 @@
 api-key_spread.txt
 secret-key_spread.txt
 log_strategy.log
-log_spread_backup.log
+log_strategy_backup.log
 pyinstaller.py
 send_orders_rate.txt
 setup.ini
-instruments_spread.txt
+instruments_strategy.txt
+.gitignore
