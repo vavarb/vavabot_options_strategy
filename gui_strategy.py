@@ -2019,26 +2019,31 @@ class Ui_MainWindow(object):
         self.label_16.setText(_translate("MainWindow", "Position Builder:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_instruments), _translate("MainWindow", "Instruments"))
         self.label_6.setText(_translate("MainWindow",
-                                        "What instrument name to consider for conditions (Ex.: BTC-PERPETUAL, ETH-4SEP20):"))
+                                        "What instrument name to consider for conditions "
+                                        "(Ex.: BTC-PERPETUAL, ETH-4SEP20):"))
         self.lineEdit_currency_exchange_rate_for_upper_and_lower1.setText(_translate("MainWindow", "BTC-PERPETUAL"))
 
         # self.lineEdit_orders_rate.setText(_translate("MainWindow", "5"))
         self.pushButton_orders_rate.setText(_translate("MainWindow", "Orders/sec\nUpdate"))
 
         self.label_28.setText(_translate("MainWindow",
-                                         "Trade if currency LOWER then (in USD):                                                                                   <"))
+                                         "Trade if currency LOWER then (in USD):"
+                                         "                                        "
+                                         "                                           <"))
         self.label_29.setText(
             _translate("MainWindow", "Buy or sell the options structure? (Write \"buy\" or \"sell\")"))
         self.lineEdit_buy_or_sell_structure1.setItemText(0, _translate("MainWindow", "Set buy or sell"))
         self.lineEdit_buy_or_sell_structure1.setItemText(1, _translate("MainWindow", "buy"))
         self.lineEdit_buy_or_sell_structure1.setItemText(2, _translate("MainWindow", "sell"))
         self.comboBox_value_given.setItemText(0, _translate("MainWindow",
-                                                            "Set the cost of the Options Structure order will be  placed for the fixed value given in:"))
+                                                            "Set the cost of the Options Structure order will be  "
+                                                            "placed for the fixed value given in:"))
         self.comboBox_value_given.setItemText(1, _translate("MainWindow", "BTC"))
         self.comboBox_value_given.setItemText(2, _translate("MainWindow", "Mark Price %"))
         self.comboBox_value_given.setItemText(3, _translate("MainWindow", "USD"))
         self.comboBox_value_given_2.setItemText(0, _translate("MainWindow",
-                                                              "Set the cost of the Options Structure as trigger (optional)"))
+                                                              "Set the cost of the Options Structure as trigger "
+                                                              "(optional)"))
         self.comboBox_value_given_2.setItemText(1, _translate("MainWindow", "in BTC > "))
         self.comboBox_value_given_2.setItemText(2, _translate("MainWindow", "in BTC < "))
         self.comboBox_value_given_2.setItemText(3, _translate("MainWindow", "in Mark Price % > "))
@@ -2058,7 +2063,8 @@ class Ui_MainWindow(object):
         self.comboBox_value_given_2.setItemText(17, _translate("MainWindow", "in Vol > "))
         self.comboBox_value_given_2.setItemText(18, _translate("MainWindow", "in Vol < "))
         self.label_27.setText(_translate("MainWindow",
-                                         "Trade if currency quote UPPER then (in USD):                                                                          >"))
+                                         "Trade if currency quote UPPER then (in USD):"
+                                         "                                                                          >"))
         self.pushButton_submit_new_targets.setText(_translate("MainWindow", "SUBMIT\n"
                                                                             "new\n"
                                                                             "Conditions"))
@@ -2094,11 +2100,16 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_strutucture_quote),
                                   _translate("MainWindow", "Structure"))
         self.textEdit_monitor.setHtml(_translate("MainWindow",
-                                                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-                                                 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\""
+                                                 " \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                 "<html><head><meta name=\"qrichtext\" content=\"1\" "
+                                                 "/><style type=\"text/css\">\n"
                                                  "p, li { white-space: pre-wrap; }\n"
-                                                 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-                                                 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+                                                 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; "
+                                                 "font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+                                                 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; "
+                                                 "margin-bottom:0px; margin-left:0px; margin-right:0px; "
+                                                 "-qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.label_41.setText(_translate("MainWindow", "Monitor"))
         self.pushButton_start_trading.setText(_translate("MainWindow", "START\n"
                                                                        "TRADING"))

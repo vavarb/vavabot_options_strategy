@@ -12532,9 +12532,6 @@ def add_widgets(ui):
     is_stop_by_price.stateChanged.connect(is_stop_by_price_state_changed)
     sinal.is_stop_by_price_state_changed_signal.connect(is_stop_by_price_state_changed)
 
-# TODO: implentar na função run
-# TODO: atualizr o setup.ini creator e click no new_targets para o instrument target
-
 
 if __name__ == "__main__":
     import sys
