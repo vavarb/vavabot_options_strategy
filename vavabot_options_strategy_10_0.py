@@ -11208,6 +11208,65 @@ def run(ui):
         Quote().quote_new_structure_cost_for_print_when_stopped_trading(priority=priority)
         # sinal.pushButton_request_options_structure_cost_signal.emit()  # = call Quote().quote_new()
 
+    def is_stop_if_price_true_or_false(info):
+        from lists import list_monitor_log
+        from connection_spread import connect
+
+        is_stop_if_price_checkbox = info['is_stop_if_price_checkbox']
+
+        try:
+            if is_stop_if_price_checkbox is True:
+                is_stop_if_price_combo_box = str(info['is_stop_if_price_combo_box'])
+                is_stop_if_price_line_edit = abs(float(info['is_stop_if_price_line_edit']))
+                instrument_targets = str(info['instrument_targets'])
+                price = abs(float(info['price']))
+
+                list_monitor_log.append(
+                    '*** Stop if ' + str(instrument_targets) + ' mark price ' +
+                    str(is_stop_if_price_combo_box) + ' ' +
+                    str(is_stop_if_price_line_edit) + '. Mark Price: ' +
+                    str(price) +
+                    ' ***'
+                )
+
+                if is_stop_if_price_combo_box == '>':
+                    if float(price) > is_stop_if_price_line_edit:
+                        list_monitor_log.append(
+                            '*** Stop if price: The target WAS reached *** ' +
+                            '***** TRADING STOPPED by PRICE WAS reached *****'
+                        )
+                        return True
+                    else:
+                        list_monitor_log.append(
+                            '*** Stop if price: The target was NOT reached ***'
+                        )
+                        return False
+                elif is_stop_if_price_combo_box == '<':
+                    if float(price) < is_stop_if_price_line_edit:
+                        list_monitor_log.append(
+                            '*** Stop if price: The target WAS reached *** ' +
+                            '***** TRADING STOPPED by PRICE WAS reached *****'
+                        )
+                        return True
+                    else:
+                        list_monitor_log.append(
+                            '*** Stop if price: The target was NOT reached ***'
+                        )
+                        return False
+                else:
+                    list_monitor_log.append(
+                        '*** Stop if price: The target was NOT reached ***'
+                    )
+                    return False
+            else:
+                return False
+        except Exception as er:
+            list_monitor_log.append(str(er) + ' ***** Error Code:: 11279 *****')
+            connect.logwriter(str(er) + '***** Stop if price ***** Error Code:: 11280 *****')
+            return False
+        finally:
+            pass
+
     def start():
         import time
         from lists import list_monitor_log
@@ -11260,6 +11319,12 @@ def run(ui):
 
         dont_stop_trading_and_update_amount_adjusted = reduce_only_setup.getboolean(
                 'infinite_loop')
+
+        targets_setup = setup['targets']
+        is_stop_if_price_checkbox = targets_setup.getboolean('is_stop_if_price_checkbox')
+        is_stop_if_price_combo_box = targets_setup['is_stop_if_price_combo_box']
+        is_stop_if_price_line_edit = targets_setup['is_stop_if_price_line_edit']
+        instrument_targets = targets_setup['instrument_targets']
 
         if true_or_false_start_ischecked is True:
             waiting_date_time_start = True
@@ -11407,7 +11472,12 @@ def run(ui):
                     break
                 else:
                     pass
+
                 counter_run_trade_option = 11
+
+                # Is Stop by Price
+                is_stop_if_price_true_or_false_return = False
+
                 while run_trade_option_on_off == 'on':
                     try:
                         from connection_spread import connect
@@ -11436,6 +11506,30 @@ def run(ui):
                                         list_monitor_log.append('*** Trading time is NOT over ***')
                                 else:
                                     pass
+
+                                # Check Is Stop by price
+                                if is_stop_if_price_checkbox is True:
+                                    if is_stop_if_price_true_or_false_return is False:
+                                        pass
+                                    elif is_stop_if_price_true_or_false_return is True:
+                                        trading_on_off = 'off'
+                                        run_trade_future_on_off = 'off'
+                                        run_trade_option_on_off = 'off'
+                                        run_target_on_off = 'off'
+                                        trading_on_off_for_msg = 'off'
+                                        send_future_orders_while = False
+
+                                        list_monitor_log.append('*** Trading Stopped by PRICE ***')
+                                        connect.logwriter('*** Trading Stopped by PRICE ***')
+                                        break
+                                    else:
+                                        list_monitor_log.append(
+                                            '*********** Is Stop by Price Error 11689 ***********')
+                                        connect.logwriter(
+                                            '*********** Is Stop by Price Error 11689 ***********')
+                                else:
+                                    pass
+
                                 if reduce_only_setup_instrument_1 is False and \
                                     reduce_only_setup_instrument_2 is False and \
                                     reduce_only_setup_instrument_3 is False and \
@@ -11458,6 +11552,21 @@ def run(ui):
                                     structure_cost_for_tab_run_trading_and_btc_index_and_greeks_when_started_trading()
                                 list_monitor_log.append('***** Update Strategy cost,'
                                                         ' greeks and BTC index for tab Run *****')
+                                # Is Stop by Price
+                                if is_stop_if_price_checkbox is True:
+                                    price_to_is_stop = abs(
+                                        float(connect.mark_price(instrument_name=instrument_targets, priority=1)))
+                                    info = {
+                                        'price': price_to_is_stop,
+                                        'is_stop_if_price_checkbox': is_stop_if_price_checkbox,
+                                        'is_stop_if_price_combo_box': is_stop_if_price_combo_box,
+                                        'is_stop_if_price_line_edit': is_stop_if_price_line_edit,
+                                        'instrument_targets': instrument_targets
+                                    }
+                                    is_stop_if_price_true_or_false_return = is_stop_if_price_true_or_false(info)
+                                else:
+                                    pass
+
                                 sinal.chronometer_signal.emit(str(counter_run_trade_option))
                                 counter_run_trade_option = 11
                             else:
@@ -11507,6 +11616,28 @@ def run(ui):
                                                 connect.logwriter('*** Trading Stopped by Timeout ***')
                                             else:
                                                 list_monitor_log.append('*** Trading time is NOT over ***')
+                                        else:
+                                            pass
+
+                                        # Check Is Stop by price
+                                        if is_stop_if_price_checkbox is True:
+                                            if is_stop_if_price_true_or_false_return is False:
+                                                pass
+                                            elif is_stop_if_price_true_or_false_return is True:
+                                                trading_on_off = 'off'
+                                                run_trade_future_on_off = 'off'
+                                                run_trade_option_on_off = 'off'
+                                                run_target_on_off = 'off'
+                                                trading_on_off_for_msg = 'off'
+                                                send_future_orders_while = False
+
+                                                list_monitor_log.append('*** Trading Stopped by PRICE ***')
+                                                connect.logwriter('*** Trading Stopped by PRICE ***')
+                                            else:
+                                                list_monitor_log.append(
+                                                    '*********** Is Stop by Price Error 11689 ***********')
+                                                connect.logwriter(
+                                                    '*********** Is Stop by Price Error 11689 ***********')
                                         else:
                                             pass
 
@@ -11595,6 +11726,28 @@ def run(ui):
                                         else:
                                             pass
 
+                                        # Check Is Stop by price
+                                        if is_stop_if_price_checkbox is True:
+                                            if is_stop_if_price_true_or_false_return is False:
+                                                pass
+                                            elif is_stop_if_price_true_or_false_return is True:
+                                                trading_on_off = 'off'
+                                                run_trade_future_on_off = 'off'
+                                                run_trade_option_on_off = 'off'
+                                                run_target_on_off = 'off'
+                                                trading_on_off_for_msg = 'off'
+                                                send_future_orders_while = False
+
+                                                list_monitor_log.append('*** Trading Stopped by PRICE ***')
+                                                connect.logwriter('*** Trading Stopped by PRICE ***')
+                                            else:
+                                                list_monitor_log.append(
+                                                    '*********** Is Stop by Price Error 11689 ***********')
+                                                connect.logwriter(
+                                                    '*********** Is Stop by Price Error 11689 ***********')
+                                        else:
+                                            pass
+
                                         if run_trade_future_on_off == 'on':
                                             if ConditionsCheck().targets_achieved_if_only_future(
                                                     priority=1) == 'targets_ok':
@@ -11650,6 +11803,28 @@ def run(ui):
                                         connect.logwriter('*** Trading Stopped by Timeout ***')
                                     else:
                                         list_monitor_log.append('*** Trading time is NOT over ***')
+                                else:
+                                    pass
+
+                                # Check Is Stop by price
+                                if is_stop_if_price_checkbox is True:
+                                    if is_stop_if_price_true_or_false_return is False:
+                                        pass
+                                    elif is_stop_if_price_true_or_false_return is True:
+                                        trading_on_off = 'off'
+                                        run_trade_future_on_off = 'off'
+                                        run_trade_option_on_off = 'off'
+                                        run_target_on_off = 'off'
+                                        trading_on_off_for_msg = 'off'
+                                        send_future_orders_while = False
+
+                                        list_monitor_log.append('*** Trading Stopped by PRICE ***')
+                                        connect.logwriter('*** Trading Stopped by PRICE ***')
+                                    else:
+                                        list_monitor_log.append(
+                                            '*********** Is Stop by Price Error 11689 ***********')
+                                        connect.logwriter(
+                                            '*********** Is Stop by Price Error 11689 ***********')
                                 else:
                                     pass
 
@@ -12358,6 +12533,7 @@ def add_widgets(ui):
     sinal.is_stop_by_price_state_changed_signal.connect(is_stop_by_price_state_changed)
 
 # TODO: implentar na função run
+# TODO: atualizr o setup.ini creator e click no new_targets para o instrument target
 
 
 if __name__ == "__main__":
